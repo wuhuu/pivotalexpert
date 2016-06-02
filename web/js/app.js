@@ -111,29 +111,6 @@
       });
     }
 
-    $scope.addFreeCodeCamp = function () {
-      console.log("Adding Free Code Camp.");
-      $scope.ref.child('pivotalExpert/userProfiles').child($scope.profile.$id)
-        .child('services/freeCodeCamp/details/id').set($scope.freeCodeCampUsername);
-      //Put a link to profile
-    }
-
-    $scope.addCodeCombat = function () {
-      console.log("Adding Code Combat.");
-      //update Firebase
-      $scope.ref.child('pivotalExpert/userProfiles').child($scope.profile.$id)
-        .child('services/codeCombat/details/id').set($scope.codeCombatUsername);
-      //Put a link to profile. 
-    }
-
-    $scope.addCodeSchool = function () {
-      console.log("Adding Code School.");
-      //update Firebase
-      $scope.ref.child('pivotalExpert/userProfiles').child($scope.profile.$id)
-        .child('services/codeSchool/details/id').set($scope.codeSchoolUsername);
-      //Put a link to profile. 
-    }
-
     $scope.googleLogin = function () {
       console.log("here");
       $scope.ref.authWithOAuthPopup("google", function (error, authData) {
@@ -188,25 +165,10 @@
       });
     };
 
-    $scope.updateAllProfiles = function () {
-      // Fetch all userProfiles as an array. 
-      // Check for each service on each profile and enqueue if found. 
-    };
-
     $scope.updateAllServices = function () {
       console.log("Enqueueing " + $scope.profile.$id);
-      if ($scope.profile.services && $scope.profile.services.codeCombat) {
-        $scope.updateTasks.$add({ id: $scope.profile.$id, service: "codeCombat" });
-      }
-      if ($scope.profile.services && $scope.profile.services.freeCodeCamp) {
-        $scope.updateTasks.$add({ id: $scope.profile.$id, service: "freeCodeCamp" });
-      }
-      if ($scope.profile.services && $scope.profile.services.codeSchool) {
-        $scope.updateTasks.$add({ id: $scope.profile.$id, service: "codeSchool" });
-      }
-
+        $scope.updateTasks.$add({ id: $scope.profile.$id, service: "TESTING" });
     };
-
 
     $scope.getTheTime = function (timestamp) {
       return new Date(timestamp).toString();

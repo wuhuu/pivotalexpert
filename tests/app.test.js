@@ -10,6 +10,24 @@ describe('app', function () {
     $controller = _$controller_;
   }));
 
+  describe('Sample controller', function () {
+    describe('getAchievementList', function () {
+      it('should fetch and assign achievements to $scope.achievementList', function () {
+
+        var $scope = {};
+        $scope.ref = function () { };
+        var controller = $controller('SampleCtrl', {
+          $scope: $scope,
+          $firebaseArray: function () { return ['A'];},
+          $firebaseObject: function () { },
+          $firebaseAuth: function () { }
+        });
+        $scope.getAchievementList();
+        expect( $scope.achievements.length).toBe(1);
+      });
+    });
+});
+
   describe('SampleCtrl', function () {
 
 

@@ -16,7 +16,6 @@
     $scope.ref = new Firebase("https://pivotal-expert.firebaseio.com");
 
     // create a synchronized array
-    // click on `index.html` above to see it used in the DOM!
     $scope.logs = $firebaseArray($scope.ref.child('logs/profileUpdates'));
 
     $scope.usersRef = $scope.ref.child('users');
@@ -34,16 +33,37 @@
     var usersRef = $scope.ref.child('auth').child('users');
 
     $scope.allUsers = $firebaseArray($scope.ref.child('pivotalExpert/userProfiles'));
+   
+    $scope.getAchievementList = function(){
+      $scope.achievements =  $firebaseArray($scope.ref.child('pivotalExpert/achievements'));
+    }
+    //Run once on load. 
+    $scope.getAchievementList();
+     
+    $scope.markAchievementCompleted = function(achievementId){
+       $scope.ref.child('pivotalExpert')
+       .child('userProfiles')
+       .child($scope.user.publicId)
+       .child('userAchievements')
+       .child(achievementId).set(true);
+    }
     
+    $scope.markAchievementUncompleted = function(achievementId){
+       $scope.ref.child('pivotalExpert')
+       .child('userProfiles')
+       .child($scope.user.publicId)
+       .child('userAchievements')
+       .child(achievementId).set(false);
+    }
     $scope.logout = function () {
-      console.log("Logging user out.")
+      //console.log("Logging user out.")
       $scope.ref.unauth();
       $scope.user = null;
     };
 
     $scope.fetchAchievements = function (publicId) {
       console.log("Fetching achievements for " + publicId);
-      $scope.achievements = $firebaseObject($scope.ref.child('pivotalExpert/userAchievements/' + publicId));
+      $scope.userAchievements = $firebaseObject($scope.ref.child('pivotalExpert/userAchievements/' + publicId));
     }
 
     $scope.fetchPivotalExpertProfile = function (publicId) {
@@ -72,7 +92,7 @@
       console.log("User " + authData.uid + " is logged in with " + authData.provider);
       $scope.fetchAuthData(authData.uid);
     } else {
-      console.log("User is logged out");
+      //console.log("User is logged out");
     }
 
     $scope.addNewUserProfile = function () {

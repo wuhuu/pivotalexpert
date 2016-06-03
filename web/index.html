@@ -9,7 +9,7 @@
   </head>
 
   <body ng-controller="SampleCtrl">
-    <h2>Pivotal Expert</h2> {{all}}
+    <h2>Pivotal Expert</h2> {{profile.userAchievements}}
     <div ng-hide="user">
       <button type="submit" ng-click="login('github')">Github Login</button>
       <button type="submit" ng-click="googleLogin()">Google Login</button>
@@ -28,7 +28,16 @@
 
     <button type="submit" ng-click="updateAllServices()">Request for something to be updated</button>
 
-
+    <br>
+    Achievements<br>
+    <ol>
+      <li ng-repeat="a in achievements">
+        {{a.name}} 
+        <button type="submit" ng-click="markAchievementCompleted(a.$id)">Mark completed</button>
+        <button type="submit" ng-click="markAchievementUncompleted(a.$id)">Clear</button>
+        <img ng-show="profile.userAchievements[a.$id]" width="25" src="https://cdn0.iconfinder.com/data/icons/round-ui-icons/128/tick_green.png"> 
+      </li>
+    </ol>
 
     <h1>All Users</h1>
     <table class="table table-striped">
@@ -36,6 +45,7 @@
         <th></th>
         <th>Username</th>
         <th>Photo</th>
+        <th>Achievements</th>
 
       </tr>
       <tr ng-repeat="item in allUsers">
@@ -44,7 +54,10 @@
         </td>
         <td>{{item.user.displayName}}</td>
         <td> <img ng-src="{{item.user.pic}}" height="42" width="42"> </td>
-
+        <td>
+           <span ng-repeat="(key, value) in item.userAchievements">
+             <span ng-show="value">{{key}}</span> 
+           </span></td>
       </tr>
       <table>
 

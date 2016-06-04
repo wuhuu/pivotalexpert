@@ -15,6 +15,7 @@ module.exports = function(config) {
 // list of files / patterns to load in the browser
 files: [
   'web/lib/angular.min.js',
+  'web/lib/angular-route',
   'web/lib/angular-mocks.js',
   'web/lib/firebase.js',
   'node_modules/mockfirebase/browser/mockfirebase.js',

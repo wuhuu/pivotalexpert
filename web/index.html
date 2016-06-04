@@ -4,125 +4,16 @@
     <script src="lib/angular.min.js"></script>
     <script src="lib/firebase.js"></script>
     <script src="lib/angularfire.min.js"></script>
+    <script src="lib/angular-route.js"></script>
     <script src="js/app.js"></script>
 
   </head>
 
-<body ng-controller="SampleCtrl">
-  <h2>Pivotal Expert</h2>
-  <div ng-hide="user">
-    <button type="submit" ng-click="login('github')">Github Login</button>
-    <button type="submit" ng-click="googleLogin()">Google Login</button>
+  <body>
+  [<a href="#/home">Home</a> | <a href="#/tasks">Tasks</a>]
+  <div ng-view></div>
 
-  </div>
-  <div ng-show="user">
-    Hi {{profile.user.displayName}}. (edit)
-    <button type="submit" ng-click="logout()">Logout</button>
-    <br>
-    <div ng-show="user && !user.publicId">
-      <form ng-submit="addNewUserProfile()">
-        Pick a unique username for Pivotal Expert. http://profile/<input ng-model="newProfileId" />
-        <button type="submit">Save</button>
-      </form>
-    </div>
-    Achievements<br>
-    <ol>
-      <li ng-repeat="a in achievements">
-        {{a.name}}
-        <!-- Only show the clear button and checkmark if the user has completed the achievement.
-             Using ng-show and ng-hide based on if the user has completed a challenge. 
-         -->
-        <button ng-hide="profile.userAchievements[a.$id]" type="submit" ng-click="markAchievementCompleted(a.$id)">Mark completed</button>
-        <span ng-show="profile.userAchievements[a.$id]">
-          <button type="submit" ng-click="markAchievementUncompleted(a.$id)">Clear</button>
-          <img width="25" src="images/tick_green.png"> 
-        </span>
-      </li>
-    </ol>
-  </div>
-  <button type="submit" ng-click="updateAllServices()">Request for something to be updated asynchronously</button>
-
-  <h1>All Users</h1>
-  <table class="table table-striped">
-    <tr>
-      <th></th>
-      <th>Username</th>
-      <th>Photo</th>
-      <th>Achievements</th>
-
-    </tr>
-    <tr ng-repeat="item in allUsers">
-      <td>
-        {{$index+1}}.
-      </td>
-      <td>{{item.user.displayName}}</td>
-      <td> <img ng-src="{{item.user.pic}}" height="42" width="42"> </td>
-      <td>
-        <span ng-repeat="(key, value) in item.userAchievements">
-             <span ng-show="value">{{key}}</span>
-        </span>
-      </td>
-    </tr>
-    <table>
-
-      <h1>Task Queue</h1>
-      <table class="table table-striped">
-        <tr>
-          <th>Id</th>
-          <th>Service</th>
-          <th>State</th>
-          <th>Progress</th>
-          <th>State Changed</th>
-        </tr>
-        <tr ng-repeat="item in updateTasks">
-          <td>
-            {{item.id}}
-          </td>
-          <td>
-            {{item.service}}
-          </td>
-          <td>
-            {{item._state}}
-          </td>
-          <td>
-            {{item._progress}}
-          </td>
-          <td>
-            {{item._state_changed}}
-          </td>
-          <td>
-            {{getTime()}}
-          </td>
-        </tr>
-        <table>
-
-          <h1>Task Logs</h1>
-          <table class="table table-striped">
-            <tr>
-              <th>User</th>
-              <th>Service</th>
-              <th>Service ID</th>
-              <th>Achievements</th>
-              <th>Minutes Ago</th>
-            </tr>
-            <tr ng-repeat="item in filteredLogs | orderBy:'-updated'" ">
-          <td>
-            {{$index+1}}.
-          </td>
-          <td>
-              {{item.service}} 
-          </td>
-          <td>
-            {{item.id}}
-          </td>
-          <td>
-              {{item.count}} 
-          </td>
-          <td>{{ timePassed(item.updated) |number:2 }}
-            </td>
-        </tr>
-      <table>
-    <link rel="stylesheet " href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css " type="text/css " />
+  <link rel="stylesheet " href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css " type="text/css " />
 
   </body>
 </html>

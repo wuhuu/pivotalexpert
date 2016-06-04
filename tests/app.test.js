@@ -2,13 +2,24 @@
 describe('app', function () {
 
   beforeEach(module('app'));
+  //mock out modules
   angular.module('firebase', []);
-
+  angular.module('ngRoute', []);
+  
   var $controller;
 
   beforeEach(inject(function (_$controller_) {
     $controller = _$controller_;
   }));
+/*  
+  describe('Example', function () {
+    describe('test', function () {
+      it('should pass', function () {
+        expect(2).toBe(2);
+      });
+    });
+});
+
 
   describe('Sample controller', function () {
     describe('getAchievementList', function () {
@@ -73,4 +84,5 @@ describe('app', function () {
 
     });
   });
+  */
 });

@@ -3,13 +3,49 @@
   
   angular
     .module('app', [
-        'firebase'
+        'firebase','ngRoute'
     ]);
+
 
    // The controller can eventually be moved to another file. 
    // Add the controller to the module. 
+
+angular.module('app').
+  config(['$locationProvider', '$routeProvider',
+    function config($locationProvider, $routeProvider) {
+      $locationProvider.hashPrefix('');
+
+      $routeProvider.
+        when('/home', {
+              templateUrl: 'partials/home.html',
+              controller: 'SampleCtrl'
+        }).
+        when('/profile/:profileId', {
+              templateUrl: 'partials/profile.html',
+              controller: 'ProfileCtrl'
+        }).
+        when('/tasks', {
+              templateUrl: 'partials/tasks.html',
+              controller: 'SampleCtrl'
+        }).
+        otherwise('/home');
+    }
+  ]);
+
+   angular.module('app')
+        .controller('ProfileCtrl', ProfileCtrl);
+
    angular.module('app')
         .controller('SampleCtrl', SampleCtrl);
+
+   function ProfileCtrl($scope, $routeParams, $firebaseArray){
+     $scope.profileId =  $routeParams.profileId;
+     $scope.ref = new Firebase("https://pivotal-expert.firebaseio.com");
+     $scope.achievements = $firebaseArray($scope.ref.child('pivotalExpert/userProfiles/'+$scope.profileId+'/userAchievements'));
+     $scope.achievements.$loaded().then(function () {
+         $scope.totalAchievements = $scope.achievements.length;
+      });
+   }
    
    // Define the controller.
    function SampleCtrl($scope, $firebaseArray, $firebaseObject, $firebaseAuth) {

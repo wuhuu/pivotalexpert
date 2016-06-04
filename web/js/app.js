@@ -38,13 +38,21 @@ angular.module('app').
    angular.module('app')
         .controller('SampleCtrl', SampleCtrl);
 
-   function ProfileCtrl($scope, $routeParams, $firebaseArray){
-     $scope.profileId =  $routeParams.profileId;
+   function ProfileCtrl($scope, $routeParams, $firebaseArray) {
+     $scope.profileId = $routeParams.profileId;
      $scope.ref = new Firebase("https://pivotal-expert.firebaseio.com");
-     $scope.achievements = $firebaseArray($scope.ref.child('pivotalExpert/userProfiles/'+$scope.profileId+'/userAchievements'));
+     $scope.achievements = $firebaseArray($scope.ref.child('pivotalExpert/userProfiles/' + $scope.profileId + '/userAchievements'));
+     //Update total achievements when it loads and/or changes. 
      $scope.achievements.$loaded().then(function () {
-         $scope.totalAchievements = $scope.achievements.length;
-      });
+       $scope.totalAchievements = 0;
+       for (var i=0; i<$scope.achievements.length; i++) {
+         //Count the achievement if completed
+         if ($scope.achievements[i].$value) {
+           $scope.totalAchievements += 1;
+         }
+       }
+
+     });
    }
    
    // Define the controller.

@@ -26,7 +26,7 @@ angular.module('app').
         }).
         when('/tasks', {
               templateUrl: 'partials/tasks.html',
-              controller: 'SampleCtrl'
+              controller: 'TaskCtrl'
         }).
         otherwise('/home');
     }
@@ -34,11 +34,39 @@ angular.module('app').
 
    angular.module('app')
         .controller('ProfileCtrl', ProfileCtrl);
-
    angular.module('app')
         .controller('SampleCtrl', SampleCtrl);
+     angular.module('app')
+        .controller('TaskCtrl', TaskCtrl);
+        
+  function TaskCtrl($scope, $routeParams, $firebaseArray) {
+     $scope.code = "add = function(a,b){ return a+b; }";
+     $scope.tests = " it('should add numbers', function () { expect(add(2,1)).to.equal(3); });"
+     $scope.ref = new Firebase("https://pivotal-expert.firebaseio.com");
+     
+     $scope.tasks = $firebaseArray($scope.ref.child('queue/tasks'));
+     
+     var query = $scope.ref.child('pivotalExpert/logs/verifyLogs').orderByChild("updated").limitToLast(10);
+     $scope.filteredLogs = $firebaseArray(query);
+     
+     
+     $scope.checkTheCode = function(code, tests){
+      $scope.tasks.$add({
+          code: code,
+          tests: tests
+      });
+     }
+     
+    $scope.timePassed = function (timestamp) {
+      var delta = new Date() - new Date(timestamp);
+      return delta / 60000;
+    }
 
+
+   }
+         
    function ProfileCtrl($scope, $routeParams, $firebaseArray) {
+     // Get the profileId from the url
      $scope.profileId = $routeParams.profileId;
      $scope.ref = new Firebase("https://pivotal-expert.firebaseio.com");
      $scope.achievements = $firebaseArray($scope.ref.child('pivotalExpert/userProfiles/' + $scope.profileId + '/userAchievements'));

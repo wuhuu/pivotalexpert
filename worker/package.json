@@ -1,0 +1,22 @@
+{
+  "name": "mocha-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "node-lambda": "^0.8.5"
+  },
+  "dependencies": {
+    "firebase": "2.4.2",
+    "firebase-queue": "latest",
+    "request": "latest",
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3",
+    "mocha-js-reporter": "^1.2.0"
+  }
+}

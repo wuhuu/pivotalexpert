@@ -1,94 +1,17 @@
 
 (function() { // Wrap in an IIFE
   
-  angular
-    .module('app', [
-        'firebase','ngRoute'
-    ]);
+  angular.module('login', ['firebase']);
 
 
    // The controller can eventually be moved to another file. 
    // Add the controller to the module. 
+   angular.module('login')
+        .controller('LoginCtrl', LoginCtrl);
 
-angular.module('app').
-  config(['$locationProvider', '$routeProvider',
-    function config($locationProvider, $routeProvider) {
-      $locationProvider.hashPrefix('');
-
-      $routeProvider.
-        when('/home', {
-              templateUrl: 'partials/home.html',
-              controller: 'SampleCtrl'
-        }).
-		when('/users', {
-              templateUrl: 'partials/users.html',
-              controller: 'SampleCtrl'
-        }).
-        when('/profile/:profileId', {
-              templateUrl: 'partials/profile.html',
-              controller: 'ProfileCtrl'
-        }).
-        when('/tasks', {
-              templateUrl: 'partials/tasks.html',
-              controller: 'SampleCtrl'
-        }).
-        otherwise('/home');
-    }
-  ]);
-
-   angular.module('app')
-        .controller('ProfileCtrl', ProfileCtrl);
-   angular.module('app')
-        .controller('SampleCtrl', SampleCtrl);
-     angular.module('app')
-        .controller('TaskCtrl', TaskCtrl);
-        
-  function TaskCtrl($scope, $routeParams, $firebaseArray) {
-     $scope.code = "add = function(a,b){ return a+b; }";
-     $scope.tests = " it('should add numbers', function () { expect(add(2,1)).to.equal(3); });"
-     $scope.ref = new Firebase("https://pivotal-expert.firebaseio.com");
-     
-     $scope.tasks = $firebaseArray($scope.ref.child('queue/tasks'));
-     
-     var query = $scope.ref.child('pivotalExpert/logs/verifyLogs').orderByChild("updated").limitToLast(10);
-     $scope.filteredLogs = $firebaseArray(query);
-     
-     
-     $scope.checkTheCode = function(code, tests){
-      $scope.tasks.$add({
-          code: code,
-          tests: tests
-      });
-     }
-     
-    $scope.timePassed = function (timestamp) {
-      var delta = new Date() - new Date(timestamp);
-      return delta / 60000;
-    }
-
-
-   }
-         
-   function ProfileCtrl($scope, $routeParams, $firebaseArray) {
-     // Get the profileId from the url
-     $scope.profileId = $routeParams.profileId;
-     $scope.ref = new Firebase("https://pivotal-expert.firebaseio.com");
-     $scope.achievements = $firebaseArray($scope.ref.child('pivotalExpert/userProfiles/' + $scope.profileId + '/userAchievements'));
-     //Update total achievements when it loads and/or changes. 
-     $scope.achievements.$loaded().then(function () {
-       $scope.totalAchievements = 0;
-       for (var i=0; i<$scope.achievements.length; i++) {
-         //Count the achievement if completed
-         if ($scope.achievements[i].$value) {
-           $scope.totalAchievements += 1;
-         }
-       }
-
-     });
-   }
    
    // Define the controller.
-   function SampleCtrl($scope, $firebaseArray, $firebaseObject, $firebaseAuth) {
+   function LoginCtrl($scope, $firebaseArray, $firebaseObject, $firebaseAuth) {
     $scope.ref = new Firebase("https://pivotal-expert.firebaseio.com");
 
     // create a synchronized array
@@ -206,29 +129,9 @@ angular.module('app').
         }
       });
     }
-
-    $scope.googleLogin = function () {
-      console.log("here");
-      $scope.ref.authWithOAuthPopup("google", function (error, authData) {
-
-        console.log(authData)
-        //usersRef.child(authData.uid).update(authData.google);
-
-        usersRef.child(authData.uid).update({
-          //username: authData.google.username,
-          pic: authData.google.profileImageURL,
-          email: authData.google.email,
-          displayName: authData.google.displayName
-        });
-        $scope.fetchAuthData(authData.uid);
-
-      }, {
-          scope: "email"
-        });
-    }
-
-    $scope.login = function (service) {
-      console.log("Logging user in.")
+	
+	$scope.login = function (service) {
+      console.log("Loggin by GitHub")
       auth.$authWithOAuthPopup(service).then(function (user) {
         console.log("Logged in as:", user.uid);
 
@@ -254,6 +157,63 @@ angular.module('app').
       });
     };
 
+    $scope.googleLogin = function () {
+      console.log("Loggin by Google");
+      $scope.ref.authWithOAuthPopup("google", function (error, authData) {
+
+        console.log(authData)
+        //usersRef.child(authData.uid).update(authData.google);
+
+        usersRef.child(authData.uid).update({
+          //username: authData.google.username,
+          pic: authData.google.profileImageURL,
+          email: authData.google.email,
+          displayName: authData.google.displayName
+        });
+        $scope.fetchAuthData(authData.uid);
+
+      }, {
+          scope: "email"
+        });
+    }
+	
+	$scope.emailLogin = function (emaillID, pwd) {
+	  console.log("Loggin by Email");
+      $scope.ref.authWithPassword({
+		  email    : emaillID,
+		  password : pwd
+		}, function (error, authData) {
+
+        console.log(authData)
+        //usersRef.child(authData.uid).update(authData.google);
+
+        usersRef.child(authData.uid).update({
+          //username: authData.google.username,
+          pic: authData.password.profileImageURL,
+          email: authData.password.email,
+          displayName: authData.password.email
+        });
+        $scope.fetchAuthData(authData.uid);
+
+      }, {
+          scope: "email"
+        });
+	}
+	
+	$scope.createUser = function (emaillID, pwd) {
+	  console.log("Loggin by Email");
+      $scope.ref.ref.createUser({
+		  email    : emaillID,
+		  password : pwd
+		}, function(error, userData) {
+		  if (error) {
+			console.log("Error creating user:", error);
+		  } else {
+			console.log("Successfully created user account with uid:", userData.uid);
+		  }
+		});
+	}
+
     $scope.addProfileUpdateTask = function () {
       $scope.updateTasks.$add({
         id: $scope.id,
@@ -261,10 +221,6 @@ angular.module('app').
       });
     };
 
-    $scope.updateAllServices = function () {
-      console.log("Enqueueing " + $scope.profile.$id);
-        $scope.updateTasks.$add({ id: $scope.profile.$id, service: "TESTING" });
-    };
 
     $scope.getTheTime = function (timestamp) {
       return new Date(timestamp).toString();

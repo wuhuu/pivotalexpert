@@ -1,56 +1,99 @@
-  <h2>Pivotal Expert</h2>
-  <div ng-hide="user">
-    <button type="submit" ng-click="login('github')">Github Login</button>
-    <button type="submit" ng-click="googleLogin()">Google Login</button>
+    <!-- Content -->
+    <div class="container">
 
-  </div>
-  <div ng-show="user">
-    Hi {{profile.user.displayName}}. (edit) <a href="#/profile/{{user.publicId}}"+>Profile</a> |
-    <button type="submit" ng-click="logout()">Logout</button>
-    <br>
-    <div ng-show="user && !user.publicId">
-      <form ng-submit="addNewUserProfile()">
-        Pick a unique username for Pivotal Expert. http://profile/<input ng-model="newProfileId" />
-        <button type="submit">Save</button>
-      </form>
+        <header class="welcome">
+            <h1><font size="9">Welcome!</font></h1>
+            <p>Hello {{profile.user.displayName}}</p>
+        </header>
+
+		<!-- Current Courses Header-->
+		<div class="row">
+			<div class="col-lg-12">
+				<h3>Your courses</h3>
+			</div>
+		</div>
+		
+		<!-- Current Courses -->
+		<div class="row container-white">
+			<div class="course-name">Spreadsheets</div>
+			<div class="progress-container">
+			  <div id="myBar" class="progressbarRed" >
+				<div id="percentage">0%</div>
+			  </div>
+			</div>
+			<script>
+				move(44)
+				function move(value) {
+				  var elem = document.getElementById("myBar");
+				  var width = 0;
+				  var id = setInterval(frame, 10);
+				  function frame() {
+					if (width >= value) {
+					  clearInterval(id);
+					} else {
+					  width++;
+					  elem.style.width = width + '%';
+					  document.getElementById("percentage").innerHTML = width * 1  + '%';
+					}
+				  }
+				}
+			</script>
+		</div>
+		
+        <hr>
+        <!-- More Courses Header -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>More Courses you might take</h3>
+            </div>
+        </div>
+
+        <!-- More Courses -->
+        <div class="row text-center">
+
+            <div class="col-md-3 col-sm-6 course">
+                <div class="thumbnail">
+                    <img src="images\image1.jpeg" alt="">
+                    <div class="caption">
+                        <h3>Course Alpha</h3>
+                        <p>Some details here. </p>
+                        <p>
+                            <a href="#">More Info</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 course">
+                <div class="thumbnail">
+                    <img src="images\image2.jpeg" alt="">
+                    <div class="caption">
+                        <h3>Course Beta</h3>
+                        <p>Some details here. </p>
+                        <p>
+                            <a href="#">More Info</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 course">
+                <div class="thumbnail">
+                    <img src="images\image3.jpeg" alt="">
+                    <div class="caption">
+                        <h3>Course Gamma</h3>
+                        <p>Some details here. </p>
+                        <p>
+                            <a href="#" >More Info</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
     </div>
-    Achievements<br>
-    <ol>
-      <li ng-repeat="a in achievements">
-        {{a.name}}
-        <!-- Only show the clear button and checkmark if the user has completed the achievement.
-             Using ng-show and ng-hide based on if the user has completed a challenge. 
-         -->
-        <button ng-hide="profile.userAchievements[a.$id]" type="submit" ng-click="markAchievementCompleted(a.$id)">Mark completed</button>
-        <span ng-show="profile.userAchievements[a.$id]">
-          <button type="submit" ng-click="markAchievementUncompleted(a.$id)">Clear</button>
-          <img width="25" src="images/tick_green.png"> 
-        </span>
-      </li>
-    </ol>
-  </div>
-  
-  <h1>All Users</h1>
-  <table class="table table-striped">
-    <tr>
-      <th></th>
-      <th>User</th>
-      <th>Photo</th>
-      <th>Achievements</th>
 
-    </tr>
-    <tr ng-repeat="item in allUsers">
-      <td>
-        {{$index+1}}.
-      </td>
-      <td>
-          <a href="#/profile/{{item.$id}}">{{item.user.displayName}}</a>
-      </td>
-      <td> <img ng-src="{{item.user.pic}}" height="42" width="42"> </td>
-      <td>
-        <span ng-repeat="(key, value) in item.userAchievements">
-             <span ng-show="value">{{key}}</span>
-        </span>
-      </td>
-    </tr>
-    <table>
+
+	

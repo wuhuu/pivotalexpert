@@ -25,6 +25,16 @@ hr {
   color: #cc0000; 
 }
 
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 100%
+}
+th, td {
+    padding: 10px;
+    width: 30px;
+}
+
 img {
   vertical-align: middle;
 }
@@ -118,7 +128,6 @@ img {
   margin-right: auto;
   margin-left: auto;
 }
-
 .container-white {
   padding-right: 15px;
   padding-left: 15px;
@@ -671,17 +680,17 @@ tbody.collapse.in {
     padding-bottom: 15px;
   }
 }
-
 /*black color nav bar*/
 .navbar-inverse {
   background-color: #222;
   border-color: #080808;
+  border-width: 0 0 5px 0;
+  border-bottom-color: #cc0000;
 }
 /*nav bar brand color*/
 .navbar-inverse .navbar-brand {
   color: #ffffff;
 }
-
 /*Grey color nav brand color on hover*/
 .navbar-inverse .navbar-brand:hover,
 .navbar-inverse .navbar-brand:focus {
@@ -696,6 +705,37 @@ tbody.collapse.in {
 .navbar-inverse .navbar-nav > li > a:focus {
   color: #ffffff;
   background-color: #cc0000;
+}
+
+/*Learning Environment*/
+.instructions {
+  display: block;
+  padding: 4px;
+  margin-top: 15px;
+  overflow: auto;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  -webkit-transition: border .2s ease-in-out;
+       -o-transition: border .2s ease-in-out;
+          transition: border .2s ease-in-out;   
+    
+}
+.learning-environment {
+  display: block;
+  padding: 15px;
+  margin-top: 15px;
+  overflow: auto;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  -webkit-transition: border .2s ease-in-out;
+       -o-transition: border .2s ease-in-out;
+          transition: border .2s ease-in-out;   
+    
+}
+.size-down{
+
 }
 
 
@@ -727,8 +767,8 @@ a.thumbnail.active {
 }
 
 .course-name{
-	font-size: 14px;
-	font-weight: bold;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 

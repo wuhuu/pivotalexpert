@@ -32,6 +32,14 @@ angular.module('app').
               templateUrl: 'partials/tasks.html',
               controller: 'SampleCtrl'
         }).
+		when('/lesson', {
+              templateUrl: 'partials/lesson.html',
+              controller: 'SampleCtrl'
+        }).
+		when('/login', {
+              templateUrl: 'partials/login.html',
+              controller: 'SampleCtrl'
+        }).
         otherwise('/home');
     }
   ]);

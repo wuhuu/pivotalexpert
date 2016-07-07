@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html ng-app="app">
+
 	<link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900|RobotoDraft:400,100,300,500,700,900'>
 	<link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
 	
@@ -7,75 +8,53 @@
 	
 	<title>PivotalExpert</title>
 		
-	<!-- CSS Bootstrap 
+	<!-- Bootstrap CSS
 	<link rel="stylesheet " href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css " type="text/css " />
 	-->
-    <!-- CSS Stylesheet -->
-    <link href="css/landing.css" rel="stylesheet">
-
-	
-	<!-- jQuery -->
-    <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JS -->
-    <script src="js/bootstrap.min.js"></script>
-
-	<!-- Progress Bar JS -->
-	<script src="js/progressBar.js"></script>
-
-	
-	<!-- Angular Library -->
-	<script src="lib/angular.min.js"></script>
-    <script src="lib/firebase.js"></script>
-    <script src="lib/angularfire.min.js"></script>
-    <script src="lib/angular-route.js"></script>
-	
-	<!-- Angular -->
-    <script src="js/app.js"></script>
-	
+    <!-- Custom CSS -->
+    <link href="content/css/landing.css" rel="stylesheet">
 
   </head>
 
   <body>
-	<!-- Navigation Bar -->
-	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a href="#/"><div class="navbar-brand">PivotalExpert</div></a>
-			</div>
-			
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					<li>
-						<a href="#/profile/{{profile.user.publicId}}"+>Profile</a>
-					</li>
-					<li>
-						<a href="#/course">Courses</a>
-					</li>
-					<li>
-						<a href="#/login">login_page</a>
-					</li>
-					<li>
-						<a href="#/tasks">OLD_Tasks</a>
-					</li>
-					<li>
-						<a href="#/users">OLD_Home</a>
-					</li>
-
-				</ul>
-			</div>
-		</div>
-	</nav>
+	<!--navbar directive that stays at the top of every page-->
+	<pe-navbar></pe-navbar>
 	
+	<!--Main content that changes based on route-->
 	<div ng-view></div>
 
-
+	<!--Third-party JS-->
+	<!-- jQuery -->
+    <script src="content/js/jquery.js"></script>
+	<!-- Bootstrap Core JS -->
+    <script src="content/js/bootstrap.min.js"></script>
+	<!-- Progress Bar JS -->
+	<script src="content/js/progressBar.js"></script>
+	<!-- Angular Library -->
+	<script src="content/lib/angular.min.js"></script>
+    <script src="content/lib/firebase.js"></script>
+    <script src="content/lib/angularfire.min.js"></script>
+    <script src="content/lib/angular-route.js"></script>
+	
+	<!--main app module-->
+    <script src="app/app.js"></script>
+	
+	<!--layout module-->
+    <script src="app/layout/layout.module.js"></script>
+    <script src="app/layout/navbar.directive.js"></script>
+	
+	<!--landing module-->
+    <script src="app/landing/landing.module.js"></script>
+    <script src="app/landing/config.route.js"></script>
+	
+	<!--common module-->
+	
+	<!--auth module-->
+    <script src="app/auth/auth.module.js"></script>
+    <script src="app/auth/config.route.js"></script>
+    <script src="app/auth/auth.controller.js"></script>
+    <script src="app/auth/auth.service.js"></script>
+    <script src="app/auth/authForm.directive.js"></script>
 
   </body>
 </html>

@@ -18,23 +18,22 @@
 
   <body>
 	<!--navbar directive that stays at the top of every page-->
-	<pe-navbar></pe-navbar>
+	<mv-navbar></mv-navbar>
 	
 	<!--Main content that changes based on route-->
 	<div ng-view></div>
 
 	<!--Third-party JS-->
-	<!-- jQuery -->
-    <script src="content/js/jquery.js"></script>
-	<!-- Bootstrap Core JS -->
-    <script src="content/js/bootstrap.min.js"></script>
-	<!-- Progress Bar JS -->
-	<script src="content/js/progressBar.js"></script>
-	<!-- Angular Library -->
 	<script src="content/lib/angular.min.js"></script>
     <script src="content/lib/firebase.js"></script>
     <script src="content/lib/angularfire.min.js"></script>
     <script src="content/lib/angular-route.js"></script>
+	<script src="content/lib/jquery.js"></script>
+	<script src="content/lib/bootstrap.min.js"></script>
+
+	<!-- Login JS -->
+	<script src="content/js/login.js"></script>
+
 	
 	<!--main app module-->
     <script src="app/app.js"></script>
@@ -45,16 +44,19 @@
 	
 	<!--landing module-->
     <script src="app/landing/landing.module.js"></script>
-    <script src="app/landing/config.route.js"></script>
 	
 	<!--common module-->
+	<script src="app/common/common.module.js"></script>
 	
 	<!--auth module-->
     <script src="app/auth/auth.module.js"></script>
-    <script src="app/auth/config.route.js"></script>
-    <script src="app/auth/auth.controller.js"></script>
-    <script src="app/auth/auth.service.js"></script>
-    <script src="app/auth/authForm.directive.js"></script>
+	
+	<!--lesson module-->
+    <script src="app/lesson/lesson.module.js"></script>
+	
+	<!--profile module-->
+    <script src="app/profile/profile.module.js"></script>
+
 
   </body>
 </html>

@@ -23,10 +23,31 @@
 
   function configFunction($locationProvider, $routeProvider) {
     $locationProvider.hashPrefix('');
-    $routeProvider.otherwise({
-		
-      redirectTo: '/'
-    });
+    $routeProvider.
+        when('/home', {
+              templateUrl: 'app/landing/home.html'
+        }).
+		when('/users', {
+              templateUrl: 'app/partials/users.html',
+              controller: 'SampleCtrl'
+        }).
+        when('/profile/:profileId', {
+              templateUrl: 'app/profile/profile.html',
+              controller: 'ProfileCtrl'
+        }).
+        when('/tasks', {
+              templateUrl: 'app/partials/tasks.html',
+              controller: 'SampleCtrl'
+        }).
+		when('/lesson', {
+              templateUrl: 'app/lesson/lesson.html',
+              controller: 'SampleCtrl'
+        }).
+		when('/login', {
+              templateUrl: 'app/auth/login.html',
+              controller: 'SampleCtrl'
+        }).
+        otherwise('/home');
   }
 
 })();

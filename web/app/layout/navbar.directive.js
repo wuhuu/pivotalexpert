@@ -3,9 +3,9 @@
 
   angular
     .module('app.layout')
-    .directive('peNavbar', peNavbar);
+    .directive('mvNavbar', mvNavbar);
 
-  function peNavbar() {
+  function mvNavbar() {
     return {
       templateUrl: 'app/layout/navbar.html',
       restrict: 'E',

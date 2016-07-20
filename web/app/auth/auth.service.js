@@ -53,9 +53,15 @@
     }
 
     function fetchAuthData() {
-	  var authId = auth.$getAuth().uid;
-      console.log("Fetching authId " + authId);
-	  return $firebaseObject(usersRef.child(authId));
+	  var audData = auth.$getAuth();
+	  if (audData) {
+        console.log("Fetching authId " + audData.uid);
+	    return $firebaseObject(usersRef.child(audData.uid));
+	  } else {
+		console.log("not login");
+		return null;
+	  }
+	  
     }
 
   }

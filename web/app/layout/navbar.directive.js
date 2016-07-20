@@ -12,16 +12,15 @@
 	  controller: NavbarController
     };
   }
-  
+ 
   NavbarController.$inject = ['$scope', 'authService'];
-  
+
   function NavbarController($scope, authService) {
       //Retrieve User Display Name
 	  var user = authService.fetchAuthData();
 	  user.$loaded().then(function () {
         $scope.publicId = user.publicId;
       });
-	  
   }
   
 

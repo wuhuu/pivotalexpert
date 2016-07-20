@@ -9,9 +9,14 @@
   function LandingController($scope, authService) {
       //Retrieve User Display Name
 	  var user = authService.fetchAuthData();
-	  user.$loaded().then(function () {
-        $scope.displayName = user.publicId;
-      });
+	  if(user) {
+	    user.$loaded().then(function () {
+          $scope.displayName = user.publicId;
+        });
+	  } else {
+		  $scope.displayName = "There";
+	  }
+
 	  
   }
 

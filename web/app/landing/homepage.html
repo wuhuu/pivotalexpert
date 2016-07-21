@@ -15,16 +15,16 @@
 	
 	<!-- Current Courses -->
 	<div class="row container-white">
-		<div class="course-name">Spreadsheets</div>
+		<div class="course-name">Basic</div>
 		<div class="progress-container">
-		  <div id="myBar" class="progressbarRed" >
-			<div id="percentage">0%</div>
+		  <div id="myBar_B" class="progressbarGreen" >
+			<div id="percentage_Basic">0%</div>
 		  </div>
 		</div>
 		<script>
-			move(44)
+			move(100)
 			function move(value) {
-			  var elem = document.getElementById("myBar");
+			  var elem = document.getElementById("myBar_B");
 			  var width = 0;
 			  var id = setInterval(frame, 10);
 			  function frame() {
@@ -33,11 +33,59 @@
 				} else {
 				  width++;
 				  elem.style.width = width + '%';
-				  document.getElementById("percentage").innerHTML = width * 1  + '%';
+				  document.getElementById("percentage_Basic").innerHTML = width * 1  + '%';
 				}
 			  }
 			}
 		</script>
+	
+		<div class="course-name">Advanced</div>
+			<div class="progress-container">
+			  <div id="myBar_A" class="progressbarRed" >
+				<div id="percentage_Advanced">0%</div>
+			  </div>
+			</div>
+			<script>
+				move(44)
+				function move(value) {
+				  var elem = document.getElementById("myBar_A");
+				  var width = 0;
+				  var id = setInterval(frame, 10);
+				  function frame() {
+					if (width >= value) {
+					  clearInterval(id);
+					} else {
+					  width++;
+					  elem.style.width = width + '%';
+					  document.getElementById("percentage_Advanced").innerHTML = width * 1  + '%';
+					}
+				  }
+				}
+			</script>
+		
+		<div class="course-name">Expert</div>
+			<div class="progress-container">
+			  <div id="myBar_E" class="progressbarRed" >
+				<div id="percentage_Expert">0%</div>
+			  </div>
+			</div>
+			<script>
+				move(0)
+				function move(value) {
+				  var elem = document.getElementById("myBar_E");
+				  var width = 0;
+				  var id = setInterval(frame, 10);
+				  function frame() {
+					if (width >= value) {
+					  clearInterval(id);
+					} else {
+					  width++;
+					  elem.style.width = width + '%';
+					  document.getElementById("percentage_Expert").innerHTML = width * 1  + '%';
+					}
+				  }
+				}
+			</script>
 	</div>
 	
 	<hr>

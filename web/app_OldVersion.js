@@ -20,13 +20,25 @@ angular.module('app').
               templateUrl: 'partials/home.html',
               controller: 'SampleCtrl'
         }).
+		when('/users', {
+              templateUrl: 'partials/users.html',
+              controller: 'SampleCtrl'
+        }).
         when('/profile/:profileId', {
               templateUrl: 'partials/profile.html',
               controller: 'ProfileCtrl'
         }).
         when('/tasks', {
               templateUrl: 'partials/tasks.html',
-              controller: 'TaskCtrl'
+              controller: 'SampleCtrl'
+        }).
+		when('/lesson', {
+              templateUrl: 'partials/lesson.html',
+              controller: 'SampleCtrl'
+        }).
+		when('/login', {
+              templateUrl: 'partials/login.html',
+              controller: 'SampleCtrl'
         }).
         otherwise('/home');
     }

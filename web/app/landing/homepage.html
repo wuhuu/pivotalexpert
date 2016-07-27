@@ -1,0 +1,159 @@
+<!-- Content -->
+<div class="container" >
+
+	<header class="welcome">
+		<h1><font size="9">Welcome!</font></h1>
+		<p>Hello {{displayName}}</p>
+	</header>
+
+	<!-- Current Courses Header-->
+	<div class="row">
+		<div class="col-lg-12">
+			<h3>Your courses</h3>
+		</div>
+	</div>
+	
+	<!-- Current Courses -->
+	<div class="row container-white">
+		<div class="course-name">Basic</div>
+		<div class="progress-container">
+		  <div id="myBar_B" class="progressbarGreen" >
+			<div id="percentage_Basic">0%</div>
+		  </div>
+		</div>
+		<script>
+			move(100)
+			function move(value) {
+			  var elem = document.getElementById("myBar_B");
+			  var width = 0;
+			  var id = setInterval(frame, 10);
+			  function frame() {
+				if (width >= value) {
+				  clearInterval(id);
+				} else {
+				  width++;
+				  elem.style.width = width + '%';
+				  document.getElementById("percentage_Basic").innerHTML = width * 1  + '%';
+				}
+			  }
+			}
+		</script>
+	
+		<div class="course-name"><a href="#/coursemap" >Advanced</a></div>
+			<div class="progress-container">
+			  <div id="myBar_A" class="progressbarRed" >
+				<div id="percentage_Advanced">0%</div>
+			  </div>
+			</div>
+			<script>
+				move(44)
+				function move(value) {
+				  var elem = document.getElementById("myBar_A");
+				  var width = 0;
+				  var id = setInterval(frame, 10);
+				  function frame() {
+					if (width >= value) {
+					  clearInterval(id);
+					} else {
+					  width++;
+					  elem.style.width = width + '%';
+					  document.getElementById("percentage_Advanced").innerHTML = width * 1  + '%';
+					}
+				  }
+				}
+			</script>
+		
+		<div class="course-name">Expert</div>
+			<div class="progress-container">
+			  <div id="myBar_E" class="progressbarRed" >
+				<div id="percentage_Expert">0%</div>
+			  </div>
+			</div>
+			<script>
+				move(0)
+				function move(value) {
+				  var elem = document.getElementById("myBar_E");
+				  var width = 0;
+				  var id = setInterval(frame, 10);
+				  function frame() {
+					if (width >= value) {
+					  clearInterval(id);
+					} else {
+					  width++;
+					  elem.style.width = width + '%';
+					  document.getElementById("percentage_Expert").innerHTML = width * 1  + '%';
+					}
+				  }
+				}
+			</script>
+	</div>
+	
+	<hr>
+	<!-- More Courses Header -->
+	<div class="row">
+		<div class="col-lg-12">
+			<h3>More Courses you might take</h3>
+		</div>
+	</div>
+
+	<!-- More Courses -->
+	<div class="row text-center">
+
+		<div class="col-md-3 col-sm-6 course">
+			<div class="thumbnail">
+				<img src="content\images\image1.jpeg" alt="">
+				<div class="caption">
+					<h3>Course Alpha</h3>
+					<p>Some details here. </p>
+					<p>
+						<a href="#/lesson1">Start MCQ</a>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-3 col-sm-6 course">
+			<div class="thumbnail">
+				<img src="content\images\image2.jpeg" alt="">
+				<div class="caption">
+					<h3>Course Beta</h3>
+					<p>Some details here. </p>
+					<p>
+						<a href="#/lesson2">Start Sides</a>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-3 col-sm-6 course">
+			<div class="thumbnail">
+				<img src="content\images\image3.jpeg" alt="">
+				<div class="caption">
+					<h3>Course Gamma</h3>
+					<p>Some details here. </p>
+					<p>
+						<a href="#/lesson3" >Start Video</a>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3 col-sm-6 course">
+			<div class="thumbnail">
+				<img src="content\images\image3.jpeg" alt="">
+				<div class="caption">
+					<h3>Course Gamma</h3>
+					<p>Some details here. </p>
+					<p>
+						<a href="#/lesson4" >Start Spreadsheets</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<hr>
+
+</div>
+
+
+

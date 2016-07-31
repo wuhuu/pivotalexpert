@@ -13,9 +13,10 @@
     };
   }
  
-  VideoController.$inject = ['$scope', '$http', '$sce', '$routeParams'];
+  VideoController.$inject = ['$scope', '$window','$http', '$sce', '$routeParams','authService'];
   
-  function VideoController($scope, $http, $sce, $routeParams) {
+  function VideoController($scope, $window, $http, $sce, $routeParams, authService) {
+    var ref = new Firebase("https://pivotal-expert.firebaseio.com");
 	var modID = $routeParams.modID;
 	var qnsID = $routeParams.qnsID;
 	$http.get('course/content.json').success(function(data) {
@@ -27,10 +28,19 @@
 		
 		var qnsType = questions.qnsType;
 		var qns = questions.qns;
-		console.log(qns.link);
 		$scope.videoLink = $sce.trustAsResourceUrl(qns.link);
+		
+		//Check if answer is correct
+		$scope.submit = function() {
+			var achievementId = "C" + modID + "Q" + qnsID;
+			var user = authService.fetchAuthData();
+			ref.child('pivotalExpert').child('PEProfile').child(user.$id).child('courseProgress').child(achievementId).set(true);
+			$window.location.href = '#/';
+		};
+		
 	});
-
+	
+	
   }
 
 })();

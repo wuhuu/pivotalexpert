@@ -13,9 +13,10 @@
     };
   }
  
-  SheetController.$inject = ['$scope', '$http', '$routeParams'];
+  SheetController.$inject = ['$scope', '$http', '$routeParams','authService'];
   
-  function SheetController($scope, $http, $routeParams) {
+  function SheetController($scope, $http, $routeParams, authService) {
+	var ref = new Firebase("https://pivotal-expert.firebaseio.com");
 	var modID = $routeParams.modID;
 	var qnsID = $routeParams.qnsID;
 	$http.get('course/content.json').success(function(data) {
@@ -59,6 +60,13 @@
 				if (this.answer == ans[i]) {
 					console.log("Correct Answer");
 					alert("Correct");
+					var achievementId = "C" + modID + "Q" + qnsID;
+					var user = authService.fetchAuthData();
+					ref.child('pivotalExpert').child('PEProfile').child(user.$id).child('courseProgress').child(achievementId).set(true);
+					$window.location.href = '#/';
+				} else 
+				{
+					alert("Incorrect");
 				}
 			}
 		};

@@ -4,9 +4,9 @@
     .module('app.landing')
     .controller('LandingController', LandingController);
 
-  LandingController.$inject = ['$scope', 'authService'];
+  LandingController.$inject = ['$scope','$http', 'authService'];
 
-  function LandingController($scope, authService) {
+  function LandingController($scope, $http, authService) {
       //Retrieve User Display Name
 	  var user = authService.fetchAuthData();
 	  if(user) {
@@ -16,6 +16,14 @@
 	  } else {
 		  $scope.displayName = "There";
 	  }
+	  
+	  console.log("Home Page");
+	  
+	  $http.get('course/content.json').success(function(data) {
+		
+		$scope.courseMap = data.course.courseMap;
+
+	});
 
 	  
   }

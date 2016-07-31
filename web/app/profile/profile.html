@@ -1,11 +1,5 @@
-<div ng-controller='ProfileController'>
+<div>
 <h1>Profile for {{displayName}}</h1>
-{{totalAchievements}} total achievements<br>
-<ul>
-    <li ng-repeat="item in achievements" ng-show="item.$value">
-        {{item.$id}}
-    </li>
-</ul>
 
 
 <form ng-submit="updateDisplayName(newName)">

@@ -9,7 +9,7 @@
   
   function configFunction($routeProvider) {
     $routeProvider.
-	  when('/profile/:profileId', {
+	  when('/profile/:displayName', {
         templateUrl: 'app/profile/profile.html',
 		controller: ProfileController
       });
@@ -19,10 +19,10 @@
 
   function ProfileController($scope, $routeParams, $firebaseArray, profileService, achieveService) {
 	
-	$scope.profileId = $routeParams.profileId;
-	console.log("Profile for :", $routeParams.profileId);
+	$scope.displayName = $routeParams.displayName;
+	console.log("Profile for :", $routeParams.displayName);
 	
-	profileService.fetchPivotalExpertProfile($scope.profileId);
+	profileService.fetchPivotalExpertProfile($scope.displayName);
 	$scope.achievements = achieveService.fetchAchievements();
 	$scope.achievements.$loaded().then(function () {
        $scope.totalAchievements = 0;

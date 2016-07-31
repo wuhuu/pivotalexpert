@@ -4,45 +4,21 @@
 <div class="title">
   <h1>PivotalExpert</h1>
 </div>
+
+
+
 <!-- Form Module-->
 <div class="module form-module">
-  <div class="toggle">
-    <div>New user?</div>
-  </div>
-  <div class="form">
+  
+  <div >
     <h2>Login</h2>
 		<center>
-
-		<button type="submit" ng-click="login('github')">Github Login</button>
-		<button type="submit" ng-click="login('google')">Google Login</button>
-		<button type="submit" ng-click="logout()">Logout</button>
-		
-		
+      <button type="submit" ng-click="login('google')" ng-hide="{{!logined}}">Google Login</button><br/>
+      <button type="submit" ng-click="logout()" ng-hide="{{logined}}">Logout</button> 
 		</center>
 	
-	<hr size="1" color= #d9d9d9>
-	<center>or</center>
-	
-	<br>
-    <form>
-      <input type="text" placeholder="Username"/>
-      <input type="password" placeholder="Password"/>
-	  <div class="cta"><a href="whatdowedowiththis.com">Forgot your password?</a></div>
-      <button>Login</button>
-    </form>
-	
 	
   </div>
   
-  
-  <div class="form">
-    <h2>Create an account</h2>
-    <form>
-      <input type="text" placeholder="Username"/>
-      <input type="password" placeholder="Password"/>
-      <input type="email" placeholder="Email Address"/>
-      <button>Register</button>
-    </form>
-  </div>
   
 </div>

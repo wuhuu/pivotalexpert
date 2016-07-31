@@ -23,7 +23,7 @@
 
   function configFunction($locationProvider, $routeProvider) {
     $locationProvider.hashPrefix('');
-	$routeProvider.otherwise({
+	   $routeProvider.otherwise({
       redirectTo: '/'
     });
   }

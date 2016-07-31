@@ -9,19 +9,19 @@
   
   function configFunction($routeProvider) {
     $routeProvider.
-	when('/lesson1', {
+	when('/mcq/:modID/:qnsID', {
       template:
-		'<mv-lesson-mcq></mv-lesson-mcq>',
+		'<mv-lesson-mcq></mv-lesson-mcq>'
     }).
-	when('/lesson2', {
+	when('/Slides/:modID/:qnsID', {
       template:
 		'<mv-lesson-slides></mv-lesson-slides>',
     }).
-	when('/lesson3', {
+	when('/video/:modID/:qnsID', {
       template:
 		'<mv-lesson-video></mv-lesson-video>',
     }).
-	when('/lesson4', {
+	when('/LSheet/:modID/:qnsID', {
       template:
 		'<mv-lesson-spreadsheet></mv-lesson-spreadsheet>',
     });

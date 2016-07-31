@@ -13,17 +13,39 @@
     };
   }
  
-  McqController.$inject = ['$scope', '$http'];
+  McqController.$inject = ['$scope', '$window', '$http', '$routeParams'];
   
-  function McqController($scope, $http) {
-	$http.get('course/Introudction.json').success(function(data) {
-		$scope.challenge = data.challenges;
-		console.log($scope.challenge);
-		$scope.title = $scope.challenge[0].title;
-		console.log($scope.title);
+  function McqController($scope, $window, $http, $routeParams) {
+	var modID = $routeParams.modID;
+	var qnsID = $routeParams.qnsID;
+	$http.get('course/content.json').success(function(data) {
+		console.log("Display Question");
+		var lessonContent = data.course.lessonContent;
+		var questions = lessonContent[modID].questions[qnsID];
+		$scope.qnsTitle = questions.qnsTitle;
+		$scope.qnsInstruction = questions.qnsInstruction;
+		$scope.qnsDescription = questions.qnsDescription;
+		
+		var qnsType = questions.qnsType;
+		var qns = questions.qns;
+		$scope.mcqType = qns.type;
+		$scope.options = qns.options;
+		var ans = questions.answer;
+		
+		//Check if answer is correct
+		$scope.submit = function() {
+			for (var i = 0; i < ans.length; i++) {
+				if (this.answer == ans[i]) {
+					console.log("Correct Answer");
+					alert("Correct");
+					$window.location.href = '#/lesson2';
+				} else {
+					alert("InCorrect");
+				}
+			}
+		};
+		
 	});
-
-  }
-  
+  }  
 
 })();

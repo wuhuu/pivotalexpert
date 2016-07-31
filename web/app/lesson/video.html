@@ -1,12 +1,20 @@
 
-	<div class="container-white" >
-		<br>
-		<H2>Lesson: Video lesson</H2>
-		<div class="center">
-			<iframe width="700" height="394" src="https://www.youtube.com/embed/hZRKN63TSbk" frameborder="0" allowfullscreen></iframe>
-		</div>
-		<br><br>
-		<input type="submit" value="Next Lesson">
-		<br><br>
-		
+<div class="container-white" >
+	<br>
+	<H2>{{qnsTitle}}</H2>
+	{{qnsDescription}}
+	<br><br>
+	<H3>Instructions</H3>
+	{{qnsInstruction}}
+	<br>
+	<br>
+	
+	<div class="center">
+		<iframe width="700" height="394"  ng-src="{{videoLink}}" frameborder="0" allowfullscreen></iframe>
 	</div>
+	<br><br>
+	<a href="#/lesson4"><input type="submit" value="Next Lesson"></a>
+	
+	<br><br>
+	
+</div>

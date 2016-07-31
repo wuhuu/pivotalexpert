@@ -1,8 +1,11 @@
 {
-  "chaptName": "Be a Pivotal Expert",
-  "chaptNo": 1,
+  "name": "Course 1 - Be a Pivotal Expert",
+  "id": "c1",
+  "codeName" : "Intro",
+  "type" : "c"
   "time": "15 minutes",
-  "helpRoom": "Help",
+  "helpRoom": "Course",
+  "prerequist" : []
   "challenges": [
     {
       "id": "111",

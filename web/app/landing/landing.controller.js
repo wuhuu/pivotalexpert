@@ -11,7 +11,7 @@
 	  var user = authService.fetchAuthData();
 	  if(user) {
 	    user.$loaded().then(function () {
-          $scope.displayName = user.publicId;
+          $scope.displayName = user.displayName;
         });
 	  } else {
 		  $scope.displayName = "There";

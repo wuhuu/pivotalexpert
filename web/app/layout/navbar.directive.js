@@ -13,14 +13,14 @@
     };
   }
  
-  NavbarController.$inject = ['$scope', 'authService'];
+  NavbarController.$inject = ['$firebaseObject','$scope', 'authService'];
 
-  function NavbarController($scope, authService) {
+  function NavbarController($firebaseObject,$scope, authService) {
       //Retrieve User Display Name
 	  var user = authService.fetchAuthData();
-	  user.$loaded().then(function () {
-        $scope.publicId = user.publicId;
-      });
+    user.$loaded().then(function(){
+      $scope.displayName = user.displayName;
+    });
   }
   
 

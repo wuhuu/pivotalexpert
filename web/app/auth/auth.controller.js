@@ -4,15 +4,16 @@
     .module('app.auth')
     .controller('AuthController', AuthController);
 
-  AuthController.$inject = ['$scope', '$location', 'authService'];
+  AuthController.$inject = ['$scope', '$location', 'authService','navBarService','$firebaseObject'];
 
-  function AuthController($scope, $location, authService) {
+  function AuthController($scope, $location, authService,navBarService,$firebaseObject) {
 	
 	$scope.login = function (service) {
 	  console.log("Logging in");
-	  authService.login(service)
+	  authService.login(service,$scope)
 		.then(function() {
-          $location.path('/');
+		//$location.path('/#/profile/'+$scope.displayName);
+		//$location.path('/');
         })
 	    .catch(function (error) {
           console.log("Authentication failed:", error);
@@ -27,7 +28,16 @@
 	
 	$scope.logout = function () {
 	  authService.logout();
+	  $location.path('/');
 	}
+
+	var check = authService.fetchAuthData();
+		if(check==null) {
+			$scope.logined= true;
+		}else {
+			$scope.logined= false;
+		}
+	
 	
   };
   

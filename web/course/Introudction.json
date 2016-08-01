@@ -1,0 +1,75 @@
+{
+  "name": "Course 1 - Be a Pivotal Expert",
+  "id": "c1",
+  "codeName" : "Intro",
+  "type" : "c"
+  "time": "15 minutes",
+  "helpRoom": "Course",
+  "prerequist" : []
+  "challenges": [
+    {
+      "id": "111",
+      "title": "Something Important Too FROM JSON1234",
+	  "type": "mcq",
+      "description": [
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          "",
+          "content\\images\\image1.jpeg",
+          ""
+      ],
+	  "questions" : [
+		[
+			"Radio",
+			"Question Description",
+			"Option1",
+			"Option2",
+			"Option3",
+			"Option4"
+		],
+		[
+			"CheckBox",
+			"Question Description",
+			"Option1",
+			"Option2",
+			"Option3",
+			"Option4"
+		]
+	  ],
+      "tests": []
+    },
+    {
+      "id": "112",
+      "title": "Something Important",
+	  "type": "slide",
+      "description": [
+          ""
+	  ],
+	  "link" : "https://docs.google.com/presentation/d/1g2xeJ057mndKT1wFPEdq3xsLAa03Neu5eZY5u5mf_e8/embed?start=false&loop=false&delayms=60000",
+      "tests": []
+    },
+    {
+      "id": "113",
+      "title": "Video lesson",
+	  "type": "video",
+      "description": [
+          ""
+	  ],
+	  "link" : "https://www.youtube.com/embed/hZRKN63TSbk",
+      "tests": []
+    },
+	{
+      "id": "114",
+      "title": " Video lesson",
+	  "type": "slide",
+      "description": [
+          ""
+	  ],
+	  "questions" : [
+		[
+			"How to display the qns"
+		]
+	  ],
+	  "tests": []
+    }
+  ]
+}

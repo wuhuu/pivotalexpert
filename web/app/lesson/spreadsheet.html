@@ -1,0 +1,31 @@
+<div class="container">   
+	<div class="container-white" >	
+		<br>
+		<H2>{{qnsTitle}}</H2>
+		{{qnsDescription}}
+		<br><br>
+		<H3>Instructions</H3>
+		{{qnsInstruction}}
+		<br>
+		<br>
+		<form ng-submit="submit()">
+			 <input type="text" ng-model="answer" name="answer"/>
+			 <input type="submit" value="Submit">
+			 <br><br>
+		 <form/>
+			 <table>
+				<tr>
+					<th></th>
+					<th>A</th>
+					<th>B</th>
+					<th>C</th>
+					<th>D</th>
+					<th>E</th>
+				</tr>
+				<tr ng-repeat="row in range(rowCount)">
+					<td>{{row + 1}}</td>
+					<td ng-repeat="col in range(colCount)"><table><tr><td>  {{sheet[row][col]}} </td></tr></table></td>
+				</tr>
+			 </table>
+	</div>
+</div>

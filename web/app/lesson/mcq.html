@@ -1,0 +1,22 @@
+<div class="container-fixed" >
+	<div class="mcq">
+		<br>
+		<H2>{{qnsTitle}}</H2>
+		{{qnsDescription}}
+		<br><br>
+		<H3>Instructions</H3>
+		{{qnsInstruction}}
+		<br>
+		<br>
+		<form ng-submit="submit()">
+			<label ng-repeat="option in options">
+				<input type="radio" ng-model="$parent.answer" name="radio" ng-value="option" ><label for="radio1"><span><span></span></span>{{option}}</label>
+				<br/>
+			</label>
+			<br><br>
+			 <input type="submit" value="Submit">
+			 <br><br>
+		 <form/>
+		<br><br>
+	 </div>   
+</div>

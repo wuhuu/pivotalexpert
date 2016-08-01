@@ -1,0 +1,17 @@
+
+<div class="container-white" >
+	<br>
+	<H2>{{qnsTitle}}</H2>
+	{{qnsDescription}}
+	<br><br>
+	<H3>Instructions</H3>
+	{{qnsInstruction}}
+	<br>
+	<br>
+	<div class="center">
+		<iframe ng-src="{{slideLink}}" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+	</div>
+	<form ng-submit="submit()">
+		<input type="submit" value="Complete">
+	<form/>
+</div>

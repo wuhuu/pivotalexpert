@@ -200,7 +200,7 @@
 						"qnsInstruction" : "Study Tutorial Slides!",
 						"qnsType" : "Slides",
 						"qns" : {
-							"link" : "https://docs.google.com/presentation/d/11QlI-oSRlcYJxT3P0lAKfahhWAX5Q3VjuEGH5CcL-qg/edit?usp=sharing"
+							"link" : "https://docs.google.com/presentation/d/11QlI-oSRlcYJxT3P0lAKfahhWAX5Q3VjuEGH5CcL-qg/embed?start=true&loop=false&delayms=10000"
 						},
 						"answer" : []
 					},
@@ -295,7 +295,7 @@
 						"qnsInstruction" : "Study Tutorial Slides!",
 						"qnsType" : "Slides",
 						"qns" : {
-							"link" : "https://docs.google.com/presentation/d/1BUuKRjw_Nr_BcJ7G5nZmfNyYr_yd5lK2oOrV4kkvJnc/edit?usp=sharing"
+							"link" : "https://docs.google.com/presentation/d/1BUuKRjw_Nr_BcJ7G5nZmfNyYr_yd5lK2oOrV4kkvJnc/embed?start=true&loop=false&delayms=10000"
 						},
 						"answer" : []
 					},
@@ -349,7 +349,7 @@
 						"qnsInstruction" : "Study Tutorial Slides!",
 						"qnsType" : "Slides",
 						"qns" : {
-							"link" : "https://docs.google.com/presentation/d/1giDyNH38wJedIf33KZ8cX_Q5RhJorMdLEI_PJ8g7AVw/edit?usp=sharing"
+							"link" : "https://docs.google.com/presentation/d/1giDyNH38wJedIf33KZ8cX_Q5RhJorMdLEI_PJ8g7AVw/embed?start=true&loop=false&delayms=10000"
 						},
 						"answer" : []
 					},
@@ -395,7 +395,7 @@
 						"qnsInstruction" : "Study Tutorial Slides!",
 						"qnsType" : "Slides",
 						"qns" : {
-							"link" : "https://docs.google.com/presentation/d/1L876t5Xz1P3ppG7j-4291jHcaxUrOR9jYiwCaSTFl3E/edit?usp=sharing"
+							"link" : "https://docs.google.com/presentation/d/1L876t5Xz1P3ppG7j-4291jHcaxUrOR9jYiwCaSTFl3E/embed?start=true&loop=false&delayms=10000" 
 						},
 						"answer" : []
 					},

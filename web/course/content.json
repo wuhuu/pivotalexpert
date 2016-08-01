@@ -207,7 +207,7 @@
 					{"qnsTitle" : "Chapter 2 - Question 1",
 						"qnsId" : 1,
 						"qnsDescription" : "",
-						"qnsInstruction" : "Find the sum of Column A",
+						"qnsInstruction" : "Enter the formula to find the sum of Column A.",
 						"qnsType" : "LSheet",
 						"qns" : {
 							"row" : 5,
@@ -226,7 +226,7 @@
 					{"qnsTitle" : "Chapter 2 - Question 2",
 						"qnsId" : 2,
 						"qnsDescription" : "",
-						"qnsInstruction" : "Find the sum of all numerical values",
+						"qnsInstruction" : "Enter the formula to find the sum of all numerical values.",
 						"qnsType" : "LSheet",
 						"qns" : {
 							"row" : 5,
@@ -245,7 +245,7 @@
 					{"qnsTitle" : "Chapter 2 - Question 3",
 						"qnsId" : 3,
 						"qnsDescription" : "",
-						"qnsInstruction" : "Find the sum of all numerical values in the most efficient way",
+						"qnsInstruction" : "Enter the most efficient formula to sum all numerical values in the spreadsheet.",
 						"qnsType" : "LSheet",
 						"qns" : {
 							"row" : 5,
@@ -295,14 +295,14 @@
 						"qnsInstruction" : "Study Tutorial Slides!",
 						"qnsType" : "Slides",
 						"qns" : {
-							"link" : "https://docs.google.com/presentation/d/1BUuKRjw_Nr_BcJ7G5nZmfNyYr_yd5lK2oOrV4kkvJnc/embed?start=true&loop=false&delayms=10000"
+							"link" : "https://docs.google.com/presentation/d/1BUuKRjw_Nr_BcJ7G5nZmfNyYr_yd5lK2oOrV4kkvJnc/embed?start=true&loop=false&delayms=10000" 
 						},
 						"answer" : []
 					},
 					{"qnsTitle" : "Chapter 3 - Question 1",
 						"qnsId" : 1,
 						"qnsDescription" : "",
-						"qnsInstruction" : "Find the average of Column B",
+						"qnsInstruction" : "Enter the formula to find the average of all values in Column B.",
 						"qnsType" : "LSheet",
 						"qns" : {
 							"row" : 5,
@@ -321,7 +321,7 @@
 					{"qnsTitle" : "Chapter 3 - Question 2",
 						"qnsId" : 2,
 						"qnsDescription" : "",
-						"qnsInstruction" : "Find the average of all numerical values",
+						"qnsInstruction" : "Enter the formula to find the average of all numerical values.",
 						"qnsType" : "LSheet",
 						"qns" : {
 							"row" : 5,
@@ -356,7 +356,7 @@
 					{"qnsTitle" : "Chapter 4 - Question 1",
 						"qnsId" : 1,
 						"qnsDescription" : "",
-						"qnsInstruction" : "Count the number of cells that has numerical value in Column D",
+						"qnsInstruction" : "Enter the formula to count the number of cells that contains a numerical value in Column D.",
 						"qnsType" : "LSheet",
 						"qns" : {
 							"row" : 5,
@@ -395,14 +395,14 @@
 						"qnsInstruction" : "Study Tutorial Slides!",
 						"qnsType" : "Slides",
 						"qns" : {
-							"link" : "https://docs.google.com/presentation/d/1L876t5Xz1P3ppG7j-4291jHcaxUrOR9jYiwCaSTFl3E/embed?start=true&loop=false&delayms=10000" 
+							"link" : "https://docs.google.com/presentation/d/1L876t5Xz1P3ppG7j-4291jHcaxUrOR9jYiwCaSTFl3E/embed?start=true&loop=false&delayms=10000"
 						},
 						"answer" : []
 					},
 					{"qnsTitle" : "Chapter 5 - Question 1",
 						"qnsId" : 1,
 						"qnsDescription" : "",
-						"qnsInstruction" : "What is the largest number in Column D?",
+						"qnsInstruction" : "Enter the formula to find the largest value in Column D.",
 						"qnsType" : "LSheet",
 						"qns" : {
 							"row" : 5,
@@ -421,7 +421,7 @@
 					{"qnsTitle" : "Chapter 5 - Question 2",
 						"qnsId" : 2,
 						"qnsDescription" : "",
-						"qnsInstruction" : "What is the smallest number in spreadsheet?",
+						"qnsInstruction" : "Enter the formula to find the smallest value in the spreadsheet.",
 						"qnsType" : "LSheet",
 						"qns" : {
 							"row" : 5,

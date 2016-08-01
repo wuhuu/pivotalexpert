@@ -13,14 +13,21 @@
     };
   }
  
-  NavbarController.$inject = ['$firebaseObject','$scope', 'authService'];
+  NavbarController.$inject = ['$firebaseObject','$scope', '$location','authService'];
 
-  function NavbarController($firebaseObject,$scope, authService) {
+  function NavbarController($firebaseObject,$scope,$location, authService) {
       //Retrieve User Display Name
 	  var user = authService.fetchAuthData();
-    user.$loaded().then(function(){
-      $scope.displayName = user.displayName;
-    });
+	  console.log("Nav Bar");
+	  if (user != null) {
+		user.$loaded().then(function(){
+		  $scope.displayName = user.displayName;
+	    });
+		  
+	  } else {
+		console.log("Not login, from Nav Bar");
+		//$location.path('/login/');
+	  }
   }
   
 

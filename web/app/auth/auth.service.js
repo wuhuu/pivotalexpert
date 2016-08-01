@@ -63,14 +63,10 @@
 
             $scope.displayName = displayName;
             //navBarService.updateNavBar($scope,displayName);
-            $location.path('/');
+            $location.path('/profile/' + displayName);
             window.location.reload();
             //$location.path('/#/profile/'+displayName);
         });  
-
-        
-
-		//console.log("Logged in as DisplayName:", user.github.displayName);
       });
   }
 
@@ -82,10 +78,16 @@
   	  var audData = auth.$getAuth();
   	  if (audData) {
           console.log("Fetching authId " + audData.uid);
-  	    return $firebaseObject(usersRef.child(audData.uid));
+		  return $firebaseObject(usersRef.child(audData.uid));
   	  } else {
-  		console.log("not login");
-  		return null;
+  		console.log("not login, auth.service");
+		if($location.path != "/login") {
+			
+			$location.path('/login');
+		} else {
+			return null;
+		}
+		
   	  }
 	  
     }

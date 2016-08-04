@@ -13,7 +13,8 @@
 	  'app.landing',
 	  'app.auth',
 	  'app.profile',
-	  'app.lesson'
+	  'app.lesson',
+    'app.course'
 
     ])
     .config(configFunction)

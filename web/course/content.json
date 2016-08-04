@@ -1,12 +1,13 @@
 {
 	"course": {
-		"courseTitle" : "Pivotal Expert",
+		"courseTitle" : "Pivotal-Expert",
 		"courseLogo" : "image path",
 		"courseDescription" : "Descriptions here",
 		"courseMap" : [
-			{"moduleTitle" : "Chapter 1 - Google Sheets: Cell Reference",
-				"timeRequired" : "10 mins",
+			{   
 				"moduleID" : 0,
+				"moduleTitle" : "Chapter 1 - Google Sheets: Cell Reference",
+				"timeRequired" : "10 mins",
 				"qnsTitles" : [
 					{	"qnsTitle" : "Video Tutorial: Cell Reference",
 						"qnsId" : 0,
@@ -30,7 +31,7 @@
 					}
 				]
 			},
-			{"moduleTitle" : "Chapter 2 - Google Sheets: Sum",
+			{   "moduleTitle" : "Chapter 2 - Google Sheets: Sum",
 				"timeRequired" : "15 mins",
 				"moduleID" : 1,
 				"qnsTitles" : [
@@ -60,7 +61,7 @@
 					}
 				]
 			},
-			{"moduleTitle" : "Chapter 3 - Google Sheets: Average",
+			{  "moduleTitle" : "Chapter 3 - Google Sheets: Average",
 				"timeRequired" : "15 mins",
 				"moduleID" : 2,
 				"qnsTitles" : [
@@ -78,7 +79,7 @@
 					}
 				]
 			},
-			{"moduleTitle" : "Chapter 4 - Google Sheets: Count",
+			{  "moduleTitle" : "Chapter 4 - Google Sheets: Count",
 				"timeRequired" : "15 mins",
 				"moduleID" : 3,
 				"qnsTitles" : [
@@ -115,7 +116,7 @@
 				]
 			}
 		],
-		"lessonContent" : [
+		"courseContent" : [
 			{"moduleTitle" : "Chapter 1 - Google Sheets: Cell Reference",
 				"moduleID" : 0,
 				"helpRoomCode" : "cellreference",
@@ -144,8 +145,7 @@
 								[" "," "," "," "," "],
 								[" "," "," "," "," "],
 								[" "," "," "," "," "]]
-						}
-						,
+						},
 						"answer" : ["C2"]
 					},
 					{"qnsTitle" : "Chapter 1 - Question 2",

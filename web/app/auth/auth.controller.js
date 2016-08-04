@@ -12,7 +12,7 @@
 	  console.log("Logging in");
 	  authService.login(service,$scope)
 		.then(function() {
-		//$location.path('/#/profile/'+$scope.displayName);
+		
 		//$location.path('/');
         })
 	    .catch(function (error) {
@@ -31,12 +31,7 @@
 	  $location.path('/');
 	}
 
-	var check = authService.fetchAuthData();
-		if(check==null) {
-			$scope.logined= true;
-		}else {
-			$scope.logined= false;
-		}
+	
 	
 	
   };

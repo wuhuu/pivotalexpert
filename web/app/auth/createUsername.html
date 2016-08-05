@@ -1,0 +1,18 @@
+<div class="container" ng-controller='AuthController'>
+
+	<header class="welcome text-center">
+		<h1><font size="9">Welcome!</font></h1>
+	</header>
+	
+	<div class="row container-white">
+		<div>
+		<h1>Create a username for yourself!</h1>
+			<br>
+				<form ng-submit="updateDisplayName(newName)">
+					<label>Username: </label><input type="text" name="newName" ng-model="newName" >
+					<input type="submit" value="Create" style="margin-left:10px;margin-top:5px;"/>
+				</form>
+			<br>
+		</div>
+	</div>
+</div>

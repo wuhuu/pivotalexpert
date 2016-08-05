@@ -1,9 +1,78 @@
-<div>
-<h1>Profile for {{displayName}}</h1>
 
+	
+<div class="container" ng-controller='ProfileController'>
 
-<form ng-submit="updateDisplayName(newName)">
-		<label>New Display Name: </label><input type="text" name="newName" ng-model="newName">
-		<input type="submit" value="update" style="margin-left:10px;margin-top:5px;"/>
-	</form>
+	<header class="welcome text-center">
+		<h1><font size="9">Welcome!</font></h1>
+	</header>
+
+	<!-- Profile -->
+	<div class="row container-white">
+		
+		<div>
+			<div class="left profile-img"> <img src="{{displayPic}}" alt="" style="width: 100%;"> </div>
+			
+			<div class="profile-contentBox">
+					<div>
+						<h1>Profile for {{displayName}}</h1>
+						
+					<!--User's Name
+					<br>-->
+					
+					Email: {{email}}
+					</div>
+				<div class="profile-content">
+					
+					
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		<!-- <div class="course-name" style="clear: both;">Your Progress</div>
+		<div class="progress-container">
+		  <div id="progressBar" class="progressbarRed" >
+			<div id="percentage">0%</div>
+		  </div>
+		</div>
+		<script>
+			move(25)
+			function move(value) {
+			  var elem = document.getElementById("progressBar");
+			  var width = 0;
+			  var id = setInterval(frame, 10);
+			  function frame() {
+				if (width >= value) {
+				  clearInterval(id);
+				} else {
+				  width++;
+				  elem.style.width = width + '%';
+				  document.getElementById("percentage").innerHTML = width * 1  + '%';
+				}
+			  }
+			}
+		</script> -->
+
+	</div>
+
+	<hr>
+	<!-- Course Map -->
+	
+	<div class="container-white row center">
+		<h3>Achievements</h3>
+		
+		<a class="container-contentButton" ng-repeat="item in achievelist">
+			<div class="left" >{{item}}</div>
+		</a>
+		<!-- 
+		<a class="container-contentButton" href="#/lesson3" >
+			<div class="left" >Lesson 3:</div>
+		</a>
+		
+		<a class="container-contentButton" href="#/lesson4" >
+			<div class="left" >Lesson 4:</div>
+		</a> -->
+	</div>
+
 </div>

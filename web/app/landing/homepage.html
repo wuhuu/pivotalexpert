@@ -1,35 +1,75 @@
-<!-- Content -->
+	
 <div class="container" >
 
-	<header class="welcome">
+	<header class="welcome text-center">
 		<h1><font size="9">Welcome!</font></h1>
-		<p>Hello {{displayName}}</p>
 	</header>
-	<hr>
-	<!-- Current Courses Header-->
-	<div class="row">
-		<div class="col-lg-12">
-			<h3>Your courses</h3>
-		</div>
-	</div>
-	
-	<!-- Current Courses -->
+
+	<!-- Profile -->
 	<div class="row container-white">
-		<div class="course-name">
-			<label ng-repeat="course in courseMap">{{course.moduleTitle}}<br/>
-				<ul>
-					<li ng-repeat="qns in course.qnsTitles">
-						<a ng-href="#/{{qns.qnsType}}/{{course.moduleID}}/{{qns.qnsId}}">{{qns.qnsTitle}}<br/></a>
-					</li>
-				</ul>
-			</label>
+		
+		<div>
+			<div class="left profile-img"> <img src="bbtea.png" alt="" style="width: 100%;"> </div>
+			
+			<div class="profile-contentBox">
+				<div class="profile-content">
+					User's Name
+					<br>
+					<br>
+					UserEmail@gmail.com
+				</div>
+			</div>
 		</div>
+		
+		
+		
+		<div class="course-name" style="clear: both;">Your Progress</div>
+		<div class="progress-container">
+		  <div id="progressBar" class="progressbarRed" >
+			<div id="percentage">0%</div>
+		  </div>
+		</div>
+		<script>
+			move(25)
+			function move(value) {
+			  var elem = document.getElementById("progressBar");
+			  var width = 0;
+			  var id = setInterval(frame, 10);
+			  function frame() {
+				if (width >= value) {
+				  clearInterval(id);
+				} else {
+				  width++;
+				  elem.style.width = width + '%';
+				  document.getElementById("percentage").innerHTML = width * 1  + '%';
+				}
+			  }
+			}
+		</script>
+
 	</div>
 	
 	<hr>
-	<!-- More Courses Header -->
+	<!-- Course Map -->
 	
+	<div class="container-white row center">
+		<h3>Course Map</h3>
+		<a class="container-contentButton" href="#/lesson1">
+			<div class="left" >Lesson 1:</div>
+			<div class="right check"></div>
+		</a>
+		
+		<a class="container-contentButton" href="#/lesson2">
+			<div class="left" >Lesson 2:</div>
+		</a>
+		
+		<a class="container-contentButton" href="#/lesson3" >
+			<div class="left" >Lesson 3:</div>
+		</a>
+		
+		<a class="container-contentButton" href="#/lesson4" >
+			<div class="left" >Lesson 4:</div>
+		</a>
+	</div>
+
 </div>
-
-
-

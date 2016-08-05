@@ -10,7 +10,10 @@
     $routeProvider.
 	when('/login', {
       templateUrl: 'app/auth/login.html',
-	  controller: 'AuthController'
+      controller: 'AuthController'
+    }).when('/createUsername',{
+      templateUrl: 'app/auth/createUsername.html',
+      controller: 'AuthController'
     });
   }
 

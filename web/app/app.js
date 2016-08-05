@@ -14,7 +14,7 @@
 	  'app.auth',
 	  'app.profile',
 	  'app.lesson',
-    'app.course'
+	  'app.coursemap'
 
     ])
     .config(configFunction)

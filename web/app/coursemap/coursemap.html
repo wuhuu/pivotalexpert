@@ -1,42 +1,33 @@
-<div class="container" ng-controller=''>
+<div class="container">
 
 	<div class="container-white">
 		<div class="container-half">
 			<img src="content\images\image3.jpeg" width="100%" height="auto" style="max-width: 250px;">
 		</div>
 		<div class="container-half">
-			<font size="18"><b>Spreadsheets(Advanced)</b></font>
+			<font size="18"><b>{{courseTitle}}</b></font>
 			<br>
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-			
+			{{courseDesc}}
 			
 		</div>
 	</div>
 
 	<div class="container-white">
-		
-		<div class="container-module">	
-			<span class="left"><a href="#/lesson3" >Watch Video</a></span>
-			<span class="right"><img class="module-tick" src="http://image.flaticon.com/icons/svg/148/148767.svg"></span>
-		</div>	
-		
-		<div class="container-module">
-			<span class="left"><a href="#/lesson2">View Sides</a></span>
-			<span class="right"><img class="module-tick" src="http://image.flaticon.com/icons/svg/148/148767.svg"></span>
-		</div>
-		
-		<div class="container-module">
-			<span class="left"><a href="#/lesson1">Attempt MCQ</a></span>
-			<span class="right"><img class="module-tick" src="http://image.flaticon.com/icons/svg/19/19973.svg"></span>
-		</div>
-		
-		<div class="container-module">
-			<span class="left"><a href="#/lesson4" >Attempt Spreadsheets</a></span>
-			<span class="right"><img class="module-tick" src="http://image.flaticon.com/icons/svg/19/19973.svg"></span>
-		</div>	
-			
-			
-		
-	
+		<label ><br/>
 
+		</label>
+		
+		<div class="row" ng-repeat="course in courseMap">
+			<span class="left">{{course.moduleTitle}}</span> </br>
+			<div class="container-module" ng-repeat="qns in course.qnsTitles">
+				<span class="left"><a ng-href="#/{{qns.qnsType}}/{{course.moduleID}}/{{qns.qnsId}}">{{qns.qnsTitle}}<br/></a></span>
+
+				<div ng-show="!complete(course.moduleID, qns.qnsId)">
+					<span class="right"><img class="module-tick" src="http://image.flaticon.com/icons/svg/19/19973.svg"></span>
+				</div>
+				<div ng-show="complete(course.moduleID, qns.qnsId)">
+					<span class="right"><img class="module-tick" src="http://image.flaticon.com/icons/svg/148/148767.svg"></span>
+				</div>
+			</div>
+		</div>	
 </div>

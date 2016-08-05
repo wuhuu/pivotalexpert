@@ -23,7 +23,11 @@
 	  if (user != null) {
 	  	$scope.logined= true;
 		user.$loaded().then(function(){
-		  $scope.displayName = user.displayName;
+		 var username= authService.fetchAuthUsername();
+		 	username.$loaded().then(function(){
+				$scope.displayName = username.$value;
+				
+			});
 		   getUserAchievements(user.$id);
 	    });
 		  userpic.$loaded().then(function(){

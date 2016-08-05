@@ -19,7 +19,8 @@
       logout: logout,
       fetchAuthData: fetchAuthData,
       fetchAuthPic: fetchAuthPic,
-      fetchAuthEmail: fetchAuthEmail
+      fetchAuthEmail: fetchAuthEmail,
+      fetchAuthUsername:fetchAuthUsername
     };
 	
 	return service;
@@ -105,6 +106,16 @@
       if (audData) {
           console.log("Fetching authId " + audData.uid);
       return $firebaseObject(usersRef.child(audData.uid+'/email'));
+      }
+    }
+
+    function fetchAuthUsername() {
+      var audData = auth.$getAuth();
+      var ref = new Firebase("https://pivotal-expert.firebaseio.com/auth/usernames");
+      if (audData) {
+          console.log("Fetching authId " + audData.uid);
+
+      return $firebaseObject(ref.child(audData.uid));
       }
     }
   }

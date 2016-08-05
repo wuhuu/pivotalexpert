@@ -4,9 +4,9 @@
     .module('app.profile')
 	.controller('ProfileController', ProfileController);
 
-  ProfileController.$inject = ['$scope', '$routeParams', '$firebaseArray','authService','$location','navBarService','$firebaseObject'];
+  ProfileController.$inject = ['$http','$scope', '$routeParams', '$firebaseArray','authService','$location','navBarService','$firebaseObject'];
 
-  function ProfileController($scope, $routeParams, $firebaseArray,authService,$location,navBarService,$firebaseObject) {
+  function ProfileController($http,$scope, $routeParams, $firebaseArray,authService,$location,navBarService,$firebaseObject) {
 		$scope.list =[];
 		$scope.displayName = $routeParams.displayName;
 		var user = authService.fetchAuthData();
@@ -19,14 +19,11 @@
 			
 			console.log();
 			usersRef.child(user.$id).update({displayName:newName},function() {
-				navBarService.updateNavBar($scope,newName);
+				//navBarService.updateNavBar($scope,newName);
 				$location.path('/profile/'+newName);
 
 			});
 			
-			
-			//window.location.reload();
-
 			var userpic = authService.fetchAuthPic();
 			userpic.$loaded().then(function(){
 			  $scope.displayPic = userpic.$value;
@@ -40,9 +37,9 @@
 		    });
 
 		function getUserAchievements(uid) {
-			var list = [];
+			var achieveIdlist = [];
 
-			var courseProgressRef = new Firebase('https://pivotal-expert.firebaseio.com/pivotalExpert/PEProfile/'
+			var courseProgressRef = new Firebase('https://pivotal-expert.firebaseio.com/userProfiles/'
 				+uid+'/courseProgress/');
 
 			courseProgressRef.once('value', function(snapshot) {
@@ -50,14 +47,28 @@
 			  snapshot.forEach(function(childSnapshot) {
 			    // key will be "fred" the first time and "barney" the second time
 			    var key = childSnapshot.key();
-			    list.push(key);
+			    achieveIdlist.push(key);
 			    // childData will be the actual contents of the child
 			    //var childData = childSnapshot.val();
 				});
-			  
-			  $scope.$apply(function(){
-			  	$scope.list = list;
-			  });
+
+			  	var achievelist =[];
+				$http.get('course/content.json').success(function(data) {
+					console.log("Display Question");
+					var achievement = {}; 
+					var courseContent = data.course.courseContent;
+
+					achieveIdlist.forEach(function(achieveId,index){
+						var modID = achieveId.charAt(1);
+						var qnsID = achieveId.charAt(3);
+
+						var questions = courseContent[modID].questions[qnsID];
+						achievelist.push(questions.qnsTitle);
+					});	
+
+					$scope.achievelist = achievelist;
+					
+				});			    
 			});
 	  	}
 

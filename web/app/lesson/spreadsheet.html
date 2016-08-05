@@ -4,10 +4,12 @@
 		<H2>{{qnsTitle}}</H2>
 		{{qnsDescription}}
 		<br><br>
-		<H3>Instructions</H3>
-		{{qnsInstruction}}
-		<br>
-		<br>
+		<div ng-show="qnsInstruction">
+			<H3>Instructions</H3>
+			{{qnsInstruction}}
+			<br>
+			<br>
+		</div>
 		<form ng-submit="submit()">
 			 <input type="text" ng-model="answer" name="answer"/>
 			 <input type="submit" value="Submit">

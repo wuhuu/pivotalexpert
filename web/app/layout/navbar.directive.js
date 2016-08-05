@@ -34,7 +34,6 @@
 		  $scope.displayPic = userpic.$value;
 	    });
 	  } else {
-		console.log("Not login, from Nav Bar");
 		$scope.logined= false;
 		//$location.path('/login/');
 	  }
@@ -49,7 +48,7 @@
 	function getUserAchievements(uid) {
 		var list = [];
 
-		var courseProgressRef = new Firebase('https://pivotal-expert.firebaseio.com/pivotalExpert/PEProfile/'
+		var courseProgressRef = new Firebase('https://pivotal-expert.firebaseio.com/userProfiles/'
 			+uid+'/courseProgress/');
 
 		courseProgressRef.once('value', function(snapshot) {

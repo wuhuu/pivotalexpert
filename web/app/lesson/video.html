@@ -4,10 +4,12 @@
 	<H2>{{qnsTitle}}</H2>
 	{{qnsDescription}}
 	<br><br>
-	<H3>Instructions</H3>
-	{{qnsInstruction}}
-	<br>
-	<br>
+	<div ng-show="qnsInstruction">
+		<H3>Instructions</H3>
+		{{qnsInstruction}}
+		<br>
+		<br>
+	</div>
 	
 	<div class="center">
 		<iframe width="700" height="394"  ng-src="{{videoLink}}" frameborder="0" allowfullscreen></iframe>

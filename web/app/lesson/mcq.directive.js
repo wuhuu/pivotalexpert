@@ -13,16 +13,16 @@
     };
   }
  
-  McqController.$inject = ['$scope', '$window', '$http', '$routeParams','authService'];
+  McqController.$inject = ['$scope', '$location', '$http', '$routeParams','authService'];
   
-  function McqController($scope, $window, $http, $routeParams, authService) {
+  function McqController($scope, $location, $http, $routeParams, authService) {
 	var ref = new Firebase("https://pivotal-expert.firebaseio.com");
 	var modID = $routeParams.modID;
 	var qnsID = $routeParams.qnsID;
 	$http.get('course/content.json').success(function(data) {
 		console.log("Display Question");
-		var lessonContent = data.course.lessonContent;
-		var questions = lessonContent[modID].questions[qnsID];
+		var courseContent = data.course.courseContent;
+		var questions = courseContent[modID].questions[qnsID];
 		$scope.qnsTitle = questions.qnsTitle;
 		$scope.qnsInstruction = questions.qnsInstruction;
 		$scope.qnsDescription = questions.qnsDescription;
@@ -41,8 +41,27 @@
 					alert("Correct");
 					var achievementId = "C" + modID + "Q" + qnsID;
 					var user = authService.fetchAuthData();
-					ref.child('pivotalExpert').child('PEProfile').child(user.$id).child('courseProgress').child(achievementId).set(true);
-					$window.location.href = '#/';
+					ref.child('userProfiles').child(user.$id).child('courseProgress').child(achievementId).set(true);
+					
+					//Go to next qns
+					var nextQns = courseContent[modID].questions[parseInt(qnsID) + 1];
+					if(nextQns) {
+						//Complete current qns, go to next qns
+						$location.path('/lesson/' + nextQns.qnsType + '/' + modID + '/' + nextQns.qnsId);
+					} else {
+						//Complete current module, go to next module
+						nextQns = courseContent[parseInt(modID) + 1];
+						if(nextQns) {
+							//Complete whole course
+							$location.path('/lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0');
+						} else {
+							//Complete whole course
+							 var username= authService.fetchAuthUsername();
+							username.$loaded().then(function(){
+								$location.path('/profile/' + username.$value);
+							});
+						}
+					}
 				} else {
 					alert("Incorrect");
 				}

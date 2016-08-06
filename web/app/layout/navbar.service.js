@@ -9,7 +9,8 @@
   function navBarService($firebaseObject, $firebaseAuth, authService) {
 	   
 	   var service = {
-	      updateNavBar: updateNavBar
+	      updateNavBar: updateNavBar,
+	      getUserAchievements: getUserAchievements
 	    };
 	
 		return service;
@@ -20,8 +21,24 @@
 		  $scope.displayName = newName;
 		  user.$loaded().then(function () {
 	        $scope.displayName = user.displayName;
+	        $getUserAchievements(user$id);
 	      });
 	  	}
+
+	  	function getUserAchievements(uid,$scope) {
+		var list = [];
+
+		var courseProgressRef = new Firebase('https://pivotal-expert.firebaseio.com/userProfiles/'
+			+uid+'/courseProgress/');
+
+		courseProgressRef.once('value', function(snapshot) {
+		  // The callback function will get called twice, once for "fred" and once for "barney"
+		  $scope.numAchievement = snapshot.numChildren();
+		  // $scope.$apply(function(){
+		  	
+		  // });
+		});
+  	}
   }
 
 })();

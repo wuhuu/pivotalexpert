@@ -28,7 +28,7 @@
 		 	username.$loaded().then(function(){
 				$scope.displayName = username.$value;
 			});
-		   navBarService.getUserAchievements(user.$id,$scope);
+		   navBarService.getUserAchievements($scope);
 	    });
 		  userpic.$loaded().then(function(){
 		  $scope.displayPic = userpic.$value;

@@ -1,5 +1,4 @@
 (function() {
-  'use strict';
 
   angular
     .module('app.lesson', [])
@@ -10,20 +9,20 @@
   function configFunction($routeProvider) {
     $routeProvider.
 	when('/lesson/mcq/:modID/:qnsID', {
-      template:
-		'<mv-lesson-mcq></mv-lesson-mcq>'
+      templateUrl: 'app/lesson/mcq.html',
+	  controller: 'LessonController'
     }).
 	when('/lesson/Slides/:modID/:qnsID', {
-      template:
-		'<mv-lesson-slides></mv-lesson-slides>',
+      templateUrl: 'app/lesson/slides.html',
+	  controller: 'LessonController'
     }).
 	when('/lesson/video/:modID/:qnsID', {
-      template:
-		'<mv-lesson-video></mv-lesson-video>',
+      templateUrl: 'app/lesson/video.html',
+	  controller: 'LessonController'
     }).
 	when('/lesson/LSheet/:modID/:qnsID', {
-      template:
-		'<mv-lesson-spreadsheet></mv-lesson-spreadsheet>',
+      templateUrl: 'app/lesson/spreadsheet.html',
+	  controller: 'LessonController'
     });
   }
   

@@ -13,12 +13,13 @@
     };
   }
  
-  McqController.$inject = ['$scope', '$location', '$http', '$routeParams','authService'];
+  McqController.$inject = ['$scope', '$location', '$http', '$routeParams','authService','navBarService'];
   
-  function McqController($scope, $location, $http, $routeParams, authService) {
+  function McqController($scope, $location, $http, $routeParams, authService,navBarService) {
 	var ref = new Firebase("https://pivotal-expert.firebaseio.com");
 	var modID = $routeParams.modID;
 	var qnsID = $routeParams.qnsID;
+	navBarService.getUserAchievements($scope);
 	$http.get('course/content.json').success(function(data) {
 		console.log("Display Question");
 		var courseContent = data.course.courseContent;

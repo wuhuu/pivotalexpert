@@ -13,13 +13,13 @@
     };
   }
  
-  SlidesController.$inject = ['$scope', '$location','$http', '$sce', '$routeParams','authService'];
+  SlidesController.$inject = ['$scope', '$location','$http', '$sce', '$routeParams','authService','navBarService'];
   
-  function SlidesController($scope, $location, $http, $sce, $routeParams, authService) {
+  function SlidesController($scope, $location, $http, $sce, $routeParams, authService,navBarService) {
 	var ref = new Firebase("https://pivotal-expert.firebaseio.com");
   	var modID = $routeParams.modID;
 	var qnsID = $routeParams.qnsID;
-	
+	navBarService.getUserAchievements($scope);
 	$http.get('course/content.json').success(function(data) {
 		var courseContent = data.course.courseContent;
 		var questions = courseContent[modID].questions[qnsID];

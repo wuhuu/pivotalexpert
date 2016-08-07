@@ -13,6 +13,7 @@
 	var qnsID = $routeParams.qnsID;
 	
 	navBarService.getUserAchievements($scope);
+	$scope.answer = "";
 	
 	$http.get('course/content.json').success(function(data) {
 		var courseContent = data.course.courseContent;
@@ -31,7 +32,7 @@
 
 		// MCQ Qns type
 		if (qnsType == 'mcq'){
-			ans = questions.answer;
+			
 			$scope.mcqType = qns.type;
 			$scope.options = qns.options;
 		}
@@ -69,14 +70,31 @@
 			if (qnsType == 'video' || qnsType == 'slides'){
 				correctAns();
 			} else {
-				for (var i = 0; i < ans.length; i++) {
-					if (this.answer == ans[i]) {
-						correctAns();
-						console.log("Correct Answer");
-						alert("Correct");
-					} else {
-						alert("Incorrect");
+				if(qnsType == 'mcq') {
+					$scope.answer = $scope.answer.toUpperCase();
+					for (var i = 0; i < ans.length; i++) {
+						if (this.answer == ans[i]) {
+							//correctAns();
+							console.log("Correct Answer");
+							$scope.incorrect = false;
+							$scope.correct = true;
+							$scope.next = function() {correctAns(); };
+						} else { 
+							$scope.hint = questions.hint;
+							$scope.incorrect = true;
+						}
 					}
+				}
+				if(qnsType == 'LSheet') {
+					$scope.answer = $scope.answer.toUpperCase();
+					var validation = questions.checks;
+					var syntax = validation.syntax;
+					var explain = validation.explain;
+					var values = validation.values;
+					console.log(syntax);
+					console.log(explain);
+					console.log(values);
+					
 				}
 			}
 		};
@@ -108,7 +126,7 @@
 					$location.path('/lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0');
 				} else {
 					//update last attemp in firebase db
-					ref.child('userProfiles').child(user.$id).child('lastAttempt').set("");
+					ref.child('userProfiles').child(user.$id).child('lastAttempt').set("completed");
 					//Complete whole course
 					var username= authService.fetchAuthUsername();
 					username.$loaded().then(function(){

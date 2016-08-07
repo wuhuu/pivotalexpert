@@ -17,10 +17,10 @@
   NavbarController.$inject = ['$firebaseObject','$scope', '$location','authService','navBarService'];
 
   function NavbarController($firebaseObject,$scope,$location, authService,navBarService) {
-      //Retrieve User Display Name
+	  console.log("Nav Bar");
+	  //Retrieve User Display Name
 	  var user = authService.fetchAuthData();
 	  var userpic = authService.fetchAuthPic();
-	  console.log("Nav Bar");
 	  if (user != null) {
 	  	$scope.logined= true;
 		user.$loaded().then(function(){
@@ -34,7 +34,7 @@
 		  $scope.displayPic = userpic.$value;
 	    });
 	  } else {
-		$scope.logined= false;
+		$scope.logined = false;
 		//$location.path('/login/');
 	  }
 

@@ -22,10 +22,10 @@
 			<div class="container-module" ng-repeat="qns in course.qnsTitles">
 				<span class="left"><a ng-href="#/lesson/{{qns.qnsType}}/{{course.moduleID}}/{{qns.qnsId}}">{{qns.qnsTitle}}<br/></a></span>
 
-				<div ng-show="!complete(course.moduleID, qns.qnsId)">
+				<div ng-if="!complete(course.moduleID, qns.qnsId)">
 					<span class="right"><img class="module-tick" src="http://image.flaticon.com/icons/svg/19/19973.svg"></span>
 				</div>
-				<div ng-show="complete(course.moduleID, qns.qnsId)">
+				<div ng-if="complete(course.moduleID, qns.qnsId)">
 					<span class="right"><img class="module-tick" src="http://image.flaticon.com/icons/svg/148/148767.svg"></span>
 				</div>
 			</div>

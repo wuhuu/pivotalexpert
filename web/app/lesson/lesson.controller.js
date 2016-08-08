@@ -66,12 +66,13 @@
 		
 		//Check if answer is correct
 		$scope.submit = function() {
-			if (qnsType.toUpperCase() == 'VIDEO' || qnsType.toUpperCase() == 'SLIDES'){
+			if (qnsType == 'video' || qnsType == 'slides'){
 				correctAns();
 			} else {
 				$scope.answer = $scope.answer.toUpperCase();
+				console.log("Correct Answer");
 				for (var i = 0; i < ans.length; i++) {
-					if (this.answer == ans[i]) {
+					if ($scope.answer == ans[i].toUpperCase()) {
 						//correctAns();
 						console.log("Correct Answer");
 						$scope.incorrect = false;
@@ -84,7 +85,7 @@
 						$scope.incorrect = true;
 					}
 				}
-				if (qnsType = 'LSheet' && $scope.incorrect) {
+				if (qnsType == 'LSheet' && $scope.incorrect) {
 						var inputAns = $scope.answer;
 						var validation = questions.checks;
 						var syntax = validation.syntax;

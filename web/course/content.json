@@ -37,7 +37,7 @@
 				"qnsTitles" : [
 					{	"qnsTitle" : "Chapter 2 - Slides",
 						"qnsId" : 0,
-						"qnsType" : "Slides"
+						"qnsType" : "slides"
 					},
 					{	"qnsTitle" : "Chapter 2 - Question 1",
 						"qnsId" : 1,
@@ -67,7 +67,7 @@
 				"qnsTitles" : [
 					{	"qnsTitle" : "Chapter 3 - Slides",
 						"qnsId" : 0,
-						"qnsType" : "Slides"
+						"qnsType" : "slides"
 					},
 					{	"qnsTitle" : "Chapter 3 - Question 1",
 						"qnsId" : 1,
@@ -85,7 +85,7 @@
 				"qnsTitles" : [
 					{	"qnsTitle" : "Chapter 4 - Slides",
 						"qnsId" : 0,
-						"qnsType" : "Slides"
+						"qnsType" : "slides"
 					},
 					{	"qnsTitle" : "Chapter 4 - Question 1",
 						"qnsId" : 1,
@@ -103,7 +103,7 @@
 				"qnsTitles" : [
 					{	"qnsTitle" : "Chapter 5 - Slides",
 						"qnsId" : 0,
-						"qnsType" : "Slides"
+						"qnsType" : "slides"
 					},
 					{	"qnsTitle" : "Chapter 5 - Question 1",
 						"qnsId" : 1,
@@ -212,7 +212,7 @@
 						"qnsId" : 0,
 						"qnsDescription" : "Learn about Sum Function in Google Sheets",
 						"qnsInstruction" : "Study Tutorial Slides!",
-						"qnsType" : "Slides",
+						"qnsType" : "slides",
 						"qns" : {
 							"link" : "https://docs.google.com/presentation/d/11QlI-oSRlcYJxT3P0lAKfahhWAX5Q3VjuEGH5CcL-qg/embed?start=true&loop=false&delayms=10000"
 						},
@@ -328,7 +328,7 @@
 						"qnsId" : 0,
 						"qnsDescription" : "Learn about Average Function in Google Sheets",
 						"qnsInstruction" : "Study Tutorial Slides!",
-						"qnsType" : "Slides",
+						"qnsType" : "slides",
 						"qns" : {
 							"link" : "https://docs.google.com/presentation/d/1BUuKRjw_Nr_BcJ7G5nZmfNyYr_yd5lK2oOrV4kkvJnc/embed?start=true&loop=false&delayms=10000" 
 						},
@@ -395,7 +395,7 @@
 						"qnsId" : 0,
 						"qnsDescription" : "Learn about Count Function in Google Sheets",
 						"qnsInstruction" : "Study Tutorial Slides!",
-						"qnsType" : "Slides",
+						"qnsType" : "slides",
 						"qns" : {
 							"link" : "https://docs.google.com/presentation/d/1giDyNH38wJedIf33KZ8cX_Q5RhJorMdLEI_PJ8g7AVw/embed?start=true&loop=false&delayms=10000"
 						},

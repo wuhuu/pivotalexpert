@@ -66,7 +66,7 @@
 		
 		//Check if answer is correct
 		$scope.submit = function() {
-			if (qnsType == 'video' || qnsType == 'slides'){
+			if (qnsType.toUpperCase() == 'VIDEO' || qnsType.toUpperCase() == 'SLIDES'){
 				correctAns();
 			} else {
 				$scope.answer = $scope.answer.toUpperCase();

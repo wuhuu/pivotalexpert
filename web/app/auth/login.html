@@ -1,49 +1,67 @@
+<style>
+	html{
+		height:100%;
+	}
+	body{
+		height:100%;
+	}
+	div.coverpage{
+		width: 100%;
+		height: 100%;
+		background-color: #ffffff;
+	}
 
-<div class="container">	
-	<div class="center container-wide-grey textdimwhite">
-		<br>
-		  <h1>PivotalExpert</h1>
+	.mainHeader{
+		font-family: "Karla", sans-serif !important;
+		font-size: 300%;
+	}
 
-		<button type="submit" ng-click="login('google')">Google Login</button>
-	</div>
-	<div class="container-wide-white" >
-		<div class="padding20">
-			<div class="left profile-img"> <img src="http://oss.adm.ntu.edu.sg/ichu001/wp-content/uploads/sites/178/2015/11/tools-icon.png" alt="" style="width: 100%;"> </div>
-			
-			<div class="profile-contentBox">
-				<div class="profile-content">
-					Do you love life hacks? Pivotal experts can teach you more. We are an online self-paced course that teaches you how to automate your most manual tasks.	
-				</div>
-			</div>
-		</div>	
-	</div>
-	<div class="container-wide-grey" >
-		<div class="padding20 textdimwhite">
-			<div class="right profile-img"> <img src="http://www.axis.com/sites/default/files/settings-icon.png" alt="" style="width: 100%;"> </div>
-			
-			<div class="profile-contentBox">
-				<div class="profile-content">
-					When it comes to automation, there is a huge misconception that a wealth of knowledge about coding is required. We are here to prove you wrong. We teach simple coding skills in the most practical way that enables you to automate your mundane tasks.
-				</div>
-			</div>
-		</div>	
-	</div>
-	<div class="container-wide-white" >
-		<div class="center padding20">
-			
-			<br>
-			The possibilities are endless.
-			<br><br>
-			
-			<img class="margin10 profile-img" src="http://www.axis.com/sites/default/files/technical-notes-icon.png?chunk-nid-40611-chunk-vid-87464" alt="" style="width: 100%;"> 
-			<img class="margin10 profile-img" src="http://www.axis.com/sites/default/files/rma-and-warranty-icon.png?chunk-nid-40611-chunk-vid-87464" alt="" style="width: 100%;"> 
-			<img class="amrgin10 profile-img" src="http://www.axis.com/sites/default/files/statistics-icon.png?chunk-nid-39186-chunk-vid-68409" alt="" style="width: 100%;"> 
-				
-			<br><br>
-			Start now and let your computer work for you!
-			<br><br>
-			
-			<button type="submit" ng-click="login('google')">Google Login</button>
-		</div>	
-	</div>
-</div>	
+	.push-down{
+		margin-top: 80px;
+	}
+
+	.login{
+		border-radius: 25px;
+		background: #CC6666;
+		padding: 70px 25px;
+	}
+
+
+
+</style>
+
+
+<div class="coverpage">
+  <div class="col-md-12 push-down">
+  	<div class="col-md-6 col-md-offset-1" >
+
+  		<h1>Do you love life hacks? </h1>
+  		<h1>Our self paced course can teach you more.</h1>
+  		<br/>
+  		<br/>
+  		<div class="col-md-12">
+  			<div class="col-md-3">
+	  			<img src="http://oss.adm.ntu.edu.sg/ichu001/wp-content/uploads/sites/178/2015/11/tools-icon.png" alt="" style="width: 100%;">
+	  		</div>
+	  		<div class="col-md-8" style="margin-top: 10px">
+	  			<p>When it comes to automation, there is a huge misconception that a wealth of knowledge about coding is required. We are here to prove you wrong. We teach simple coding skills in the most practical way that enables you to automate your mundane tasks.</p>
+	  			<br/>
+	  		</div>
+  		</div>
+  		
+  		<div class="col-md-10 text-center">
+  			<h3>The possibilities are endless.</h3>
+  			<h4>Start now and let your computer work for you!</h4>
+  		</div>
+  		
+  		
+  	</div>
+    <div class="col-lg-4 text-center login">
+      <h1 class="mainHeader" style="color: white">Pivotal Experts</h1>
+      <br/>
+      <h3 style="color: white">Automate your life one task at a time</h3>
+      <br/>
+      <button class="btn-primary btn-lg" type="submit" ng-click="login('google')">Google Login</button>
+    </div>
+  </div>
+</div>

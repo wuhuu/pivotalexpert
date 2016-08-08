@@ -1,13 +1,13 @@
 <div class="container">
 
 	<div class="container-white">
-		<div class="container-half">
+		<div class="container-half" style="padding-top:20px">
 			<img src="content\images\image3.jpeg" width="100%" height="auto" style="max-width: 250px;">
 		</div>
-		<div class="container-half">
+		<div class="container-half" style="width: 60%;padding-top:20px">
 			<font size="18"><b>{{courseTitle}}</b></font>
-			<br>
-			{{courseDesc}}
+			</br>
+			<p>{{courseDesc}}</p>
 			
 		</div>
 	</div>
@@ -18,9 +18,10 @@
 		</label>
 		
 		<div class="row" ng-repeat="course in courseMap">
-			<span class="left">{{course.moduleTitle}}</span> </br>
+			<br/>
+			<span class="left" style="font-size: 1.3em">{{course.moduleTitle}}</span> </br>
 			<div class="container-module" ng-repeat="qns in course.qnsTitles">
-				<span class="left"><a ng-href="#/lesson/{{qns.qnsType}}/{{course.moduleID}}/{{qns.qnsId}}">{{qns.qnsTitle}}<br/></a></span>
+				<span class="left"><a style="font-size: 1.3em" ng-href="#/lesson/{{qns.qnsType}}/{{course.moduleID}}/{{qns.qnsId}}">{{qns.qnsTitle}}<br/></a></span>
 
 				<div ng-show="!complete(course.moduleID, qns.qnsId)">
 					<span class="right"><img class="module-tick" src="http://image.flaticon.com/icons/svg/19/19973.svg"></span>

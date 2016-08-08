@@ -4,14 +4,17 @@
     .module('app.coursemap')
     .controller('CoursemapController', CoursemapController);
 
-  CoursemapController.$inject = ['$scope','$http', '$firebaseObject', 'authService'];
+  CoursemapController.$inject = ['$scope', '$firebaseObject', 'authService', 'commonService', 'navBarService'];
 
-  function CoursemapController($scope, $http, $firebaseObject, authService) {
+  function CoursemapController($scope, $firebaseObject, authService, commonService, navBarService) {
     console.log("Coursemap Page");
 	var user = authService.fetchAuthData();
-	var courseProgressRef = new Firebase('https://pivotal-expert.firebaseio.com/userProfiles/'+user.$id+'/courseProgress/');	
-	var list = [];
+	var ref = commonService.firebaseRef();
+	
 
+	
+	var courseProgressRef = ref.child('/userProfiles/' + user.$id + '/Pivotal-Expert/courseProgress/');
+	var list = [];
 	courseProgressRef.once('value', function(snapshot) {
 	  snapshot.forEach(function(childSnapshot) {
 		var key = childSnapshot.key();
@@ -22,18 +25,18 @@
 			var course = 'C' + moduleID + 'Q' + qnsId;
 			return list.indexOf(course) > -1;
 		};
-		 // Retrieve from json
-		$http.get('course/content.json').success(function(data) {
-			$scope.courseTitle = data.course.courseTitle;
-			$scope.courseLogo = data.course.courseLogo;
-			$scope.courseDesc = data.course.courseDescription;
-			$scope.courseMap = data.course.courseMap;
+	
+	
+		 // Retrieve from content
+		var content =  $firebaseObject(ref.child('pivotalExpert').child('content'));
+		content.$loaded().then(function(){
+			$scope.courseTitle = content.course.courseTitle;
+			$scope.courseLogo = content.course.courseLogo;
+			$scope.courseDesc = content.course.courseDescription;
+			$scope.courseMap = content.course.courseMap;
 		});
 	});
 
-
-
-	  
   }
 
 })();

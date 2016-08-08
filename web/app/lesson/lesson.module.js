@@ -12,7 +12,7 @@
       templateUrl: 'app/lesson/mcq.html',
 	  controller: 'LessonController'
     }).
-	when('/lesson/Slides/:modID/:qnsID', {
+	when('/lesson/slides/:modID/:qnsID', {
       templateUrl: 'app/lesson/slides.html',
 	  controller: 'LessonController'
     }).

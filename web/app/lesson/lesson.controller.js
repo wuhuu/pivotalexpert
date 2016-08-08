@@ -4,26 +4,30 @@
     .module('app.lesson')
     .controller('LessonController', LessonController);
 	
-  LessonController.$inject = ['$scope', '$routeParams', '$location', '$http', '$sce', 'authService','navBarService'];
+  LessonController.$inject = ['$scope', '$routeParams', '$location', '$firebaseObject', '$sce', 'authService','navBarService', 'commonService'];
 
-  function LessonController($scope, $routeParams, $location, $http, $sce, authService, navBarService) {
+  function LessonController($scope, $routeParams, $location, $firebaseObject, $sce, authService, navBarService, commonService) {
 	console.log("LessonController");
-	var ref = new Firebase("https://pivotal-expert.firebaseio.com");
+	var ref = commonService.firebaseRef();
 	var modID = $routeParams.modID;
 	var qnsID = $routeParams.qnsID;
 	
 	navBarService.getUserAchievements($scope);
 	$scope.answer = "";
 	
-	$http.get('course/content.json').success(function(data) {
-		var courseContent = data.course.courseContent;
+	//Load Content
+	var content =  $firebaseObject(ref.child('pivotalExpert').child('content'));
+	content.$loaded().then(function(){
+		var courseTitle = content.course.courseTitle;
+		var courseContent = content.course.courseContent;
+		
 		var questions = courseContent[modID].questions[qnsID];
 		$scope.qnsTitle = questions.qnsTitle;
 		$scope.qnsInstruction = questions.qnsInstruction;
 		$scope.qnsDescription = questions.qnsDescription;
 		var qnsType = questions.qnsType;
 		var qns = questions.qns;
-		var ans = null;
+		var ans = questions.answer;
 		// video or slides Qns type
 		if (qnsType == 'video' || qnsType == 'slides'){
 			$scope.srclink = $sce.trustAsResourceUrl(qns.link);
@@ -31,14 +35,12 @@
 
 		// MCQ Qns type
 		if (qnsType == 'mcq'){
-			ans = questions.answer;
 			$scope.mcqType = qns.type;
 			$scope.options = qns.options;
 		}
 		
 		// Local Spreadsheet Qns type
 		if (qnsType == 'LSheet') {
-			ans = questions.answer;
 			$scope.sheet = qns.sheet;
 			$scope.rowCount = qns.row;
 			$scope.colCount = qns.col;
@@ -66,28 +68,30 @@
 		
 		//Check if answer is correct
 		$scope.submit = function() {
-			if (qnsType == 'video' || qnsType == 'slides'){
+			if (qnsType.toUpperCase() == 'VIDEO' || qnsType.toUpperCase() == 'SLIDES'){
 				correctAns();
+				return;
 			} else {
-				$scope.answer = $scope.answer.toUpperCase();
-				console.log("Correct Answer");
-				for (var i = 0; i < ans.length; i++) {
-					if ($scope.answer == ans[i].toUpperCase()) {
-						//correctAns();
-						console.log("Correct Answer");
-						$scope.incorrect = false;
-						$scope.correct = true;
-						$scope.next = function() {correctAns(); };
-						return;
-					} else { 
-						console.log("Incorrect Answer");
-						$scope.hint = questions.hint;
-						$scope.incorrect = true;
-					}
+				if (qnsType == 'LSheet') {
+					$scope.answer = $scope.answer.toUpperCase();
 				}
+				if ($scope.answer == ans) {
+					//correctAns();
+					console.log("Correct Answer");
+					$scope.incorrect = false;
+					$scope.correct = true;
+					$scope.next = function() {correctAns(); };
+					return;
+				} else { 
+					console.log("Incorrect Answer");
+					$scope.hint = questions.hint;
+					$scope.incorrect = true;
+				}
+				
 				if (qnsType == 'LSheet' && $scope.incorrect) {
-						var inputAns = $scope.answer;
-						var validation = questions.checks;
+					var inputAns = $scope.answer;
+					var validation = questions.checks;
+					if(validation) {
 						var syntax = validation.syntax;
 						//check if any validation to check for
 						if(inputAns == "") {
@@ -95,7 +99,6 @@
 							return;
 						}
 						if(syntax.length != 0) {
-							console.log("TEST" + inputAns);
 							
 							var explain = validation.explain;
 							var values = validation.values;
@@ -129,6 +132,7 @@
 								return;
 							}
 						}
+					}
 				}
 			}
 		};
@@ -139,28 +143,31 @@
 			var achievementId = "C" + modID + "Q" + qnsID;
 			var user = authService.fetchAuthData();
 			//update course progress in firebase db
-			ref.child('userProfiles').child(user.$id).child('courseProgress').child(achievementId).set(currentDateTime);
+			ref.child('userProfiles').child(user.$id).child(courseTitle).child('courseProgress').child(achievementId).set(currentDateTime);
 			
 			//Go to next qns
 			var nextQns = courseContent[modID].questions[parseInt(qnsID) + 1];
 			if(nextQns) {
 				//update last attemp in firebase db
 				var nextQnsID = 'C' + modID + 'Q' + nextQns.qnsId;
-				ref.child('userProfiles').child(user.$id).child('lastAttempt').set(nextQnsID);
+				ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(nextQnsID);
 				//Complete current qns, go to next qns
 				$location.path('/lesson/' + nextQns.qnsType + '/' + modID + '/' + nextQns.qnsId);
 			} else {
 				//Complete current module, go to next module
 				nextQns = courseContent[parseInt(modID) + 1];
+
 				if(nextQns) {
 					//update last attemp in firebase db
 					var nextQnsID = 'C' + nextQns.moduleID + 'Q0';
-					ref.child('userProfiles').child(user.$id).child('lastAttempt').set(nextQnsID);
+					console.log('lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0')
+					
+					ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(nextQnsID);
 					//Complete whole course
 					$location.path('/lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0');
 				} else {
 					//update last attemp in firebase db
-					ref.child('userProfiles').child(user.$id).child('lastAttempt').set("completed");
+					ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set("completed");
 					//Complete whole course
 					var username= authService.fetchAuthUsername();
 					username.$loaded().then(function(){
@@ -170,6 +177,5 @@
 			}
 		};
 	});
-	
   };
 })();

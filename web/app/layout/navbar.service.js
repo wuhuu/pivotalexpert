@@ -4,13 +4,15 @@
     .module('app.layout')
     .factory('navBarService', navBarService);
 
-  navBarService.$inject = ['$rootScope','$firebaseArray', '$firebaseObject','authService'];
+  navBarService.$inject = ['$rootScope','$firebaseObject', '$firebaseAuth','authService', 'commonService'];
   
-  function navBarService($rootScope,$firebaseObject, $firebaseAuth, authService) {
-	   
+  function navBarService($rootScope,$firebaseObject, $firebaseAuth, authService, commonService) {
+		var ref = commonService.firebaseRef();
+		
 	   var service = {
 	      updateNavBar: updateNavBar,
-	      getUserAchievements: getUserAchievements
+	      getUserAchievements: getUserAchievements,
+		  getCourseTitle: getCourseTitle
 	    };
 	
 		return service;
@@ -25,21 +27,33 @@
 	      });
 	  	}
 
+
+	  
 	  	function getUserAchievements($scope) {
 			var user = authService.fetchAuthData();
+			var courseTitle = $firebaseObject(getCourseTitle());
+			courseTitle.$loaded().then(function(){
+				courseTitle = courseTitle.$value;
 			
-			user.$loaded().then(function () {
-				var courseProgressRef = new Firebase('https://pivotal-expert.firebaseio.com/userProfiles/'
-										+user.$id+'/courseProgress/');
+			
+				user.$loaded().then(function () {
+					var courseProgressRef = ref.child('/userProfiles/' + user.$id + '/' + courseTitle + '/courseProgress/');
 
-				courseProgressRef.once('value', function(snapshot) {
-				  // The callback function will get called twice, once for "fred" and once for "barney"
-				  
-				   $scope.$apply(function(){
-				  	$rootScope.numAchievement = snapshot.numChildren();
-				   });
+					courseProgressRef.once('value', function(snapshot) {
+					  // The callback function will get called twice, once for "fred" and once for "barney"
+					  
+					   $scope.$apply(function(){
+						$rootScope.numAchievement = snapshot.numChildren();
+					   });
+					});
 				});
-		  	});
+			});
+		}
+		
+		function getCourseTitle() {
+
+			var courseTitleRef = ref.child('/pivotalExpert/content/course/courseTitle');
+			return courseTitleRef;
 		}
   }
 

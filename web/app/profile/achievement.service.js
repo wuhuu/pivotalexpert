@@ -4,11 +4,11 @@
     .module('app.profile')
     .factory('achieveService', achieveService);
 
-  achieveService.$inject = ['$firebaseArray', '$firebaseObject'];
+  achieveService.$inject = ['$firebaseArray', '$firebaseObject', ' commonService'];
   
-  function achieveService($firebaseArray, $firebaseObject) {
+  function achieveService($firebaseArray, $firebaseObject, commonService) {
 
-	var ref = new Firebase("https://pivotal-expert.firebaseio.com");
+	var ref = commonService.firebaseRef();;
 	
 	var service = {
       fetchAchievements: fetchAchievements

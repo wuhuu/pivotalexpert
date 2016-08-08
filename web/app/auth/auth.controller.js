@@ -4,9 +4,9 @@
     .module('app.auth')
     .controller('AuthController', AuthController);
 
-  AuthController.$inject = ['$scope', '$location' ,'$firebaseObject','$firebaseAuth','authService','navBarService'];
+  AuthController.$inject = ['$scope', '$location' ,'$firebaseObject', '$firebaseAuth', 'authService','navBarService', 'commonService'];
 
-  function AuthController($scope, $location,$firebaseObject,$firebaseAuth, authService,navBarService) {
+  function AuthController($scope, $location, $firebaseObject, $firebaseAuth, authService, navBarService, commonService) {
 	
 	$scope.login = function (service) {
 	  console.log("Logging in");
@@ -41,7 +41,7 @@
 	$scope.updateDisplayName = function (username) {
 		var user = authService.fetchAuthData();
 
-		var ref = new Firebase("https://pivotal-expert.firebaseio.com/auth");
+		var ref = commonService.firebaseRef().child("auth");
 		user.$loaded().then(function(user){
 			
 		

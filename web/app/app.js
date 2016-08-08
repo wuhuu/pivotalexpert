@@ -9,6 +9,7 @@
       'firebase',
 
       // Custom modules.
+	  'app.common',
       'app.layout',
 	  'app.landing',
 	  'app.auth',

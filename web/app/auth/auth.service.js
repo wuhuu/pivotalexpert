@@ -79,7 +79,7 @@
     function fetchAuthData() {
   	  var audData = auth.$getAuth();
   	  if (audData) {
-          console.log("Fetching authId " + audData.uid);
+          console.log("Fetching fetchAuthData " + audData.uid);
 		  return $firebaseObject(usersRef.child(audData.uid));
 
   	  } else {
@@ -97,14 +97,14 @@
     function fetchAuthPic() {
       var audData = auth.$getAuth();
       if (audData) {
-          console.log("Fetching authId " + audData.uid);
+          console.log("Fetching fetchAuthPic " + audData.uid);
       return $firebaseObject(usersRef.child(audData.uid+'/pic'));
       }
     }
     function fetchAuthEmail() {
       var audData = auth.$getAuth();
       if (audData) {
-          console.log("Fetching authId " + audData.uid);
+          console.log("Fetching fetchAuthEmail " + audData.uid);
       return $firebaseObject(usersRef.child(audData.uid+'/email'));
       }
     }
@@ -113,7 +113,7 @@
       var audData = auth.$getAuth();
       var ref = new Firebase("https://pivotal-expert.firebaseio.com/auth/usernames");
       if (audData) {
-          console.log("Fetching authId " + audData.uid);
+          console.log("Fetching fetchAuthUsername " + audData.uid);
 
       return $firebaseObject(ref.child(audData.uid));
       }

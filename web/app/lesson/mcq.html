@@ -16,7 +16,19 @@
 				<br/>
 			</label>
 			<br><br>
+			
+			<div ng-show='incorrect'>
+				<h4> {{hint}} </h4>
+				<h4 style="color: red"> INCORRECT </h4>
+			</div>
+
 			 <input type="submit" value="Submit">
+			 <div ng-show='correct'>
+				<h3> 
+					Well done!!! You got the answer correct. Click next to challenge yourself for another questions! 
+					<input type="submit" value="Next Qns" ng-click="next()"> 
+				</h3>
+			</div>
 			 <br><br>
 		 <form/>
 		<br><br>

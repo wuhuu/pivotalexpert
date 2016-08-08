@@ -13,12 +13,13 @@
     };
   }
  
-  SheetController.$inject = ['$scope', '$http', '$routeParams', '$location', 'authService'];
+  SheetController.$inject = ['$scope', '$http', '$routeParams', '$location', 'authService','navBarService'];
   
-  function SheetController($scope, $http, $routeParams, $location, authService) {
+  function SheetController($scope, $http, $routeParams, $location, authService,navBarService) {
 	var ref = new Firebase("https://pivotal-expert.firebaseio.com");
 	var modID = $routeParams.modID;
 	var qnsID = $routeParams.qnsID;
+	navBarService.getUserAchievements($scope);
 	$http.get('course/content.json').success(function(data) {
 		
 		var courseContent = data.course.courseContent;

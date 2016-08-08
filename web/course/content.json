@@ -37,7 +37,7 @@
 				"qnsTitles" : [
 					{	"qnsTitle" : "Chapter 2 - Slides",
 						"qnsId" : 0,
-						"qnsType" : "Slides"
+						"qnsType" : "slides"
 					},
 					{	"qnsTitle" : "Chapter 2 - Question 1",
 						"qnsId" : 1,
@@ -67,7 +67,7 @@
 				"qnsTitles" : [
 					{	"qnsTitle" : "Chapter 3 - Slides",
 						"qnsId" : 0,
-						"qnsType" : "Slides"
+						"qnsType" : "slides"
 					},
 					{	"qnsTitle" : "Chapter 3 - Question 1",
 						"qnsId" : 1,
@@ -85,7 +85,7 @@
 				"qnsTitles" : [
 					{	"qnsTitle" : "Chapter 4 - Slides",
 						"qnsId" : 0,
-						"qnsType" : "Slides"
+						"qnsType" : "slides"
 					},
 					{	"qnsTitle" : "Chapter 4 - Question 1",
 						"qnsId" : 1,
@@ -103,7 +103,7 @@
 				"qnsTitles" : [
 					{	"qnsTitle" : "Chapter 5 - Slides",
 						"qnsId" : 0,
-						"qnsType" : "Slides"
+						"qnsType" : "slides"
 					},
 					{	"qnsTitle" : "Chapter 5 - Question 1",
 						"qnsId" : 1,
@@ -146,7 +146,13 @@
 								[" "," "," "," "," "],
 								[" "," "," "," "," "]]
 						},
-						"answer" : ["C2"]
+						"answer" : ["C2"],
+						"hint" : "Hint to help answer the question",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
 					},
 					{"qnsTitle" : "Chapter 1 - Question 2",
 						"qnsId" : 2,
@@ -164,7 +170,13 @@
 								[" "," "," "," "," "]]
 						}
 						,
-						"answer" : ["A4"]
+						"answer" : ["A4"],
+						"hint" : "Hint to help answer the question",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
 					},
 					{"qnsTitle" : "Chapter 1 - Question 3",
 						"qnsId" : 3,
@@ -175,7 +187,8 @@
 							"type" : "radio ",
 							"options" : ["Alphabertical","Numerical"]
 						},
-						"answer" : ["Alphabertical"]
+						"answer" : ["Alphabertical"],
+						"hint" : "Hint to help answer the question"
 					},
 					{"qnsTitle" : "Chapter 1 - Question 4",
 						"qnsId" : 4,
@@ -186,7 +199,8 @@
 							"type" : "radio ",
 							"options" : ["Alphabertical","Numerical"]
 						},
-						"answer" : ["Numerical"]
+						"answer" : ["Numerical"],
+						"hint" : "Hint to help answer the question"
 					}
 				]
 			},
@@ -198,11 +212,12 @@
 						"qnsId" : 0,
 						"qnsDescription" : "Learn about Sum Function in Google Sheets",
 						"qnsInstruction" : "Study Tutorial Slides!",
-						"qnsType" : "Slides",
+						"qnsType" : "slides",
 						"qns" : {
 							"link" : "https://docs.google.com/presentation/d/11QlI-oSRlcYJxT3P0lAKfahhWAX5Q3VjuEGH5CcL-qg/embed?start=true&loop=false&delayms=10000"
 						},
-						"answer" : []
+						"answer" : [],
+						"hint" : ""
 					},
 					{"qnsTitle" : "Chapter 2 - Question 1",
 						"qnsId" : 1,
@@ -221,7 +236,13 @@
 							]
 						}
 						,
-						"answer" : ["=SUM(A1,A2,A3,A4,A5)","=SUM(A1:A5)"]
+						"answer" : ["=SUM(A1,A2,A3,A4,A5)","=SUM(A1:A5)"],
+						"hint" : "The Answer should be in the format of =SUM(B1,B2,B3,B4,B5)",
+						"checks" : {
+							"syntax" : ["=", "SUM(", ",", ",", ",", ",", ")"],
+							"explain" : ["All Function start with '='" , "Missng or Incorrect used of function name", "Missing ','", "Missing ','", "Missing ','", "Missing ','", "Missing a closing for the function"],
+							"values" : ["A1","A2","A3","A4","A5"]
+						}
 					},
 					{"qnsTitle" : "Chapter 2 - Question 2",
 						"qnsId" : 2,
@@ -240,7 +261,13 @@
 							]
 						}
 						,
-						"answer" : ["=SUM(A1,A4,C3,D1)"]
+						"answer" : ["=SUM(A1,A4,C3,D1)"],
+						"hint" : "Hint to help answer the question",
+						"checks" : {
+							"syntax" : ["=", "SUM(", ")"],
+							"explain" : ["All Function start with '='" , "Incorrect used of function name", "Missing a closing for the function"],
+							"values" : ["A1","A4" ,"C3","D1"]
+						}
 					},
 					{"qnsTitle" : "Chapter 2 - Question 3",
 						"qnsId" : 3,
@@ -259,7 +286,13 @@
 							]
 						}
 						,
-						"answer" : ["=SUM(A1:E5)"]
+						"answer" : ["=SUM(A1:E5)"],
+						"hint" : "Hint to help answer the question",
+						"checks" : {
+							"syntax" : ["=", "SUM(", ")"],
+							"explain" : ["All Function start with '='" , "Incorrect used of function name", "Missing a closing for the function"],
+							"values" : ["A1","E5"]
+						}
 					},
 					{"qnsTitle" : "Chapter 2 - Question 4",
 						"qnsId" : 4,
@@ -270,7 +303,8 @@
 							"type" : "radio ",
 							"options" : ["=sum('1',1)","sum(1+2+3)","=sum(123,123)","\"=sum(123+123)\""]
 						},
-						"answer" : ["=sum(123,123)"]
+						"answer" : ["=sum(123,123)"],
+						"hint" : "Hint to help answer the question"
 					},
 					{"qnsTitle" : "Chapter 2 - Question 5",
 						"qnsId" : 5,
@@ -281,7 +315,8 @@
 							"type" : "radio",
 							"options" : ["=sum(sum(1123,123),123,12)","=sum(=sum(1123,123),123,12)","\"sum(sum(123,123)+123+123)\""]
 						},
-						"answer" : ["=sum(sum(1123,123),123,12)"]
+						"answer" : ["=sum(sum(1123,123),123,12)"],
+						"hint" : "Hint to help answer the question"
 					}
 				]
 			},
@@ -293,11 +328,12 @@
 						"qnsId" : 0,
 						"qnsDescription" : "Learn about Average Function in Google Sheets",
 						"qnsInstruction" : "Study Tutorial Slides!",
-						"qnsType" : "Slides",
+						"qnsType" : "slides",
 						"qns" : {
 							"link" : "https://docs.google.com/presentation/d/1BUuKRjw_Nr_BcJ7G5nZmfNyYr_yd5lK2oOrV4kkvJnc/embed?start=true&loop=false&delayms=10000" 
 						},
-						"answer" : []
+						"answer" : [],
+						"hint" : ""
 					},
 					{"qnsTitle" : "Chapter 3 - Question 1",
 						"qnsId" : 1,
@@ -316,7 +352,13 @@
 							]
 						}
 						,
-						"answer" : ["=AVERAGE(B1,B2,B3,B4,B5)","=AVERAGE(B1:B5)"]
+						"answer" : ["=AVERAGE(B1,B2,B3,B4,B5)","=AVERAGE(B1:B5)"],
+						"hint" : "Hint to help answer the question",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
 					},
 					{"qnsTitle" : "Chapter 3 - Question 2",
 						"qnsId" : 2,
@@ -335,7 +377,13 @@
 							]
 						}
 						,
-						"answer" : ["=AVERAGE(A1,A4,B1,C3,D1,E2,E5)"]
+						"answer" : ["=AVERAGE(A1,A4,B1,C3,D1,E2,E5)"],
+						"hint" : "",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
 					}
 				]
 			},
@@ -347,11 +395,12 @@
 						"qnsId" : 0,
 						"qnsDescription" : "Learn about Count Function in Google Sheets",
 						"qnsInstruction" : "Study Tutorial Slides!",
-						"qnsType" : "Slides",
+						"qnsType" : "slides",
 						"qns" : {
 							"link" : "https://docs.google.com/presentation/d/1giDyNH38wJedIf33KZ8cX_Q5RhJorMdLEI_PJ8g7AVw/embed?start=true&loop=false&delayms=10000"
 						},
-						"answer" : []
+						"answer" : [],
+						"hint" : ""
 					},
 					{"qnsTitle" : "Chapter 4 - Question 1",
 						"qnsId" : 1,
@@ -370,7 +419,13 @@
 							]
 						}
 						,
-						"answer" : ["=COUNT(D1,D2,D3,D4,D5)","=COUNT(D1:D5)"]
+						"answer" : ["=COUNT(D1,D2,D3,D4,D5)","=COUNT(D1:D5)"],
+						"hint" : "",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
 					},
 					{"qnsTitle" : "Chapter 4 - Question 2",
 						"qnsId" : 2,
@@ -381,7 +436,8 @@
 							"type" : "radio",
 							"options" : ["Boolean","Number","String","Alphabert"]
 						},
-						"answer" : ["Number"]
+						"answer" : ["Number"],
+						"hint" : "Hint to help answer the question"
 					}
 				]
 			},
@@ -397,7 +453,13 @@
 						"qns" : {
 							"link" : "https://docs.google.com/presentation/d/1L876t5Xz1P3ppG7j-4291jHcaxUrOR9jYiwCaSTFl3E/embed?start=true&loop=false&delayms=10000"
 						},
-						"answer" : []
+						"answer" : [],
+						"hint" : "",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
 					},
 					{"qnsTitle" : "Chapter 5 - Question 1",
 						"qnsId" : 1,
@@ -416,7 +478,13 @@
 							]
 						}
 						,
-						"answer" : ["=MAX(D1:D5)"]
+						"answer" : ["=MAX(D1:D5)"],
+						"hint" : "",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
 					},
 					{"qnsTitle" : "Chapter 5 - Question 2",
 						"qnsId" : 2,
@@ -435,7 +503,13 @@
 							]
 						}
 						,
-						"answer" : ["=MIN(A1:E5)"]
+						"answer" : ["=MIN(A1:E5)"],
+						"hint" : "",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
 					}
 				]
 			}

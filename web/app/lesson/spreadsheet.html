@@ -10,11 +10,22 @@
 			<br>
 			<br>
 		</div>
-		<form ng-submit="submit()">
+			<div ng-show='incorrect'>
+				<h4> {{validation}} </h4>
+				<h4> {{hint}} </h4>
+				<h4 style="color: red"> INCORRECT </h4>
+			</div>	
 			 <input type="text" ng-model="answer" name="answer"/>
-			 <input type="submit" value="Submit">
+			 <input type="submit" value="Submit" ng-click="submit()">
+			<div ng-show='correct'>
+				<h3> 
+					Well done!!! You got the answer correct. Click next to challenge yourself for another questions! 
+					<input type="submit" value="Next Qns" ng-click="next()"> 
+				</h3>
+			</div>
+			 
 			 <br><br>
-		 <form/>
+			 
 			 <table>
 				<tr>
 					<th></th>

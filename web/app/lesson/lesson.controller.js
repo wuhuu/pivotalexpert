@@ -21,7 +21,6 @@
 		$scope.qnsTitle = questions.qnsTitle;
 		$scope.qnsInstruction = questions.qnsInstruction;
 		$scope.qnsDescription = questions.qnsDescription;
-		
 		var qnsType = questions.qnsType;
 		var qns = questions.qns;
 		var ans = null;
@@ -32,7 +31,7 @@
 
 		// MCQ Qns type
 		if (qnsType == 'mcq'){
-			
+			ans = questions.answer;
 			$scope.mcqType = qns.type;
 			$scope.options = qns.options;
 		}
@@ -70,31 +69,65 @@
 			if (qnsType == 'video' || qnsType == 'slides'){
 				correctAns();
 			} else {
-				if(qnsType == 'mcq') {
-					$scope.answer = $scope.answer.toUpperCase();
-					for (var i = 0; i < ans.length; i++) {
-						if (this.answer == ans[i]) {
-							//correctAns();
-							console.log("Correct Answer");
-							$scope.incorrect = false;
-							$scope.correct = true;
-							$scope.next = function() {correctAns(); };
-						} else { 
-							$scope.hint = questions.hint;
-							$scope.incorrect = true;
-						}
+				$scope.answer = $scope.answer.toUpperCase();
+				for (var i = 0; i < ans.length; i++) {
+					if (this.answer == ans[i]) {
+						//correctAns();
+						console.log("Correct Answer");
+						$scope.incorrect = false;
+						$scope.correct = true;
+						$scope.next = function() {correctAns(); };
+						return;
+					} else { 
+						console.log("Incorrect Answer");
+						$scope.hint = questions.hint;
+						$scope.incorrect = true;
 					}
 				}
-				if(qnsType == 'LSheet') {
-					$scope.answer = $scope.answer.toUpperCase();
-					var validation = questions.checks;
-					var syntax = validation.syntax;
-					var explain = validation.explain;
-					var values = validation.values;
-					console.log(syntax);
-					console.log(explain);
-					console.log(values);
-					
+				if (qnsType = 'LSheet' && $scope.incorrect) {
+						var inputAns = $scope.answer;
+						var validation = questions.checks;
+						var syntax = validation.syntax;
+						//check if any validation to check for
+						if(inputAns == "") {
+							$scope.validation = "Please enter your answer";
+							return;
+						}
+						if(syntax.length != 0) {
+							console.log("TEST" + inputAns);
+							
+							var explain = validation.explain;
+							var values = validation.values;
+							for (var i = 0; i < syntax.length; i++) {
+								if (inputAns.indexOf(syntax[i]) == -1) {
+									$scope.validation = explain[i];
+									return;
+								} else {
+									inputAns = inputAns.replace(syntax[i], "");
+								}
+							}
+							
+							for (var i = 0; i < values.length; i++) {
+								if (inputAns.indexOf(values[i]) == -1) {
+									$scope.validation = "Inpute values is missing or incorrect";
+									return;
+								} else {
+									inputAns = inputAns.replace(values[i], "");
+								}
+							}
+							
+							if(inputAns.length > 0) {
+								$scope.validation = "Too many input values, please check again your values inputed.";
+							} else {
+								console.log("Correct Answer");
+								$scope.incorrect = false;
+								$scope.correct = true;
+								$scope.validation = "";
+								$scope.hint = "";
+								$scope.next = function() {correctAns(); };
+								return;
+							}
+						}
 				}
 			}
 		};

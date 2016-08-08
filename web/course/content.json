@@ -130,7 +130,6 @@
 							"link" : "https://www.youtube.com/embed/ZRu2XrQMt08"
 						},
 						"answer" : []
-
 					},
 					{"qnsTitle" : "Chapter 1 - Question 1",
 						"qnsId" : 1,
@@ -238,11 +237,11 @@
 						}
 						,
 						"answer" : ["=SUM(A1,A2,A3,A4,A5)","=SUM(A1:A5)"],
-						"hint" : "Hint to help answer the question",
+						"hint" : "The Answer should be in the format of =SUM(B1,B2,B3,B4,B5)",
 						"checks" : {
-							"syntax" : ["=", "SUM(", ")"],
-							"explain" : ["All Function start with '='" , "Incorrect used of function name", "Missing a closing for the function"],
-							"values" : ["A1","A5"]
+							"syntax" : ["=", "SUM(", ",", ",", ",", ",", ")"],
+							"explain" : ["All Function start with '='" , "Missng or Incorrect used of function name", "Missing ','", "Missing ','", "Missing ','", "Missing ','", "Missing a closing for the function"],
+							"values" : ["A1","A2","A3","A4","A5"]
 						}
 					},
 					{"qnsTitle" : "Chapter 2 - Question 2",
@@ -517,7 +516,7 @@
 		]
 	},
 	"projects": [
-		{	
+		{
 			"title" : "project",
 			"logo" : "image path",
 			"description" : "Descriptions here",

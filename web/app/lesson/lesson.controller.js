@@ -111,9 +111,16 @@
 								}
 							}
 							
+
+
+
+
+
+
+
 							for (var i = 0; i < values.length; i++) {
 								if (inputAns.indexOf(values[i]) == -1) {
-									$scope.validation = "Inpute values is missing or incorrect";
+									$scope.validation = "Input values is missing or incorrect";
 									return;
 								} else {
 									inputAns = inputAns.replace(values[i], "");
@@ -121,7 +128,7 @@
 							}
 							
 							if(inputAns.length > 0) {
-								$scope.validation = "Too many input values, please check again your values inputed.";
+								$scope.validation = "Too many input values, please check your values again.";
 							} else {
 								console.log("Correct Answer");
 								$scope.incorrect = false;

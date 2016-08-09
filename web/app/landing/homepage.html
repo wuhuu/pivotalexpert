@@ -1,35 +1,43 @@
-<!-- Content -->
+	
 <div class="container" >
+<style type="text/css" media="screen">
+    #editor { 
+        float: right;
+        margin: 30px;
+        height: 50%;
+        width: 50%;
+    }
+</style>
 
-	<header class="welcome">
+	<header class="welcome text-center">
 		<h1><font size="9">Welcome!</font></h1>
-		<p>Hello {{displayName}}</p>
 	</header>
-	<hr>
-	<!-- Current Courses Header-->
-	<div class="row">
-		<div class="col-lg-12">
-			<h3>Your courses</h3>
-		</div>
-	</div>
-	
-	<!-- Current Courses -->
+
+	<!-- Profile -->
 	<div class="row container-white">
-		<div class="course-name">
-			<label ng-repeat="course in courseMap">{{course.moduleTitle}}<br/>
-				<ul>
-					<li ng-repeat="qns in course.qnsTitles">
-						<a ng-href="#/{{qns.qnsType}}/{{course.moduleID}}/{{qns.qnsId}}">{{qns.qnsTitle}}<br/></a>
-					</li>
-				</ul>
-			</label>
+		
+		<div>
+			
+			
+			<div class="profile-contentBox">
+				<div class="profile-content">
+					User's Name
+					<br>
+					<br>
+					UserEmail@gmail.com
+				</div>
+			</div>
 		</div>
+		
 	</div>
-	
+	<div id="editor"> 
+	function foo(items) {
+	    var x = "All this is syntax highlighted";
+	    return x;
+	}
+	</div>
 	<hr>
-	<!-- More Courses Header -->
+	<button ng-click='vet()'>Submit answer</button>
+	<!-- Course Map -->
 	
 </div>
-
-
-

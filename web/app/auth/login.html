@@ -1,24 +1,68 @@
+<style>
+	html{
+		height:100%;
+	}
+	body{
+		height:100%;
+	}
+	div.coverpage{
+		width: 100%;
+		height: 100%;
+		background-color: #ffffff;
+	}
+
+	.mainHeader{
+		font-family: "Karla", sans-serif !important;
+		font-size: 300%;
+	}
+
+	.push-down{
+		margin-top: 80px;
+	}
+
+	.login{
+		border-radius: 25px;
+		background: #CC6666;
+		padding: 70px 25px;
+	}
 
 
-<!-- Title-->
-<div class="title">
-  <h1>PivotalExpert</h1>
-</div>
+
+</style>
 
 
+<div class="coverpage">
+  <div class="col-md-12 push-down">
+  	<div class="col-md-6 col-md-offset-1" >
 
-<!-- Form Module-->
-<div class="module form-module">
-  
-  <div >
-    <h2>Login</h2>
-		<center>
-      <button type="submit" ng-click="login('google')" ng-hide="{{!logined}}">Google Login</button><br/>
-      <button type="submit" ng-click="logout()" ng-hide="{{logined}}">Logout</button> 
-		</center>
-	
-	
+  		<h1>Do you love life hacks? </h1>
+  		<h1>Our self paced course can teach you more.</h1>
+  		<br/>
+  		<br/>
+  		<div class="col-md-12">
+  			<div class="col-md-3">
+	  			<img src="http://oss.adm.ntu.edu.sg/ichu001/wp-content/uploads/sites/178/2015/11/tools-icon.png" alt="" style="width: 100%;">
+	  		</div>
+	  		<div class="col-md-8" style="margin-top: 10px">
+	  			<p>When it comes to automation, there is a huge misconception that a wealth of knowledge about coding is required. We are here to prove you wrong. We teach simple coding skills in the most practical way that enables you to automate your mundane tasks.</p>
+	  			<br/>
+	  		</div>
+  		</div>
+  		
+  		<div class="col-md-10 text-center">
+  			<h3>The possibilities are endless.</h3>
+  			<h4>Start now and let your computer work for you!</h4>
+  		</div>
+  		
+  		
+  	</div>
+    <div class="col-lg-4 text-center login">
+      <h1 class="mainHeader" style="color: white">Pivotal Experts</h1>
+      <br/>
+      <h3 style="color: white">Automate your life one task at a time</h3>
+      <br/>
+      <button class="btn-primary btn-lg" type="submit" ng-click="login('google')">Google Login</button>
+    </div>
   </div>
-  
-  
 </div>
+

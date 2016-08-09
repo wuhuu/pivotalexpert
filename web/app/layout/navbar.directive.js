@@ -10,25 +10,48 @@
       restrict: 'E',
 	  //Add controllers method if there any assoicate with it
 	  controller: NavbarController
+	  
     };
   }
  
-  NavbarController.$inject = ['$firebaseObject','$scope', '$location','authService'];
+  NavbarController.$inject = ['$firebaseObject','$scope', '$location','authService', 'navBarService'];
 
-  function NavbarController($firebaseObject,$scope,$location, authService) {
-      //Retrieve User Display Name
+  function NavbarController($firebaseObject,$scope,$location, authService, navBarService) {
+	  console.log("NavbarController");
+	  //Retrieve User Display Name
 	  var user = authService.fetchAuthData();
-	  console.log("Nav Bar");
+	  var userpic = authService.fetchAuthPic();
+	  
 	  if (user != null) {
+	  	$scope.logined= true;
 		user.$loaded().then(function(){
-		  $scope.displayName = user.displayName;
+		 var username= authService.fetchAuthUsername();
+		 	username.$loaded().then(function(){
+				$scope.displayName = username.$value;
+			});
+		   navBarService.getUserAchievements($scope);
 	    });
-		  
+		  userpic.$loaded().then(function(){
+		  $scope.displayPic = userpic.$value;
+	    });
 	  } else {
-		console.log("Not login, from Nav Bar");
+		$scope.logined = false;
 		//$location.path('/login/');
 	  }
+	
+	  var courseTitle = $firebaseObject(navBarService.getCourseTitle());
+		courseTitle.$loaded().then(function(){
+			$scope.courseTitle = courseTitle.$value;
+	  });
+	  $scope.logout = function () {
+	  $scope.logined= false;
+	  authService.logout();
+	  $location.path('/');
+	  window.location.reload();
+	}
+	
   }
-  
+
+
 
 })();

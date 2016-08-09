@@ -9,11 +9,13 @@
       'firebase',
 
       // Custom modules.
+	  'app.common',
       'app.layout',
 	  'app.landing',
 	  'app.auth',
 	  'app.profile',
-	  'app.lesson'
+	  'app.lesson',
+	  'app.coursemap'
 
     ])
     .config(configFunction)

@@ -1,0 +1,518 @@
+{
+	"course": {
+		"courseTitle" : "Pivotal-Expert",
+		"courseLogo" : "image path",
+		"courseDescription" : "Descriptions here",
+		"courseMap" : [
+			{   
+				"moduleID" : 0,
+				"moduleTitle" : "Chapter 1 - Google Sheets: Cell Reference",
+				"timeRequired" : "10 mins",
+				"qnsTitles" : [
+					{	"qnsTitle" : "Video Tutorial: Cell Reference",
+						"qnsId" : 0,
+						"qnsType" : "video"
+					},
+					{	"qnsTitle" : "Chapter 1 - Question 1",
+						"qnsId" : 1,
+						"qnsType" : "LSheet"
+					},
+					{	"qnsTitle" : "Chapter 1 - Question 2",
+						"qnsId" : 2,
+						"qnsType" : "LSheet"
+					},
+					{	"qnsTitle" : "Chapter 1 - Question 3",
+						"qnsId" : 3,
+						"qnsType" : "mcq"
+					},
+					{	"qnsTitle" : "Chapter 1 - Question 4",
+						"qnsId" : 4,
+						"qnsType" : "mcq"
+					}
+				]
+			},
+			{   "moduleTitle" : "Chapter 2 - Google Sheets: Sum",
+				"timeRequired" : "15 mins",
+				"moduleID" : 1,
+				"qnsTitles" : [
+					{	"qnsTitle" : "Chapter 2 - Slides",
+						"qnsId" : 0,
+						"qnsType" : "slides"
+					},
+					{	"qnsTitle" : "Chapter 2 - Question 1",
+						"qnsId" : 1,
+						"qnsType" : "LSheet"
+					},
+					{	"qnsTitle" : "Chapter 2 - Question 2",
+						"qnsId" : 2,
+						"qnsType" : "LSheet"
+					},
+					{	"qnsTitle" : "Chapter 2 - Question 3",
+						"qnsId" : 3,
+						"qnsType" : "LSheet"
+					},
+					{	"qnsTitle" : "Chapter 2 - Question 4",
+						"qnsId" : 4,
+						"qnsType" : "mcq"
+					},
+					{	"qnsTitle" : "Chapter 2 - Question 5",
+						"qnsId" : 5,
+						"qnsType" : "mcq"
+					}
+				]
+			},
+			{  "moduleTitle" : "Chapter 3 - Google Sheets: Average",
+				"timeRequired" : "15 mins",
+				"moduleID" : 2,
+				"qnsTitles" : [
+					{	"qnsTitle" : "Chapter 3 - Slides",
+						"qnsId" : 0,
+						"qnsType" : "slides"
+					},
+					{	"qnsTitle" : "Chapter 3 - Question 1",
+						"qnsId" : 1,
+						"qnsType" : "LSheet"
+					},
+					{	"qnsTitle" : "Chapter 3 - Question 2",
+						"qnsId" : 2,
+						"qnsType" : "LSheet"
+					}
+				]
+			},
+			{  "moduleTitle" : "Chapter 4 - Google Sheets: Count",
+				"timeRequired" : "15 mins",
+				"moduleID" : 3,
+				"qnsTitles" : [
+					{	"qnsTitle" : "Chapter 4 - Slides",
+						"qnsId" : 0,
+						"qnsType" : "slides"
+					},
+					{	"qnsTitle" : "Chapter 4 - Question 1",
+						"qnsId" : 1,
+						"qnsType" : "LSheet"
+					},
+					{	"qnsTitle" : "Chapter 4 - Question 2",
+						"qnsId" : 2,
+						"qnsType" : "mcq"
+					}
+				]
+			},
+			{"moduleTitle" : "Chapter 5 - Google Sheets: Max/Min",
+				"timeRequired" : "15 mins",
+				"moduleID" : 4,
+				"qnsTitles" : [
+					{	"qnsTitle" : "Chapter 5 - Slides",
+						"qnsId" : 0,
+						"qnsType" : "slides"
+					},
+					{	"qnsTitle" : "Chapter 5 - Question 1",
+						"qnsId" : 1,
+						"qnsType" : "LSheet"
+					},
+					{	"qnsTitle" : "Chapter 5 - Question 2",
+						"qnsId" : 2,
+						"qnsType" : "LSheet"
+					}
+				]
+			}
+		],
+		"courseContent" : [
+			{"moduleTitle" : "Chapter 1 - Google Sheets: Cell Reference",
+				"moduleID" : 0,
+				"helpRoomCode" : "cellreference",
+				"questions" : [
+					{"qnsTitle" : "Video Tutorial: Cell Reference",
+						"qnsId" : 0,
+						"qnsDescription" : "Learn about Cell Reference in Google Sheets",
+						"qnsInstruction" : "Watch the video and attempt the quiz!",
+						"qnsType" : "video",
+						"qns" : {
+							"link" : "https://www.youtube.com/embed/ZRu2XrQMt08"
+						},
+						"answer" : ""
+					},
+					{"qnsTitle" : "Chapter 1 - Question 1",
+						"qnsId" : 1,
+						"qnsDescription" : "",
+						"qnsInstruction" : "Find the cell reference of \"Selected\"  e.g. A1",
+						"qnsType" : "LSheet",
+						"qns" : {
+							"row" : 5,
+							"col" : 5,
+							"sheet" : [
+								[" "," "," "," "," "],
+								[" "," ","Selected"," "," "],
+								[" "," "," "," "," "],
+								[" "," "," "," "," "],
+								[" "," "," "," "," "]]
+						},
+						"answer" : ["C2"],
+						"hint" : "Hint to help answer the question",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
+					},
+					{"qnsTitle" : "Chapter 1 - Question 2",
+						"qnsId" : 2,
+						"qnsDescription" : "",
+						"qnsInstruction" : "Find the cell reference of \"Selected\"",
+						"qnsType" : "LSheet",
+						"qns" : {
+							"row" : 5,
+							"col" : 5,
+							"sheet" : [
+								[" "," "," "," "," "],
+								[" "," "," "," "," "],
+								[" "," "," "," "," "],
+								["Selected"," "," "," "," "],
+								[" "," "," "," "," "]]
+						}
+						,
+						"answer" : "A4",
+						"hint" : "Hint to help answer the question",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
+					},
+					{"qnsTitle" : "Chapter 1 - Question 3",
+						"qnsId" : 3,
+						"qnsDescription" : "",
+						"qnsInstruction" : "What is the ID for columns in Google Sheets?",
+						"qnsType" : "mcq",
+						"qns" : {
+							"type" : "radio ",
+							"options" : ["Alphabertical","Numerical"]
+						},
+						"answer" : "Alphabertical",
+						"hint" : "Hint to help answer the question"
+					},
+					{"qnsTitle" : "Chapter 1 - Question 4",
+						"qnsId" : 4,
+						"qnsDescription" : "",
+						"qnsInstruction" : "What is the ID for rows in Google Sheets?",
+						"qnsType" : "mcq",
+						"qns" :{
+							"type" : "radio ",
+							"options" : ["Alphabertical","Numerical"]
+						},
+						"answer" : "Numerical",
+						"hint" : "Hint to help answer the question"
+					}
+				]
+			},
+			{"moduleTitle" : "Chapter 2 - Google Sheets: Sum",
+				"moduleID" : 1,
+				"helpRoomCode" : "sum",
+				"questions" : [
+					{"qnsTitle" : "Chapter 2 - Slides",
+						"qnsId" : 0,
+						"qnsDescription" : "Learn about Sum Function in Google Sheets",
+						"qnsInstruction" : "Study Tutorial Slides!",
+						"qnsType" : "slides",
+						"qns" : {
+							"link" : "https://docs.google.com/presentation/d/11QlI-oSRlcYJxT3P0lAKfahhWAX5Q3VjuEGH5CcL-qg/embed?start=true&loop=false&delayms=10000"
+						},
+						"answer" : ""
+					},
+					{"qnsTitle" : "Chapter 2 - Question 1",
+						"qnsId" : 1,
+						"qnsDescription" : "",
+						"qnsInstruction" : "Enter the formula to find the sum of Column A.",
+						"qnsType" : "LSheet",
+						"qns" : {
+							"row" : 5,
+							"col" : 5,
+							"sheet" : [
+								["1"," "," "," "," "],
+								["2"," "," "," "," "],
+								["3"," "," "," "," "],
+								["4"," "," "," "," "],
+								["5"," "," "," "," "]
+							]
+						}
+						,
+						"answer" : "=SUM(A1,A2,A3,A4,A5)",
+						"hint" : "The Answer should be in the format of =SUM(B1,B2,B3,B4,B5)",
+						"checks" : {
+							"syntax" : ["=", "SUM(", ",", ",", ",", ",", ")"],
+							"explain" : ["All Function start with '='" , "Missng or Incorrect used of function name", "Missing ','", "Missing ','", "Missing ','", "Missing ','", "Missing a closing for the function"],
+							"values" : ["A1","A2","A3","A4","A5"]
+						}
+					},
+					{"qnsTitle" : "Chapter 2 - Question 2",
+						"qnsId" : 2,
+						"qnsDescription" : "",
+						"qnsInstruction" : "Enter the formula to find the sum of all numerical values.",
+						"qnsType" : "LSheet",
+						"qns" : {
+							"row" : 5,
+							"col" : 5,
+							"sheet" : [
+								["1"," "," ","2"," "],
+								[" "," "," "," "," "],
+								[" "," ","3"," "," "],
+								["4"," "," "," "," "],
+								[" "," "," "," "," "]
+							]
+						}
+						,
+						"answer" : "=SUM(A1,A4,C3,D1)",
+						"hint" : "Hint to help answer the question",
+						"checks" : {
+							"syntax" : ["=", "SUM(", ")"],
+							"explain" : ["All Function start with '='" , "Incorrect used of function name", "Missing a closing for the function"],
+							"values" : ["A1","A4" ,"C3","D1"]
+						}
+					},
+					{"qnsTitle" : "Chapter 2 - Question 3",
+						"qnsId" : 3,
+						"qnsDescription" : "",
+						"qnsInstruction" : "Enter the most efficient formula to sum all numerical values in the spreadsheet.",
+						"qnsType" : "LSheet",
+						"qns" : {
+							"row" : 5,
+							"col" : 5,
+							"sheet" : [
+								["1","1","1","1","1"],
+								["2","2","2","2","2"],
+								["3","3","3","3","3"],
+								["4","4","4","4","4"],
+								["5","5","5","5","5"]
+							]
+						}
+						,
+						"answer" : "=SUM(A1:E5)",
+						"hint" : "Hint to help answer the question",
+						"checks" : {
+							"syntax" : ["=", "SUM(", ")"],
+							"explain" : ["All Function start with '='" , "Incorrect used of function name", "Missing a closing for the function"],
+							"values" : ["A1","E5"]
+						}
+					},
+					{"qnsTitle" : "Chapter 2 - Question 4",
+						"qnsId" : 4,
+						"qnsDescription" : "",
+						"qnsInstruction" : "What of the following is correct?",
+						"qnsType" : "mcq",
+						"qns" : {
+							"type" : "radio ",
+							"options" : ["=sum('1',1)","sum(1+2+3)","=sum(123,123)","\"=sum(123+123)\""]
+						},
+						"answer" : "=sum(123,123)",
+						"hint" : "Hint to help answer the question"
+					},
+					{"qnsTitle" : "Chapter 2 - Question 5",
+						"qnsId" : 5,
+						"qnsDescription" : "",
+						"qnsInstruction" : "What of the following is correct? (You may choose more than 1)",
+						"qnsType" : "mcq",
+						"qns" : {
+							"type" : "radio",
+							"options" : ["=sum(sum(1123,123),123,12)","=sum(=sum(1123,123),123,12)","\"sum(sum(123,123)+123+123)\""]
+						},
+						"answer" : "=sum(sum(1123,123),123,12)",
+						"hint" : "Hint to help answer the question"
+					}
+				]
+			},
+			{"moduleTitle" : "Chapter 3 - Google Sheets: Average",
+				"moduleID" : 2,
+				"helpRoomCode" : "average",
+				"questions" : [
+					{"qnsTitle" : "Chapter 3 - Slides",
+						"qnsId" : 0,
+						"qnsDescription" : "Learn about Average Function in Google Sheets",
+						"qnsInstruction" : "Study Tutorial Slides!",
+						"qnsType" : "slides",
+						"qns" : {
+							"link" : "https://docs.google.com/presentation/d/1BUuKRjw_Nr_BcJ7G5nZmfNyYr_yd5lK2oOrV4kkvJnc/embed?start=true&loop=false&delayms=10000" 
+						},
+						"answer" : ""
+					},
+					{"qnsTitle" : "Chapter 3 - Question 1",
+						"qnsId" : 1,
+						"qnsDescription" : "",
+						"qnsInstruction" : "Enter the formula to find the average of all values in Column B.",
+						"qnsType" : "LSheet",
+						"qns" : {
+							"row" : 5,
+							"col" : 5,
+							"sheet" : [
+								[" ","1"," "," "," "],
+								[" ","2"," "," "," "],
+								[" ","3"," "," "," "],
+								[" ","4"," "," "," "],
+								[" ","5"," "," "," "]
+							]
+						}
+						,
+						"answer" : "=AVERAGE(B1,B2,B3,B4,B5)",
+						"hint" : "Hint to help answer the question",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
+					},
+					{"qnsTitle" : "Chapter 3 - Question 2",
+						"qnsId" : 2,
+						"qnsDescription" : "",
+						"qnsInstruction" : "Enter the formula to find the average of all numerical values.",
+						"qnsType" : "LSheet",
+						"qns" : {
+							"row" : 5,
+							"col" : 5,
+							"sheet" : [
+								["1"," ","3","2"," "],
+								[" "," "," "," ","5"],
+								[" "," ","3"," "," "],
+								["4"," "," "," "," "],
+								[" "," "," "," ","7"]
+							]
+						}
+						,
+						"answer" : "=AVERAGE(A1,A4,B1,C3,D1,E2,E5)",
+						"hint" : "",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
+					}
+				]
+			},
+			{"moduleTitle" : "Chapter 4 - Google Sheets: Count",
+				"moduleID" : 3,
+				"helpRoomCode" : "count",
+				"questions" : [
+					{"qnsTitle" : "Chapter 4 - Slides",
+						"qnsId" : 0,
+						"qnsDescription" : "Learn about Count Function in Google Sheets",
+						"qnsInstruction" : "Study Tutorial Slides!",
+						"qnsType" : "slides",
+						"qns" : {
+							"link" : "https://docs.google.com/presentation/d/1giDyNH38wJedIf33KZ8cX_Q5RhJorMdLEI_PJ8g7AVw/embed?start=true&loop=false&delayms=10000"
+						},
+						"answer" : ""
+					},
+					{"qnsTitle" : "Chapter 4 - Question 1",
+						"qnsId" : 1,
+						"qnsDescription" : "",
+						"qnsInstruction" : "Enter the formula to count the number of cells that contains a numerical value in Column D.",
+						"qnsType" : "LSheet",
+						"qns" : {
+							"row" : 5,
+							"col" : 5,
+							"sheet" : [
+								[" "," "," ","1"," "],
+								[" "," "," ","2"," "],
+								[" "," "," ","2"," "],
+								[" "," "," ","3"," "],
+								[" "," "," ","4"," "]
+							]
+						}
+						,
+						"answer" : "=COUNT(D1,D2,D3,D4,D5)",
+						"hint" : "",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
+					},
+					{"qnsTitle" : "Chapter 4 - Question 2",
+						"qnsId" : 2,
+						"qnsDescription" : "",
+						"qnsInstruction" : "What format of data can be counted using COUNT Function?",
+						"qnsType" : "mcq",
+						"qns" : {
+							"type" : "radio",
+							"options" : ["Boolean","Number","String","Alphabert"]
+						},
+						"answer" : "Number",
+						"hint" : "Hint to help answer the question"
+					}
+				]
+			},
+			{"moduleTitle" : "Chapter 5 - Google Sheets: Max/Min",
+				"moduleID" : 4,
+				"helpRoomCode" : "maxmin",
+				"questions" : [
+					{"qnsTitle" : "Chapter 5 - Slides",
+						"qnsId" : 0,
+						"qnsDescription" : "Learn about MAX/MIN Function in Google Sheets",
+						"qnsInstruction" : "Study Tutorial Slides!",
+						"qnsType" : "Slides",
+						"qns" : {
+							"link" : "https://docs.google.com/presentation/d/1L876t5Xz1P3ppG7j-4291jHcaxUrOR9jYiwCaSTFl3E/embed?start=true&loop=false&delayms=10000"
+						},
+						"answer" : ""
+					},
+					{"qnsTitle" : "Chapter 5 - Question 1",
+						"qnsId" : 1,
+						"qnsDescription" : "",
+						"qnsInstruction" : "Enter the formula to find the largest value in Column D.",
+						"qnsType" : "LSheet",
+						"qns" : {
+							"row" : 5,
+							"col" : 5,
+							"sheet" : [
+								[" "," "," ","100"," "],
+								[" "," "," ","25"," "],
+								[" "," "," ","22"," "],
+								[" "," "," ","32"," "],
+								[" "," "," ","40"," "]
+							]
+						}
+						,
+						"answer" : "=MAX(D1:D5)",
+						"hint" : "",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
+					},
+					{"qnsTitle" : "Chapter 5 - Question 2",
+						"qnsId" : 2,
+						"qnsDescription" : "",
+						"qnsInstruction" : "Enter the formula to find the smallest value in the spreadsheet.",
+						"qnsType" : "LSheet",
+						"qns" : {
+							"row" : 5,
+							"col" : 5,
+							"sheet" : [
+								["1","2","3","4","5"],
+								["3","1","3","8","2"],
+								["3","5","0","32","5"],
+								["1","1","1","2","3"],
+								["1","6","4","2","3"]
+							]
+						}
+						,
+						"answer" : "=MIN(A1:E5)",
+						"hint" : "",
+						"checks" : {
+							"syntax" : [],
+							"explain" : [],
+							"values" : []
+						}
+					}
+				]
+			}
+		]
+	},
+	"projects": [
+		{
+			"title" : "project",
+			"logo" : "image path",
+			"description" : "Descriptions here",
+			"duration" : "3 Week",
+			"requirement" : ["modID(completed)", "anotherModID"]
+		}
+	]
+}

@@ -74,19 +74,22 @@
 			} else {
 				if (qnsType == 'LSheet') {
 					$scope.answer = $scope.answer.toUpperCase();
-				}
-				if ($scope.answer == ans) {
-					//correctAns();
-					console.log("Correct Answer");
-					$scope.incorrect = false;
-					$scope.correct = true;
-					$scope.next = function() {correctAns(); };
-					return;
-				} else { 
-					console.log("Incorrect Answer");
-					$scope.hint = questions.hint;
 					$scope.incorrect = true;
 				}
+
+
+				// if ($scope.answer == ans) {
+				// 	//correctAns();
+				// 	console.log("Correct Answer");
+				// 	$scope.incorrect = false;
+				// 	$scope.correct = true;
+				// 	$scope.next = function() {correctAns(); };
+				// 	return;
+				// } else { 
+				// 	console.log("Incorrect Answer");
+				// 	$scope.hint = questions.hint;
+				// 	$scope.incorrect = true;
+				// }
 				
 				if (qnsType == 'LSheet' && $scope.incorrect) {
 					var inputAns = $scope.answer;
@@ -111,13 +114,6 @@
 								}
 							}
 							
-
-
-
-
-
-
-
 							for (var i = 0; i < values.length; i++) {
 								if (inputAns.indexOf(values[i]) == -1) {
 									$scope.validation = "Input values is missing or incorrect";

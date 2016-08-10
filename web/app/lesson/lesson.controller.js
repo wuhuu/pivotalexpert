@@ -80,7 +80,13 @@
 				} else if (qnsType == 'GSheet') {
 			        //https://spreadsheets.google.com/feeds/cells/1cdD1Hna9WyQnhS3QLM_WedsL9Up7x9hLIjvKj0IWTJI/1/public/full?alt=json
 			        // what users will submit is: https://docs.google.com/spreadsheets/d/1cdD1Hna9WyQnhS3QLM_WedsL9Up7x9hLIjvKj0IWTJI/edit#gid=0
-			        $scope.answer = $scope.answer.substring($scope.answer.indexOf('/d/')+3,$scope.answer.indexOf('/edit'));
+			        if($scope.answer.indexOf('/edit') != -1) {
+			        	$scope.answer = $scope.answer.substring($scope.answer.indexOf('/d/')+3,$scope.answer.indexOf('/edit'));
+					}
+					else {
+						$scope.answer = $scope.answer.substring($scope.answer.indexOf('/d/')+3,$scope.answer.indexOf('/pubhtml'));
+					}
+
 			        var answerJsonRequest = 'https://spreadsheets.google.com/feeds/cells/'+$scope.answer+'/1/public/full?alt=json';
 			        
 			        $http.get(answerJsonRequest)
@@ -93,7 +99,14 @@
 			          inputValue = getCellRange(inputValue,row,col);
 			          $scope.answer = inputValue.toUpperCase();
 			          validateAnswer();
-			        });
+			        },
+			        function(err) {
+				        // Handle error here
+				        $scope.hint = "Please make sure your Google Sheet is published!"
+				        return;
+				    });
+				}else if (qnsType == 'mcq') {
+					validateAnswer();
 				}
 
 				function validateAnswer(){

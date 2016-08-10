@@ -15,7 +15,8 @@
 				<h4> Hint:{{hint}} </h4>
 				<h4 style="color: red"> INCORRECT </h4>
 			</div>	
-			 <input type="text" ng-model="answer" name="answer"/>
+			 <input type="text" ng-model="answer" name="answer" style="width:90%;"/><br><br>
+
 			 <input type="submit" value="Submit" ng-click="submit()">
 			<div ng-show='correct'>
 				<h3> 
@@ -24,21 +25,5 @@
 				</h3>
 			</div>
 			 
-			 <br><br>
-			 
-			 <table>
-				<tr>
-					<th></th>
-					<th>A</th>
-					<th>B</th>
-					<th>C</th>
-					<th>D</th>
-					<th>E</th>
-				</tr>
-				<tr ng-repeat="row in range(rowCount)">
-					<td>{{row + 1}}</td>
-					<td ng-repeat="col in range(colCount)"><table><tr><td>  {{sheet[row][col]}} </td></tr></table></td>
-				</tr>
-			 </table>
 	</div>
 </div>

@@ -11,8 +11,8 @@
 	when('/login', {
       templateUrl: 'app/auth/login.html',
       controller: 'AuthController'
-    }).when('/createUsername',{
-      templateUrl: 'app/auth/createUsername.html',
+    }).when('/changeDisplayName',{
+      templateUrl: 'app/auth/changeDisplayName.html',
       controller: 'AuthController'
     });
   }

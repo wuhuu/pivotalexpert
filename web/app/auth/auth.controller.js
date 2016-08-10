@@ -14,11 +14,11 @@
 		.then(function() {
 		var username = authService.fetchAuthUsername();
 
-		username.$loaded().then(function(){
-			if(username.$value == null){
-				$location.path('/createUsername');
-			}
-		});
+		// username.$loaded().then(function(){
+		// 	if(username.$value == null){
+		// 		$location.path('/createUsername');
+		// 	}
+		// });
 		//$location.path('/');
         })
 	    .catch(function (error) {

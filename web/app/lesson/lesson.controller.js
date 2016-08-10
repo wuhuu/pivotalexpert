@@ -74,19 +74,22 @@
 			} else {
 				if (qnsType == 'LSheet') {
 					$scope.answer = $scope.answer.toUpperCase();
-				}
-				if ($scope.answer == ans) {
-					//correctAns();
-					console.log("Correct Answer");
-					$scope.incorrect = false;
-					$scope.correct = true;
-					$scope.next = function() {correctAns(); };
-					return;
-				} else { 
-					console.log("Incorrect Answer");
-					$scope.hint = questions.hint;
 					$scope.incorrect = true;
 				}
+
+
+				// if ($scope.answer == ans) {
+				// 	//correctAns();
+				// 	console.log("Correct Answer");
+				// 	$scope.incorrect = false;
+				// 	$scope.correct = true;
+				// 	$scope.next = function() {correctAns(); };
+				// 	return;
+				// } else { 
+				// 	console.log("Incorrect Answer");
+				// 	$scope.hint = questions.hint;
+				// 	$scope.incorrect = true;
+				// }
 				
 				if (qnsType == 'LSheet' && $scope.incorrect) {
 					var inputAns = $scope.answer;
@@ -113,7 +116,7 @@
 							
 							for (var i = 0; i < values.length; i++) {
 								if (inputAns.indexOf(values[i]) == -1) {
-									$scope.validation = "Inpute values is missing or incorrect";
+									$scope.validation = "Input values is missing or incorrect";
 									return;
 								} else {
 									inputAns = inputAns.replace(values[i], "");
@@ -121,7 +124,7 @@
 							}
 							
 							if(inputAns.length > 0) {
-								$scope.validation = "Too many input values, please check again your values inputed.";
+								$scope.validation = "Too many input values, please check your values again.";
 							} else {
 								console.log("Correct Answer");
 								$scope.incorrect = false;

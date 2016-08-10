@@ -11,7 +11,7 @@
 	  
 	  var ref = commonService.firebaseRef();
 	  var user = authService.fetchAuthData();
-	  var lastAttempt = $firebaseObject(ref.child('userProfiles').child(user.$id).child('lastAttempt'));
+	  var lastAttempt = $firebaseObject(ref.child('userProfiles').child(user.$id).child('Pivotal-Expert/lastAttempt'));
 	  lastAttempt.$loaded(function(){
 		if(lastAttempt.$value == 'completed') {
 			var username = authService.fetchAuthUsername();

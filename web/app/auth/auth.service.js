@@ -20,7 +20,7 @@
       fetchAuthData: fetchAuthData,
       fetchAuthPic: fetchAuthPic,
       fetchAuthEmail: fetchAuthEmail,
-      fetchAuthUsername:fetchAuthUsername
+      fetchAuthDisplayName:fetchAuthDisplayName
     };
 	
 	return service;
@@ -109,12 +109,12 @@
       }
     }
 
-    function fetchAuthUsername() {
+    function fetchAuthDisplayName() {
       var audData = auth.$getAuth();
-      var audref = ref.child("/auth/usernames");
+      var audref = ref.child("/auth/users");
       if (audData) {
-		console.log("Fetching fetchAuthUsername " + audData.uid);
-		return $firebaseObject(audref.child(audData.uid));
+    		console.log("Fetching fetchAuthDisplayName " + audData.uid);
+    		return $firebaseObject(audref.child(audData.uid).child('displayName'));
       }
     }
   }

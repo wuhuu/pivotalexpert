@@ -22,6 +22,14 @@
 		var courseContent = content.course.courseContent;
 		
 		var questions = courseContent[modID].questions[qnsID];
+
+		var user = authService.fetchAuthData();
+		user.$loaded().then(function(){
+			var currentQnsID = 'C' + modID + 'Q' + qnsID;
+			ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(currentQnsID);
+		});
+		
+
 		$scope.qnsTitle = questions.qnsTitle;
 		$scope.qnsInstruction = questions.qnsInstruction;
 		$scope.qnsDescription = questions.qnsDescription;
@@ -189,8 +197,8 @@
 			var nextQns = courseContent[modID].questions[parseInt(qnsID) + 1];
 			if(nextQns) {
 				//update last attemp in firebase db
-				var nextQnsID = 'C' + modID + 'Q' + nextQns.qnsId;
-				ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(nextQnsID);
+				// var nextQnsID = 'C' + modID + 'Q' + nextQns.qnsId;
+				// ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(nextQnsID);
 				//Complete current qns, go to next qns
 				$location.path('/lesson/' + nextQns.qnsType + '/' + modID + '/' + nextQns.qnsId);
 			} else {
@@ -199,19 +207,19 @@
 
 				if(nextQns) {
 					//update last attemp in firebase db
-					var nextQnsID = 'C' + nextQns.moduleID + 'Q0';
-					console.log('lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0')
+					// var nextQnsID = 'C' + nextQns.moduleID + 'Q0';
+					// console.log('lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0')
 					
-					ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(nextQnsID);
+					// ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(nextQnsID);
 					//Complete whole course
 					$location.path('/lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0');
 				} else {
 					//update last attemp in firebase db
 					ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set("completed");
 					//Complete whole course
-					var username= authService.fetchAuthUsername();
-					username.$loaded().then(function(){
-						$location.path('/profile/' + username.$value);
+					var displayName= authService.fetchAuthDisplayName();
+					displayName.$loaded().then(function(){
+						$location.path('/profile/' + displayName.$value);
 					});
 				}
 			}

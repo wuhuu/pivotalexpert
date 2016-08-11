@@ -45,10 +45,10 @@
 			$scope.courseTitle = courseTitle.$value;
 	  });
 	  $scope.logout = function () {
-	  $scope.logined= false;
-	  authService.logout();
-	  $location.path('/');
-	  window.location.reload();
+		  $scope.logined= false;
+		  authService.logout();
+		  $location.path('/login');
+		  window.location.reload();
 	}
 	
   }

@@ -44,7 +44,7 @@
 		var ref = commonService.firebaseRef().child("auth/users");
 		user.$loaded().then(function(user){
 			ref.child(user.$id).update({displayName:newName});
-			 $location.path('/profile');
+			 $location.path('/profile/'+newName);
 			// ref.child('usedUsername').once("value", function(snapshot) {
 			// 	var uid = user.$id;
 			// 	var b = snapshot.child(username).exists();

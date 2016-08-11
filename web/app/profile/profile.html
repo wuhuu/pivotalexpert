@@ -14,12 +14,18 @@
 			
 			<div class="profile-contentBox">
 					<div>
-						<h1>Profile for {{displayName}}</h1>
-						<a href="#/changeDisplayName"> Change display name here!</a>
+						<h1>Name: {{displayName}}
+							<sup>
+								<a href="#/changeDisplayName">
+									<i class="fa fa-pencil" style="font-size: small" aria-hidden="true"></i>
+								</a>
+							</sup>
+						</h1>
 						<!--User's Name
 						<br>-->
-						<br>
-						Email: {{email}}
+						<h2>
+							Email: {{email}}
+						</h2>
 					</div>
 				<div class="profile-content">
 					
@@ -60,11 +66,11 @@
 	<!-- Course Map -->
 	
 	<div class="container-white row center">
-		<h3>Achievements</h3>
+		<h1>Achievements</h1>
 		
-		<a class="container-contentButton" ng-repeat="item in achievelist">
+		<div class="container-contentButton" ng-repeat="item in achievelist">
 			<div class="left" >{{item}}</div>
-		</a>
+		</div>
 		<!-- 
 		<a class="container-contentButton" href="#/lesson3" >
 			<div class="left" >Lesson 3:</div>

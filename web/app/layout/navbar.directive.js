@@ -14,9 +14,9 @@
     };
   }
  
-  NavbarController.$inject = ['$firebaseObject','$scope', '$location','authService', 'navBarService'];
+  NavbarController.$inject = ['$firebaseObject','$scope', '$rootScope', '$location','authService', 'navBarService'];
 
-  function NavbarController($firebaseObject,$scope,$location, authService, navBarService) {
+  function NavbarController($firebaseObject,$scope, $rootScope,$location, authService, navBarService) {
 	  console.log("NavbarController");
 	  //Retrieve User Display Name
 	  var user = authService.fetchAuthData();

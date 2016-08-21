@@ -29,7 +29,7 @@
 		 // 	username.$loaded().then(function(){
 			// 	$scope.displayName = username.$value;
 			// });
-			$scope.displayName = user.displayName;
+			$scope.displayName = user.profileLink;
 			navBarService.getUserAchievements($scope);
 	    });
 		  userpic.$loaded().then(function(){

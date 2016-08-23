@@ -38,40 +38,40 @@
 	}
 
 	
-	$scope.updateDisplayName = function (username) {
+	$scope.updateDisplayName = function (newName) {
 		var user = authService.fetchAuthData();
 
-		var ref = commonService.firebaseRef().child("auth");
+		var ref = commonService.firebaseRef().child("auth/users");
 		user.$loaded().then(function(user){
-			
-		
-			ref.child('usedUsername').once("value", function(snapshot) {
-				var uid = user.$id;
-				var b = snapshot.child(username).exists();
-				if(!b){
-					var previousUsername = $firebaseObject(ref.child('usernames').child(uid));	
-					// delete the previousUsername for usedUsername
-						previousUsername.$loaded().then(function(){
-						if(previousUsername.$value!=null){
-							ref.child('usedUsername').child(previousUsername.$value).remove();
-						}
+			ref.child(user.$id).update({displayName:newName});
+			 $location.path('/profile/'+newName);
+			// ref.child('usedUsername').once("value", function(snapshot) {
+			// 	var uid = user.$id;
+			// 	var b = snapshot.child(username).exists();
+			// 	if(!b){
+			// 		var previousUsername = $firebaseObject(ref.child('usernames').child(uid));	
+			// 		// delete the previousUsername for usedUsername
+			// 			previousUsername.$loaded().then(function(){
+			// 			if(previousUsername.$value!=null){
+			// 				ref.child('usedUsername').child(previousUsername.$value).remove();
+			// 			}
 					
-						//update usedUsername object
-						var updateObject = {};
-						updateObject[username] = true; 					
-						ref.child('usedUsername').update(updateObject);
+			// 			//update usedUsername object
+			// 			var updateObject = {};
+			// 			updateObject[username] = true; 					
+			// 			ref.child('usedUsername').update(updateObject);
 						
-						//update usernames object
-						updateObject = {};
-						updateObject[uid] = username;
-						ref.child('usernames').update(updateObject);
-						$location.path('/profile/'+username);
-						window.location.reload();
-					});
-				}else {
-					alert("Sorry!  \'"+username +"\' is already in use, try another one.");
-				}
-			});
+			// 			//update usernames object
+			// 			updateObject = {};
+			// 			updateObject[uid] = username;
+			// 			ref.child('usernames').update(updateObject);
+			// 			$location.path('/profile/'+username);
+			// 			window.location.reload();
+			// 		});
+			// 	}else {
+			// 		alert("Sorry!  \'"+username +"\' is already in use, try another one.");
+			// 	}
+			// });
 		});
 	}
 	

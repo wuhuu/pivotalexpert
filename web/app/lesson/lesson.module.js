@@ -23,6 +23,10 @@
 	when('/lesson/LSheet/:modID/:qnsID', {
       templateUrl: 'app/lesson/spreadsheet.html',
 	  controller: 'LessonController'
+    }).
+  when('/lesson/GSheet/:modID/:qnsID', {
+      templateUrl: 'app/lesson/gsheet.html',
+    controller: 'LessonController'
     });
   }
   

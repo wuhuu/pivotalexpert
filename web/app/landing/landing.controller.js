@@ -14,9 +14,9 @@
 	  var lastAttempt = $firebaseObject(ref.child('userProfiles').child(user.$id).child('Pivotal-Expert/lastAttempt'));
 	  lastAttempt.$loaded(function(){
 		if(lastAttempt.$value == 'completed') {
-			var username = authService.fetchAuthUsername();
-		 	username.$loaded().then(function(){
-				$location.path('/profile/' + username.$value);
+			var displayName= authService.fetchAuthDisplayName();
+			displayName.$loaded().then(function(){
+				$location.path('/profile/' + displayName.$value);
 			});
 			return;
 		}

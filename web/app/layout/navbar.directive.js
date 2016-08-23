@@ -14,9 +14,9 @@
     };
   }
  
-  NavbarController.$inject = ['$firebaseObject','$scope', '$location','authService', 'navBarService'];
+  NavbarController.$inject = ['$firebaseObject','$scope', '$rootScope', '$location','authService', 'navBarService'];
 
-  function NavbarController($firebaseObject,$scope,$location, authService, navBarService) {
+  function NavbarController($firebaseObject,$scope, $rootScope,$location, authService, navBarService) {
 	  console.log("NavbarController");
 	  //Retrieve User Display Name
 	  var user = authService.fetchAuthData();
@@ -45,10 +45,10 @@
 			$scope.courseTitle = courseTitle.$value;
 	  });
 	  $scope.logout = function () {
-	  $scope.logined= false;
-	  authService.logout();
-	  $location.path('/');
-	  window.location.reload();
+		  $scope.logined= false;
+		  authService.logout();
+		  $location.path('/login');
+		  window.location.reload();
 	}
 	
   }

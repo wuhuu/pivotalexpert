@@ -23,7 +23,7 @@
 	.login{
 		border-radius: 25px;
 		background: #CC6666;
-		padding: 70px 25px;
+		padding: 30px 25px 50px 25px;
 	}
 
 
@@ -35,8 +35,8 @@
   <div class="col-md-12 push-down">
   	<div class="col-md-6 col-md-offset-1" >
 
-  		<h1>Do you love life hacks? </h1>
-  		<h1>Our self paced course can teach you more.</h1>
+  		<h1>I love life hacks, do you? </h1>
+  		<h1>Our self paced course will teach you more.</h1>
   		<br/>
   		<br/>
   		<div class="col-md-12">
@@ -57,11 +57,14 @@
   		
   	</div>
     <div class="col-lg-4 text-center login">
-      <h1 class="mainHeader" style="color: white">Pivotal Experts</h1>
+      <h1 class="mainHeader" style="color: white">{{courseTitle}}</h1>
       <br/>
+      <img src="./content/images/user_icon.png" alt="" style="width: 40%">
       <h3 style="color: white">Automate your life one task at a time</h3>
       <br/>
-      <button class="btn-primary btn-lg" type="submit" ng-click="login('google')">Google Login</button>
+      <button class="btn-primary btn-lg" type="submit" ng-click="login('google')">
+     	 <img src="./content/images/google_icon.png" alt="" style="width: 15%; margin-right:15px; padding-bottom: 2px">Google Login
+      </button>
     </div>
   </div>
 </div>

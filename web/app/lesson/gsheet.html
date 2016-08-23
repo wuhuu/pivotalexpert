@@ -36,13 +36,14 @@
 		</div>
 		<div class="col-md-3" style="height:calc(100% - 63px); background-color: white; padding: 20px 10px">
 			<h2>Instructions:</h2>
-			<h3>Please answer the questions on the right.</h3>
+			<h3>Create your own google sheet with the properties as stated in the question.</h3>
 			<br/>
 			<h3>Unable to get the right answer?</h3>
 			<p><strong>You may want to do these steps:</strong></p>
-			<p style="padding-left: 10px">1) Watch the videos or read the slides again.</p>
-			<p style="padding-left: 10px">2) Ask a friend on the gitter channel.</p>
-			<p style="padding-left: 10px">3) Email a professor at <a href="mailto:cboesch@smu.edu.sg?Subject=Hello%20again" style="font-size:1em">cbosch@smu.edu.sg</a></p>
+			<p style="padding-left: 10px">1) Ensure google sheet is made public</p>
+			<p style="padding-left: 10px">2) Watch the videos or read the slides again.</p>
+			<p style="padding-left: 10px">3) Ask a friend on the gitter channel.</p>
+			<p style="padding-left: 10px">4) Email a professor at <a href="mailto:cboesch@smu.edu.sg?Subject=Hello%20again" style="font-size:1em">cbosch@smu.edu.sg</a></p>
 		</div>
 		<div class="col-md-9" style="padding: 20px 30px">
 			<div class="col-md-6">
@@ -52,11 +53,7 @@
 					<h4>{{qnsInstruction}}</h4>
 					<br>
 				</div>
-				<div ng-repeat="option in options">
-					<label>
-						<input type="radio" ng-model="$parent.answer" name="radio" ng-value="option" ><label for="radio1"><span><span></span></span></span>{{option}}<br/></label>
-					</label>
-				</div>
+				<input type="text" ng-model="answer" name="answer" style="width:90%;"/><br><br>
 				<input type="submit" value="Submit" ng-click="submit()">
 			</div>
 			

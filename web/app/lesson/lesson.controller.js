@@ -36,6 +36,7 @@
 		var qnsType = questions.qnsType;
 		var qns = questions.qns;
 		var ans = questions.answer;
+		var answerCells = questions.answerCells;
 		// video or slides Qns type
 		if (qnsType == 'video' || qnsType == 'slides'){
 			$scope.srclink = $sce.trustAsResourceUrl(qns.link);
@@ -98,8 +99,22 @@
 			        var answerJsonRequest = 'https://spreadsheets.google.com/feeds/cells/'+$scope.answer+'/1/public/full?alt=json';
 			        
 			        $http.get(answerJsonRequest)
-			        .then(function(response) {
+			        .then(function(response) {	
 			          $scope.ssjson = response.data;
+			          var studentAnswercells = {};
+			          var lettersArry = ".ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+			          $scope.ssjson.feed.entry.forEach(function(entry){
+			          	var col = parseInt(entry.gs$cell.col);
+			          	var row = parseInt(entry.gs$cell.row);
+						var cell = lettersArry[col]+row;
+
+						if(answerCells.hasOwnProperty(cell)) {
+							studentAnswercells[cell] = getCellRange(entry.gs$cell.inputValue,row,col);
+						}
+
+			          });
+
+			          // get specific answercell from firebase.
 			          $scope.answerCell = $scope.ssjson.feed.entry[$scope.ssjson.feed.entry.length-1].gs$cell;
 			          var row = parseInt($scope.answerCell.row);
 			          var col = parseInt($scope.answerCell.col);
@@ -127,12 +142,7 @@
 						$scope.next = function() {correctAns(); };
 						return;
 					} 
-					//else { 
-					// 	console.log("Incorrect Answer");
-					// 	$scope.hint = questions.hint;
-					// 	$scope.incorrect = true;
-					// }
-					
+
 					if ((qnsType == 'GSheet' || qnsType == 'LSheet') && $scope.incorrect) {
 						var inputAns = $scope.answer;
 						var validation = questions.checks;
@@ -231,6 +241,9 @@
 
       //getting the range out from the value
       var cellsArray = inputValue.split(':');
+      if(cellsArray.length == 1) {
+      	return cellsArray[0];
+      }
       var firstCell = cellsArray[0].substring(cellsArray[0].indexOf('R'));
       var firstCellRow = parseInt(firstCell.substring(firstCell.indexOf('[')+1,firstCell.indexOf(']')));
       var firstCellCol = lettersArry[col+parseInt(firstCell.substring(firstCell.lastIndexOf('[')+1,firstCell.lastIndexOf(']')))];

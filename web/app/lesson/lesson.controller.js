@@ -18,7 +18,6 @@
 	//Load Content
 	var content =  $firebaseObject(ref.child('pivotalExpert').child('content'));
 	content.$loaded().then(function(){
-		var courseTitle = content.course.courseTitle;
 		var courseContent = content.course.courseContent;
 		
 		var questions = courseContent[modID].questions[qnsID];
@@ -26,7 +25,7 @@
 		var user = authService.fetchAuthData();
 		user.$loaded().then(function(){
 			var currentQnsID = 'C' + modID + 'Q' + qnsID;
-			ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(currentQnsID);
+			ref.child('userProfiles').child(user.$id).child('lastAttempt').set(currentQnsID);
 		});
 		
 
@@ -201,31 +200,23 @@
 			var achievementId = "C" + modID + "Q" + qnsID;
 			var user = authService.fetchAuthData();
 			//update course progress in firebase db
-			ref.child('userProfiles').child(user.$id).child(courseTitle).child('courseProgress').child(achievementId).set(currentDateTime);
+			ref.child('userProfiles').child(user.$id).child('courseProgress').child(achievementId).set(currentDateTime);
 			
 			//Go to next qns
 			var nextQns = courseContent[modID].questions[parseInt(qnsID) + 1];
 			if(nextQns) {
-				//update last attemp in firebase db
-				// var nextQnsID = 'C' + modID + 'Q' + nextQns.qnsId;
-				// ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(nextQnsID);
-				//Complete current qns, go to next qns
+				
 				$location.path('/lesson/' + nextQns.qnsType + '/' + modID + '/' + nextQns.qnsId);
 			} else {
 				//Complete current module, go to next module
 				nextQns = courseContent[parseInt(modID) + 1];
 
 				if(nextQns) {
-					//update last attemp in firebase db
-					// var nextQnsID = 'C' + nextQns.moduleID + 'Q0';
-					// console.log('lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0')
 					
-					// ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(nextQnsID);
-					//Complete whole course
 					$location.path('/lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0');
 				} else {
 					//update last attemp in firebase db
-					ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set("completed");
+					ref.child('userProfiles').child(user.$id).child('lastAttempt').set("completed");
 					//Complete whole course
 					var displayName= authService.fetchAuthDisplayName();
 					displayName.$loaded().then(function(){

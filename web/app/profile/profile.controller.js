@@ -58,7 +58,7 @@
 			var courseTitle = $firebaseObject(navBarService.getCourseTitle());
 			courseTitle.$loaded().then(function(){
 				$scope.courseTitle = courseTitle.$value;
-				var courseProgressRef = ref.child('/userProfiles/' + uid + '/' + $scope.courseTitle + '/courseProgress/');
+				var courseProgressRef = ref.child('/userProfiles/' + uid + '/courseProgress/');
 
 				courseProgressRef.once('value', function(snapshot) {
 				  // The callback function will get called twice, once for "fred" and once for "barney"

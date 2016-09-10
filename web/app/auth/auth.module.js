@@ -14,6 +14,9 @@
     }).when('/changeDisplayName',{
       templateUrl: 'app/auth/changeDisplayName.html',
       controller: 'AuthController'
+    }).when('/createProfileLink',{
+      templateUrl: 'app/auth/createProfileLink.html',
+      controller: 'AuthController'
     });
   }
 

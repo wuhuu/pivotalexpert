@@ -18,7 +18,6 @@
 	//Load Content
 	var content =  $firebaseObject(ref.child('pivotalExpert').child('content'));
 	content.$loaded().then(function(){
-		var courseTitle = content.course.courseTitle;
 		var courseContent = content.course.courseContent;
 		
 		var questions = courseContent[modID].questions[qnsID];
@@ -26,7 +25,7 @@
 		var user = authService.fetchAuthData();
 		user.$loaded().then(function(){
 			var currentQnsID = 'C' + modID + 'Q' + qnsID;
-			ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(currentQnsID);
+			ref.child('userProfiles').child(user.$id).child('lastAttempt').set(currentQnsID);
 		});
 		
 
@@ -36,6 +35,7 @@
 		var qnsType = questions.qnsType;
 		var qns = questions.qns;
 		var ans = questions.answer;
+		var answerCells = questions.answerCells;
 		// video or slides Qns type
 		if (qnsType == 'video' || qnsType == 'slides'){
 			$scope.srclink = $sce.trustAsResourceUrl(qns.link);
@@ -98,8 +98,22 @@
 			        var answerJsonRequest = 'https://spreadsheets.google.com/feeds/cells/'+$scope.answer+'/1/public/full?alt=json';
 			        
 			        $http.get(answerJsonRequest)
-			        .then(function(response) {
+			        .then(function(response) {	
 			          $scope.ssjson = response.data;
+			          var studentAnswercells = {};
+			          var lettersArry = ".ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+			          $scope.ssjson.feed.entry.forEach(function(entry){
+			          	var col = parseInt(entry.gs$cell.col);
+			          	var row = parseInt(entry.gs$cell.row);
+						var cell = lettersArry[col]+row;
+
+						if(answerCells.hasOwnProperty(cell)) {
+							studentAnswercells[cell] = getCellRange(entry.gs$cell.inputValue,row,col);
+						}
+
+			          });
+
+			          // get specific answercell from firebase.
 			          $scope.answerCell = $scope.ssjson.feed.entry[$scope.ssjson.feed.entry.length-1].gs$cell;
 			          var row = parseInt($scope.answerCell.row);
 			          var col = parseInt($scope.answerCell.col);
@@ -127,12 +141,7 @@
 						$scope.next = function() {correctAns(); };
 						return;
 					} 
-					//else { 
-					// 	console.log("Incorrect Answer");
-					// 	$scope.hint = questions.hint;
-					// 	$scope.incorrect = true;
-					// }
-					
+
 					if ((qnsType == 'GSheet' || qnsType == 'LSheet') && $scope.incorrect) {
 						var inputAns = $scope.answer;
 						var validation = questions.checks;
@@ -191,31 +200,23 @@
 			var achievementId = "C" + modID + "Q" + qnsID;
 			var user = authService.fetchAuthData();
 			//update course progress in firebase db
-			ref.child('userProfiles').child(user.$id).child(courseTitle).child('courseProgress').child(achievementId).set(currentDateTime);
+			ref.child('userProfiles').child(user.$id).child('courseProgress').child(achievementId).set(currentDateTime);
 			
 			//Go to next qns
 			var nextQns = courseContent[modID].questions[parseInt(qnsID) + 1];
 			if(nextQns) {
-				//update last attemp in firebase db
-				// var nextQnsID = 'C' + modID + 'Q' + nextQns.qnsId;
-				// ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(nextQnsID);
-				//Complete current qns, go to next qns
+				
 				$location.path('/lesson/' + nextQns.qnsType + '/' + modID + '/' + nextQns.qnsId);
 			} else {
 				//Complete current module, go to next module
 				nextQns = courseContent[parseInt(modID) + 1];
 
 				if(nextQns) {
-					//update last attemp in firebase db
-					// var nextQnsID = 'C' + nextQns.moduleID + 'Q0';
-					// console.log('lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0')
 					
-					// ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set(nextQnsID);
-					//Complete whole course
 					$location.path('/lesson/' + nextQns.questions[0].qnsType + '/' + nextQns.moduleID + '/0');
 				} else {
 					//update last attemp in firebase db
-					ref.child('userProfiles').child(user.$id).child(courseTitle).child('lastAttempt').set("completed");
+					ref.child('userProfiles').child(user.$id).child('lastAttempt').set("completed");
 					//Complete whole course
 					var displayName= authService.fetchAuthDisplayName();
 					displayName.$loaded().then(function(){
@@ -231,6 +232,9 @@
 
       //getting the range out from the value
       var cellsArray = inputValue.split(':');
+      if(cellsArray.length == 1) {
+      	return cellsArray[0];
+      }
       var firstCell = cellsArray[0].substring(cellsArray[0].indexOf('R'));
       var firstCellRow = parseInt(firstCell.substring(firstCell.indexOf('[')+1,firstCell.indexOf(']')));
       var firstCellCol = lettersArry[col+parseInt(firstCell.substring(firstCell.lastIndexOf('[')+1,firstCell.lastIndexOf(']')))];

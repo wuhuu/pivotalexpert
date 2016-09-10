@@ -37,7 +37,7 @@
 			
 			
 				user.$loaded().then(function () {
-					var courseProgressRef = ref.child('/userProfiles/' + user.$id + '/' + courseTitle + '/courseProgress/');
+					var courseProgressRef = ref.child('/userProfiles/' + user.$id + '/courseProgress/');
 
 					courseProgressRef.once('value', function(snapshot) {
 					  // The callback function will get called twice, once for "fred" and once for "barney"

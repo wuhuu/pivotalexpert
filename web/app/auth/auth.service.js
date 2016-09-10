@@ -31,12 +31,12 @@
       return auth.$authWithOAuthPopup(service, {remember: "sessionOnly",
                                                 scope: "email"}).then(function (user) {
         console.log("Logged in as:", user.uid);
-        var userData = $firebaseObject(usersRef.child(user.uid+'/displayName'));
+        var userData = $firebaseObject(usersRef.child(user.uid));
         userData.$loaded().then(function(){
 
             var displayName ='';
-            if(userData.$value != null && userData.$value !=''){
-              displayName = userData.$value;
+            if(userData.displayName != null && userData.displayName !=''){
+              displayName = userData.displayName;
             }else {
               if (service == 'github') {
                 displayName = user.github.displayName;
@@ -63,11 +63,19 @@
               
             }
 
+            
+            ref.child('/signinLogs/'+user.uid).set(new Date().toLocaleString("en-US"));
+
             $scope.displayName = displayName;
-            //navBarService.updateNavBar($scope,displayName);
-            $location.path('/profile/' + displayName);
+            if(userData.profileLink == null) {
+              $location.path('/createProfileLink');
+            }
+            else{
+              $location.path('/profile/' + userData.profileLink);
+            }
+            
             window.location.reload();
-            //$location.path('/#/profile/'+displayName);
+            
         });  
       });
   }

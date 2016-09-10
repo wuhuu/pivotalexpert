@@ -13,7 +13,7 @@
 	
 
 	
-	var courseProgressRef = ref.child('/userProfiles/' + user.$id + '/Pivotal-Expert/courseProgress/');
+	var courseProgressRef = ref.child('/userProfiles/' + user.$id + '/courseProgress/');
 	var list = [];
 	courseProgressRef.once('value', function(snapshot) {
 	  snapshot.forEach(function(childSnapshot) {

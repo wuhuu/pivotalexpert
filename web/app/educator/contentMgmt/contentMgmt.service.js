@@ -3,11 +3,8 @@
   angular
     .module('app.contentMgmt')
     .factory('contentMgmtService', contentMgmtService);
-
-
-  contentMgmtService.$inject = ['$firebaseObject', '$firebaseAuth','$location', 'commonService'];
   
-  function contentMgmtService($firebaseObject, $firebaseAuth,$location, commonService) {
+  function contentMgmtService($q,$firebaseObject, $firebaseAuth,$location, commonService) {
   	//updating chapterNode
   	 	
   	// get node of course content and course map
@@ -21,11 +18,15 @@
       getCourseSeq:getCourseSeq,
 	  getChapter:getChapter,
 	  updateCourseSeq:updateCourseSeq,
-	  deleteChapter:deleteChapter
+	  deleteChapter:deleteChapter,
+	  getQuestion:getQuestion,
+	  updateQuestion:updateQuestion,
+	  updateQuestionSeq:updateQuestionSeq,
+	  getChapterIndex:getChapterIndex,
+	  deleteQuestion:deleteQuestion
     };
 	
-	return service;  
-	  
+	return service;    
 	
   	//chapter functions
   	function updateChapter (chapter,isNewChapter) {
@@ -78,11 +79,7 @@
   	}	
 
 	function getCourseSeq(){
-		var courseSeq = $firebaseObject(courseSeqNodeRef);
-		courseSeq.$loaded().then(function(){
-			return courseSeq;
-		});
-		// return them
+		return $firebaseObject(courseSeqNodeRef);
   	}
 
 	function getChapter(cid) {
@@ -142,14 +139,7 @@
   	
 	//questions functions  
 	function getQuestion(qid) {
-		var questionNodeRef = commonService.firebaseRef().child('course/questions');
-		questionNodeRef.once("value", function(snapshot) {
-			snapshot.forEach(function(element) {
-				if(qid === element.key) {
-					return $firebaseObject(questionNodeRef.child(qid));
-				}
-			});		
-		});
+		return $firebaseObject(commonService.firebaseRef().child('course/questions/'+qid));
 	}
 
 	function updateQuestion(question,isNewQuestion) {
@@ -172,28 +162,37 @@
 				
 			}
 
-			if(qid) {
+			if(!qid) {
 				//generate new qid 
 				qid = 000;
 			}
 			// create new question node & fill it up
-			var questionNode = {hint:"",qnsDescription:"",qnsInstruction:"",qnsTitle:"",qnsType:"",qns:"",link:""};
+			var questionNode = {hint:question.hint,
+								qnsDescription:question.qnsDescription,
+								qnsInstruction:question.qnsInstruction,
+								qnsTitle:question.qnsTitle,
+								qnsType:question.qnsType,
+								qns:question.qns,
+								link:question.link};
 			// create courseSeq node & fill it up
-			var questionSeqNode = {qid:qid,qnsTitle:""};
+			var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle};
 			// create answerkey node & fill it up
 			var answerkeyNode = {answer:"",msg:[],syntax:[],values:[],answerCells:{}};
 
 			// update database
-			questionNodeRef.update({qid:questionNode});
-			answerKeyNodeRef.update({qid:answerkeyNode});
-			courseSeqNodeRef.child(cid+'/qns').update(questionSeqNode,function onComplete(){
-				
-				if(isNewQuestion) {
-					return "Question created!"
-				}else {
-					return "Question updated!"
-				}
+			//questionNodeRef.update({qid:questionNode});
+			//answerKeyNodeRef.update({qid:answerkeyNode});
+			getChapterIndex(cid).then(function(index){
+				courseSeqNodeRef.child(index+'/qns').update(questionSeqNode,function onComplete(){
+					
+					if(isNewQuestion) {
+						return "Question created!"
+					}else {
+						return "Question updated!"
+					}
+				});
 			});
+			
 			
 		});
 	}
@@ -216,13 +215,16 @@
 
 	function getChapterIndex(cid) {
 		var courseSeq = $firebaseObject(courseSeqNodeRef);
-		courseSeqNodeRef.once("value", function(snapshot) {
-			snapshot.forEach(function(element){
-				if(element.key() === cid) {
-					return element.key();
+		var q =$q.defer();
+		courseSeq.$loaded().then(function(){
+			angular.forEach(courseSeq, function(value, key) {
+				if(value.cid === cid) {				
+					q.resolve(key);
+					return false;
 				}
 			});
 		});
+		return q.promise;
   	}
 
 	function deleteQuestion (cid,qid) {

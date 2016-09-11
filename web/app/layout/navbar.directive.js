@@ -14,38 +14,36 @@
     };
   }
  
-  NavbarController.$inject = ['$firebaseObject','$scope', '$rootScope', '$location','authService', 'navBarService'];
-
-  function NavbarController($firebaseObject,$scope, $rootScope,$location, authService, navBarService) {
-	  console.log("NavbarController");
-	  //Retrieve User Display Name
-	  var user = authService.fetchAuthData();
-	  var userpic = authService.fetchAuthPic();
-	  
-	  if (user != null) {
-	  	$scope.logined= true;
-		user.$loaded().then(function(){
-		 // var username= authService.fetchAuthUsername();
-		 // 	username.$loaded().then(function(){
-			// 	$scope.displayName = username.$value;
-			// });
-			$scope.displayName = user.profileLink;
-			navBarService.getUserAchievements($scope);
-	    });
-		  userpic.$loaded().then(function(){
-		  $scope.displayPic = userpic.$value;
-	    });
-	  } else {
-		$scope.logined = false;
-		//$location.path('/login/');
-	  }
-	
+ 
+  function NavbarController($firebaseObject, $scope, $location, authService, navBarService) {
+      
+      var usersRef = firebase.database().ref().child('auth/users');
+      
+      $scope.login = function () {
+          console.log("Logging in");
+	      authService.login();      
+      }
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+          navBarService.getUserAchievements($scope);
+          $scope.displayPic = user.photoURL;
+          
+           var userData = $firebaseObject(usersRef.child(user.uid));
+          //navBarService.updateNavBar(user.displayName);
+          userData.$loaded().then(function(){
+            $scope.displayName = userData.profileLink;
+          });
+        } 
+      });
+      
 	  var courseTitle = $firebaseObject(navBarService.getCourseTitle());
 		courseTitle.$loaded().then(function(){
 			$scope.courseTitle = courseTitle.$value;
 	  });
+      
 	  $scope.logout = function () {
-		  $scope.logined= false;
+		  $scope.logined = false;
 		  authService.logout();
 		  $location.path('/login');
 		  window.location.reload();

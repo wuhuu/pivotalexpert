@@ -17,21 +17,24 @@
 	
 	<!--Main content that changes based on route-->
 	<div ng-view style="height:100%"></div>
-
-	<!-- Angular Dependencies-->
-	<script src="content/lib/angular.min.js"></script>
-    <script src="content/lib/angular-route.js"></script>
     
-    <!-- Firebase Dependencies-->
-    <script src="content/lib/firebase.js"></script>
-    <script src="content/lib/angularfire.min.js"></script>
-
     <!-- jquery Dependencies-->
 	<script src="content/lib/jquery.js"></script>
+
+	<!-- Angular Dependencies-->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
+        
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+
+    <!-- AngularFire -->
+    <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script>
     
     <!-- Angular Material Dependencies -->
-    <script src="content/lib/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
     <script src="content/lib/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-messages.min.js"></script>
     <script src="content/lib/angular-material.min.js"></script>
     <script src="content/lib/angular-material-icons.min.js"></script>
     
@@ -47,15 +50,6 @@
 	<!--main app module-->
     <script src="app/app.js"></script>
 	
-	<!--layout module-->
-    <script src="app/layout/layout.module.js"></script>
-	<script src="app/layout/navbar.directive.js"></script>
-	<script src="app/layout/navbar.service.js"></script>
-	
-	<!--landing module-->
-    <script src="app/landing/landing.module.js"></script>
-	<script src="app/landing/landing.controller.js"></script>
-	
 	<!--common module-->
 	<script src="app/common/common.service.js"></script>
 	
@@ -64,6 +58,15 @@
 	<script src="app/auth/auth.controller.js"></script>
 	<script src="app/auth/auth.service.js"></script>
 	
+    	<!--layout module-->
+    <script src="app/layout/layout.module.js"></script>
+	<script src="app/layout/navbar.directive.js"></script>
+	<script src="app/layout/navbar.service.js"></script>
+	
+	<!--landing module-->
+    <script src="app/landing/landing.module.js"></script>
+	<script src="app/landing/landing.controller.js"></script>
+    
 	<!--lesson module-->
     <script src="app/lesson/lesson.module.js"></script>
 	<script src="app/lesson/lesson.controller.js"></script>

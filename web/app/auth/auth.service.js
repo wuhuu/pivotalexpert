@@ -4,15 +4,12 @@
     .module('app.auth')
     .factory('authService', authService);
 
-
-  authService.$inject = ['$firebaseObject', '$firebaseAuth','$location', 'commonService'];
-  
-  function authService($firebaseObject, $firebaseAuth,$location, commonService) {
+  function authService($firebaseObject, $firebaseAuth, $location, $rootScope) {
 	  
 	// create an instance of the authentication service
-	var ref = commonService.firebaseRef();
-	var auth = $firebaseAuth(ref);
-	var usersRef = ref.child('auth').child('users');
+	var ref = firebase.database().ref();
+	var auth = $firebaseAuth();
+	var usersRef = ref.child('auth/users');
 	
 	var service = {
       login: login,
@@ -27,79 +24,62 @@
 	
 	//Different function of the auth service
 	
-	function login(service,$scope) {
-      return auth.$authWithOAuthPopup(service, {remember: "sessionOnly",
-                                                scope: "email"}).then(function (user) {
-        console.log("Logged in as:", user.uid);
+	function login() {
+      
+      var provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('https://www.googleapis.com/auth/userinfo.email');
+      provider.addScope('https://www.googleapis.com/auth/drive.file');
+      
+      firebase.auth().signInWithPopup(provider).then(function(result) {
+
+        console.log("login success");
+        // The signed-in user info.
+        var user = result.user;
+        
+        usersRef.child(user.uid).update({
+          pic: user.photoURL,
+          email: user.email,
+          displayName: user.displayName
+        });
+
+        ref.child('/signinLogs/' + user.uid).set(new Date().toLocaleString("en-US"));
+        
         var userData = $firebaseObject(usersRef.child(user.uid));
+        //navBarService.updateNavBar(user.displayName);
         userData.$loaded().then(function(){
-
-            var displayName ='';
-            if(userData.displayName != null && userData.displayName !=''){
-              displayName = userData.displayName;
-            }else {
-              if (service == 'github') {
-                displayName = user.github.displayName;
-              }
-              if (service == 'google') {
-                displayName = user.google.displayName;
-              }
-            }
-
-            //Update user in db with latest from Github/Google. 
-            if (service == 'github') {
-              usersRef.child(user.uid).update({
-                pic: user.github.profileImageURL,
-                email: user.github.email,
-                displayName: displayName
-              });
-            }
-            if (service == 'google') {
-                usersRef.child(user.uid).update({
-                pic: user.google.profileImageURL,
-                email: user.google.email,
-                displayName: displayName
-              });
-              
-            }
-
-            
-            ref.child('/signinLogs/'+user.uid).set(new Date().toLocaleString("en-US"));
-
-            $scope.displayName = displayName;
+           
+            $rootScope.logined = true;
             if(userData.profileLink == null) {
               $location.path('/createProfileLink');
             }
             else{
               $location.path('/profile/' + userData.profileLink);
             }
-            
-            window.location.reload();
-            
-        });  
+        });
       });
   }
 
     function logout() {
-      return auth.$unauth();
+      return firebase.auth().signOut();
     }
 
     function fetchAuthData() {
-  	  var audData = auth.$getAuth();
-  	  if (audData) {
-          console.log("Fetching fetchAuthData " + audData.uid);
-		  return $firebaseObject(usersRef.child(audData.uid));
+      var user = firebase.auth().currentUser;
 
-  	  } else {
-		console.log("not login, auth.service");
-
+      if (user) {
+        // User is signed in.
+        console.log("Fetching fetchAuthData " + user.uid);
+        return user;
+        
+      } else {
+        // No user is signed in.
+        console.log("not login, auth.service");
 		if($location.path != "/login") {
-			
 			$location.path('/login');
 		} else {
 			return null;
 		}
-	  }
+      }
     }
 
     function fetchAuthPic() {

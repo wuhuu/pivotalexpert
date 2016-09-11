@@ -4,27 +4,84 @@
     .module('app.lesson')
     .controller('LessonController', LessonController);
 	
-  LessonController.$inject = ['$http','$scope', '$routeParams', '$location', '$firebaseObject', '$sce', 'authService','navBarService', 'commonService'];
-
-  function LessonController($http,$scope, $routeParams, $location, $firebaseObject, $sce, authService, navBarService, commonService) {
-	console.log("LessonController");
-	var ref = commonService.firebaseRef();
-	var modID = $routeParams.modID;
-	var qnsID = $routeParams.qnsID;
+  function LessonController($http,$scope, $routeParams, $location, $firebaseObject, $sce, navBarService) {
+	
+    console.log("LessonController");
+	var ref = firebase.database().ref();
+    var user = firebase.auth().currentUser;
+	var chapter = $routeParams.chapter;
+	var qns = $routeParams.qns;
+    var qid = $routeParams.qid;
 	
 	navBarService.getUserAchievements($scope);
 	$scope.answer = "";
 	
-	//Load Content
-	var content =  $firebaseObject(ref.child('pivotalExpert').child('content'));
+    
+    //Load Question
+    var question = $firebaseObject(ref.child('course/questions/' + qid));
+    question.$loaded().then(function(){
+        //update user last attempt
+        ref.child('userProfiles').child(user.uid).child('lastAttempt').set(qid);
+        
+        //retrieve qns details
+        $scope.qnsTitle = question.qnsTitle;
+		$scope.qnsInstruction = question.qnsInstruction;
+		$scope.qnsDescription = question.qnsDescription;
+        var qnsType = question.qnsType;
+        
+        //Video type question
+        if(qnsType == 'video'){
+            $scope.srclink = $sce.trustAsResourceUrl(question.link);
+        }
+        
+        if(qnsType == 'slides'){
+            
+        }
+   
+    
+        //Submit answer or go next qns
+        $scope.submit = function() {
+            if (qnsType == 'video'){
+                nextQns(chapter,qns);
+            }
+        }
+    });
+    
+    function nextQns(currentChapter, currentQns){
+        var courseSeq = $firebaseObject(ref.child('courseSequence'));
+        courseSeq.$loaded().then(function() {
+            var nextQns = courseSeq[currentChapter].qns[parseInt(currentQns) + 1];
+            if(nextQns) {
+				$location.path('/lesson/' + nextQns.qnsType + '/' + currentChapter + '/' + (parseInt(currentQns) + 1) + '/' + nextQns.qnsId);
+			} else {
+				//Complete current module, go to next module
+				nextQns = courseContent[parseInt(modID) + 1].qns[0];
+				if(nextQns) {
+					$location.path('/lesson/' + nextQns.qnsType + '/' + nextQns.moduleID + '/0');
+				} else {
+					//update last attemp in firebase db
+					ref.child('userProfiles').child(user.uid).child('lastAttempt').set("completed");
+					//Complete whole course
+					var userRef = $firebaseObject(ref.child('auth/users/' + user.uid));
+					userRef.$loaded().then(function(){
+						$location.path('/profile/' + userRef.profileLink);
+					});
+				}
+			}
+        });
+    }
+    
+    /*
+	//Load course
+	var course =  $firebaseObject(ref.child('course'));
 	content.$loaded().then(function(){
 		var courseContent = content.course.courseContent;
 		
-		var questions = courseContent[modID].questions[qnsID];
+		var questions = courseContent[courseID].questions[qnsID];
 
 		var user = authService.fetchAuthData();
 		user.$loaded().then(function(){
-			var currentQnsID = 'C' + modID + 'Q' + qnsID;
+			var currentQnsID = 'C' + courseID + 'Q' + qnsID;
 			ref.child('userProfiles').child(user.$id).child('lastAttempt').set(currentQnsID);
 		});
 		
@@ -251,6 +308,6 @@
       inputValue = inputValue.replace(replaceThis,withThis);
       return inputValue;
     }
-
+    */
   };
 })();

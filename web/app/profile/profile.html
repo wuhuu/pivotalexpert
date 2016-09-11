@@ -1,84 +1,57 @@
+<div layout="row" flex>
+    <div flex="15"></div>
+        <div class="md-whiteframe-z2" layout="column" flex="70" style="padding: 15px 20px">
+          <md-content flex md-scroll-y>
+                <md-card-content>
+                <div class="text-center profile-head">
+                <img ng-src="{{displayPic}}" alt="Profile Photo" class="profile-photo">
+                <br>
+                <h1>[ {{numAchievement}} ]</h1>
+                <h2>User: {{displayName}}</h2>
+                
+                </div>
 
-	
-<div class="container">
+                <md-divider></md-divider>
+                <md-divider></md-divider>
+                <md-divider></md-divider>
+                <u><h2>Completed Projects</h2></u>
+                    <md-list>
+                      <md-item ng-repeat="project in projects | filter:search | orderBy:'title'">
+                        <md-item-content>
+                          <div class="md-tile-content">
+                            <font class="font-size-course-title">{{project.title}}</font>
+                            <p>
+                              <h4>{{project.description}}<h4>
+                            </p>
+                          </div>
+                        </md-item-content>
+                        <md-divider ng-if="!$last"></md-divider>
+                      </md-item>
+                      <md-divider></md-divider>
+                    </md-list>
 
-	<header class="welcome text-center">
-		<h1><font size="9">Welcome to {{courseTitle}}!</font></h1>
-	</header>
-
-	<!-- Profile -->
-	<div class="row container-white">
-		
-		<div>
-			<div class="left profile-img"> <img ng-src="{{displayPic}}" alt="" style="width: 100%;"> </div>
-			
-			<div class="profile-contentBox">
-					<div>
-						<h1>Name: {{displayName}}
-							<sup>
-								<a href="#/changeDisplayName">
-									<i class="fa fa-pencil" style="font-size: small" aria-hidden="true" ng-show='displayPencil'></i>
-								</a>
-							</sup>
-						</h1>
-						<!--User's Name
-						<br>-->
-						<!-- <h2>
-							Email: {{email}}
-						</h2> -->
-					</div>
-				<div class="profile-content">
-					
-					
-				</div>
-			</div>
-		</div>
-		
-		
-		
-		<!-- <div class="course-name" style="clear: both;">Your Progress</div>
-		<div class="progress-container">
-		  <div id="progressBar" class="progressbarRed" >
-			<div id="percentage">0%</div>
-		  </div>
-		</div>
-		<script>
-			move(25)
-			function move(value) {
-			  var elem = document.getElementById("progressBar");
-			  var width = 0;
-			  var id = setInterval(frame, 10);
-			  function frame() {
-				if (width >= value) {
-				  clearInterval(id);
-				} else {
-				  width++;
-				  elem.style.width = width + '%';
-				  document.getElementById("percentage").innerHTML = width * 1  + '%';
-				}
-			  }
-			}
-		</script> -->
-
-	</div>
-
-	<hr>
-	<!-- Course Map -->
-	
-	<div class="container-white row center">
-		<h1>Achievements</h1>
-		
-		<div class="container-contentButton" ng-repeat="item in achievelist">
-			<div class="left" >{{item}}</div>
-		</div>
-		<!-- 
-		<a class="container-contentButton" href="#/lesson3" >
-			<div class="left" >Lesson 3:</div>
-		</a>
-		
-		<a class="container-contentButton" href="#/lesson4" >
-			<div class="left" >Lesson 4:</div>
-		</a> -->
-	</div>
-
+                <md-divider></md-divider>
+                <md-divider></md-divider>
+                <u><h2>Completed Courses</h2></u>
+                <md-list>
+                  <md-item ng-repeat="item in achievelist | filter:search">
+                    <md-item-content>
+                      <div class="md-tile-content">
+                        <font class="font-size-course-title">{{item.qnsTitle}}</font>
+                        <p>
+                          <font class="font-size-normal">Type: {{item.qnsType}}</font>
+                        </p>
+                      </div>
+                      <div class="md-tile-right inset" hide-sm>
+                      <img class="coursemap-check" ng-src="content/images/check-circle-outline-128.png">
+                    </div>
+                    </md-item-content>
+                    <md-divider ng-if="!$last"></md-divider>
+                  </md-item>
+                  <md-divider></md-divider>
+                </md-list>
+              </md-card-content>
+          </md-content>
+        </div>
+    </div>
 </div>

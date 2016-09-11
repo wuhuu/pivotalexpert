@@ -4,19 +4,21 @@
     .module('app.landing')
     .controller('LandingController', LandingController);
 
-  LandingController.$inject = ['$scope','$http','$firebaseObject','$location','authService', 'commonService'];
+  LandingController.$inject = ['$scope','$http','$firebaseObject','$location','authService'];
 
-  function LandingController($scope, $http, $firebaseObject,$location ,authService, commonService) {
+  function LandingController($scope, $http, $firebaseObject,$location ,authService) {
 	  console.log("LandingController");
 	  
-	  var ref = commonService.firebaseRef();
-	  var user = authService.fetchAuthData();
+	  var ref = firebase.database().ref();
+	  var user = firebase.auth().currentUser;
+      
 	  var lastAttempt = $firebaseObject(ref.child('userProfiles').child(user.$id).child('lastAttempt'));
+      
 	  lastAttempt.$loaded(function(){
 		if(lastAttempt.$value == 'completed') {
-			var displayName= authService.fetchAuthDisplayName();
-			displayName.$loaded().then(function(){
-				$location.path('/profile/' + displayName.$value);
+			var profileLink= $firebaseObject(ref.child('auth/user').child(user.uid).child('profileLink'));;
+			profileLink.$loaded().then(function(){
+				$location.path('/profile/' + profileLink.$value);
 			});
 			return;
 		}

@@ -4,23 +4,22 @@
     .module('app.profile')
 	.controller('ProfileController', ProfileController);
 
-  ProfileController.$inject = ['$scope', '$routeParams', '$firebaseArray', 'authService', '$location', 'navBarService', '$firebaseObject', 'commonService'];
-  function ProfileController($scope, $routeParams, $firebaseArray, authService, $location, navBarService, $firebaseObject, commonService) {
+  function ProfileController($scope, $routeParams, $firebaseArray, $location, navBarService, $firebaseObject) {
 		console.log("ProfileController");
 		$scope.list =[];
 		
 
-		var user = authService.fetchAuthData();
-		var ref = commonService.firebaseRef();
+		var user = firebase.auth().currentUser;
+		var ref = firebase.database().ref();
 
 		var profileRef = $firebaseObject(ref.child("/auth/usedLinks/"+$routeParams.displayName));
 		profileRef.$loaded().then(function(){
-			var profile = $firebaseObject(ref.child('/auth/users/'+profileRef.$value));  
+			var profile = $firebaseObject(ref.child('/auth/users/'+profileRef.$value));
 			profile.$loaded().then(function (){
 				$scope.displayName = profile.displayName;
 				getUserAchievements(profile.$id);
 				
-				if(profile.$id == user.$id) {
+				if(profile.$id == user.uid) {
 					$scope.displayPencil = true;
 				}else {
 					$scope.displayPencil = false;
@@ -28,67 +27,44 @@
 								
 			});
 		});
-		
-		$scope.updateDisplayName = function (newName,$firebaseAuth) {
-			
-			
-			var usersRef = ref.child('auth').child('users');
-			
-			console.log();
-			usersRef.child(user.$id).update({displayName:newName},function() {
-				$location.path('/profile/'+newName);
-
-			});
-			
-			var userpic = authService.fetchAuthPic();
-			userpic.$loaded().then(function(){
-			  $scope.displayPic = userpic.$value;
-		    });
-
-		}
-		
-		// var useremail = authService.fetchAuthEmail();
-		// 	useremail.$loaded().then(function(){
-		// 	  $scope.email = useremail.$value;
-		//     });
+        
+        $scope.displayPic = user.photoURL;
 
 		function getUserAchievements(uid) {
 			var achieveIdlist = [];
-
 			var courseTitle = $firebaseObject(navBarService.getCourseTitle());
 			courseTitle.$loaded().then(function(){
 				$scope.courseTitle = courseTitle.$value;
+
 				var courseProgressRef = ref.child('/userProfiles/' + uid + '/courseProgress/');
-
 				courseProgressRef.once('value', function(snapshot) {
-				  // The callback function will get called twice, once for "fred" and once for "barney"
-				  snapshot.forEach(function(childSnapshot) {
-					// key will be "fred" the first time and "barney" the second time
-					var key = childSnapshot.key();
-					achieveIdlist.push(key);
-					// childData will be the actual contents of the child
-					//var childData = childSnapshot.val();
-					});
 
+                  snapshot.forEach(function(childSnapshot) {
+
+                    var key = childSnapshot.key;
+                    
+                    var modID = key.charAt(1);
+                    var qnsID = key.charAt(3);
+                    var qid = 'q' + ((modID * 5 + 1) + (qnsID * 1));
+                    achieveIdlist.push(qid);
+                  });
+                   //need to change
 					var achievelist =[];
-						//Load Content
-						var content =  $firebaseObject(ref.child('pivotalExpert').child('content'));
-						content.$loaded().then(function(){
-							var courseContent = content.course.courseContent;
-							console.log("Display Question");
-							var achievement = {}; 
 
-							achieveIdlist.forEach(function(achieveId,index){
-							var modID = achieveId.charAt(1);
-							var qnsID = achieveId.charAt(3);
+                    console.log("Display Question");
 
-							var questions = courseContent[modID].questions[qnsID];
-							achievelist.push(questions.qnsTitle);
-						});	
+                    achieveIdlist.forEach(function(qid,index){
+          
+                        var question =  $firebaseObject(ref.child('course/questions/' + qid));
+                        question.$loaded().then(function(){
 
-						$scope.achievelist = achievelist;
-						
-					});			    
+                            achievelist.push(question);
+
+                        });	
+
+					});  
+                    
+                    $scope.achievelist = achievelist;
 				});
 			});
 	  	}

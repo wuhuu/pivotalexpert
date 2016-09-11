@@ -4,12 +4,12 @@
     .module('app.common', [])
     .factory('commonService', commonService);
 	
-  commonService.$inject = [];
   
   function commonService() {
 	  
+
+    var ref = firebase.database().ref();
 	// create an instance of the authentication service
-	var ref = new Firebase("https://pivotal-expert.firebaseio.com");
 
 	var service = {
       firebaseRef: firebaseRef

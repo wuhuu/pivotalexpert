@@ -3,9 +3,7 @@
   angular
     .module('app.contentMgmt', [])
     .config(configFunction);
-  
-  configFunction.$inject = ['$routeProvider'];
-  
+   
   function configFunction($routeProvider) {
     $routeProvider.
 	when('/educator/courseMap', {

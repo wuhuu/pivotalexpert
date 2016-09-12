@@ -247,9 +247,7 @@
 							userProfileNodeRef.child(key+'/courseProgress/'+qid).remove();
 						});
 					});
-					
 				}
-
 				return true;
 			});
 		});

@@ -1,8 +1,100 @@
 
 
     <div layout="column" class="relative" layout-fill role="main">
+        <script>
+  $( function() {
+    $( ".accordion1" )
+      .accordion({
+        header: "> div > h2",
+        collapsible: true
+      })
+      .sortable({
+        collapsible: true,
+        axis: "y",
+        handle: "h2",
+        stop: function( event, ui ) {
+          // IE doesn't register the blur when sorting
+          // so trigger focusout handlers to remove .ui-state-focus
+          ui.item.children( "h2" ).triggerHandler( "focusout" );
+ 
+          // Refresh accordion to handle new order
+          $( this ).accordion( "refresh" );
+        }
+      });
 
-      <md-toolbar>
+      $( ".accordion2" )
+      .accordion({
+        header: "> div > h4",
+        collapsible: true
+      })
+      .sortable({
+        collapsible: true,
+        axis: "y",
+        handle: "h4",
+        stop: function( event, ui ) {
+          // IE doesn't register the blur when sorting
+          // so trigger focusout handlers to remove .ui-state-focus
+          ui.item.children( "h4" ).triggerHandler( "focusout" );
+ 
+          // Refresh accordion to handle new order
+          $( this ).accordion( "refresh" );
+        }
+      });
+  } );
+  </script>
+  <div class="accordion1">
+  <div class="group">
+    <h3>Section 1</h3>
+    <div>
+        <div class="accordion2">
+          <div class="group">
+            <h4>Section 1</h4>
+            <div>
+                asdasdas
+            </div>
+          </div>
+          <div class="group">
+          <h4>Section 2</h4>
+            <div>
+                asdasdas
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="group">
+    <h3>Section 2</h3>
+    <div>
+      <div class="accordion2">
+          <div class="group">
+            <h4>Section 1</h4>
+            <div>
+                asdasdas
+            </div>
+          </div>
+          <div class="group">
+          <h4>Section 2</h4>
+            <div>
+                asdasdas
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="group">
+    <h3>Section 3</h3>
+    <div>
+      <p>Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis. Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui. </p>
+      <ul>
+        <li>List item one</li>
+        <li>List item two</li>
+        <li>List item three</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+        
+      <!--<md-toolbar>
         <div class="md-toolbar-tools">
           <md-button class="md-icon-button" aria-label="Settings" ng-disabled="true">
             <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
@@ -18,7 +110,7 @@
             <md-icon md-svg-src="img/icons/ic_people_24px.svg"></md-icon>
           </md-button>
         </div>
-      </md-toolbar>
+      </md-toolbar>-->
 
       <div layout="row" flex>
         <div flex="auto"></div>
@@ -33,101 +125,14 @@
 
       <div layout="row" flex>
         <div flex="auto"></div>
-        <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: -185px;padding: 20px 20px;">
+        <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: 0px;padding: 20px 20px;">
           <md-content flex md-scroll-y>
-          <md-card-content>
-            <div layout="row" ng-repeat="item in courseMap" flex >
-              <div flex="5">
-                <div layout="column"" flex>
-                  <div flex="auto">
-                    <md-button class="md-icon-button md-primary">
-                      <i class="fa fa-angle-up"></i>
-                    </md-button>
-                  </div>
-                  <div flex="auto">
-                    <md-button class="md-icon-button md-primary">
-                      <i class="fa fa-angle-down"></i>
-                    </md-button>
-                  </div>
-                </div>
-              </div>
-              <div flex="auto">
-                <div layout="row">
-                  <div flex="auto"><h2>{{item.chapterTitle}}</h2></div>
-                  <div flex="10" layout="column">
-                      <div><br></div>
-                      <div layout="row">
-                        <md-button class="md-icon-button"><i class="fa fa-upload fa-lg" aria-hidden="true"></i></md-button>
-                        <md-button class="md-icon-button"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></md-button>
-                      </div>
-                      <div><br></div>
-                  </div>
-                </div>
-            <md-list>
-              <md-item ng-repeat="question in item.qns | filter:search">
-                <div layout="row" flex>
-                  <div flex="5">
-                    <div layout="column"" flex>
-                      <div flex="auto">
-                        <md-button class="md-icon-button md-primary">
-                          <i class="fa fa-angle-up"></i>
-                        </md-button>
-                      </div>
-                      <div flex="auto">
-                        <md-button class="md-icon-button md-primary">
-                          <i class="fa fa-angle-down"></i>
-                        </md-button>
-                      </div>
-                    </div>
-                  </div>
-                  <div flex="auto">
-                <md-item-content>
-                  <div class="md-tile-content">
-                    <font class="font-size-course-title">{{question.qnsTitle}}</font>
-                  </div>
-                  <div class="md-tile-right inset" hide-sm>
-                    <md-button class="md-icon-button" ng-click="editQuestion(question.qnsId,item.cid)">
-                      <i class="fa fa-pencil fa-lg"></i>
-                    </md-button>
-                    <md-button class="md-icon-button">
-                      <i class="fa fa-times fa-lg"></i>
-                    </md-button>
-                  </div>
-                  </md-item-content>
-                  <md-divider ng-if="!$last"></md-divider>
-              </md-item>
-              <md-divider></md-divider>
-            </div>
-            </div>
-            </md-list>
-            </div>
-            </div>
-
-            <md-divider></md-divider>
-            <md-divider></md-divider>
-
-            <div layout="row"" flex>
-              <div flex="5">
-                <div layout="column"" flex>
-                  <div flex="auto">
-                    <md-button class="md-icon-button md-primary">
-                      <i class="fa fa-angle-up"></i>
-                    </md-button>
-                  </div>
-                  <div flex="auto">
-                    <md-button class="md-icon-button md-primary">
-                      <i class="fa fa-angle-down"></i>
-                    </md-button>
-                  </div>
-                </div>
-              </div>
-              <div flex="auto">
-                <h2>Chapter 2: Google Sheets</h2>
-                <md-list>
-                  <md-item ng-repeat="item in courseMaterial | filter:search">
-                    <div layout="row" flex>
-                      <div flex="5">
-                        <div layout="column"" flex>
+          <md-card-content >
+            <div class="accordion1">
+              <div layout="column" ng-repeat="item in courseMap" flex >
+                  <div id='chapButtons' style='position:relative;'>
+                      <div layout="row"" flex>
+                        <div layout="column">
                           <div flex="auto">
                             <md-button class="md-icon-button md-primary">
                               <i class="fa fa-angle-up"></i>
@@ -139,33 +144,116 @@
                             </md-button>
                           </div>
                         </div>
+                        <div layout="row "flex="auto">
+                          <button class="md-icon-button md-button md-default-theme" ng-transclude=""><i class="fa fa-upload fa-lg ng-scope" aria-hidden="true"></i><div class="md-ripple-container"></div></button>
+                          <button class="md-icon-button md-button md-default-theme" ng-transclude=""><i class="fa fa-trash fa-lg ng-scope" aria-hidden="true"></i></button>
+                        </div>
                       </div>
-                      <div flex="auto">
+                  </div>
+                  <h2>{{item.chapterTitle}}</h2>
+                  <div layout="column">
+                    <md-list>
+                      <md-item ng-repeat="question in item.qns | filter:search">
+                        <div layout="row" flex>
+                          <div flex="5">
+                            <div layout="column"" flex>
+                              <div flex="auto">
+                                <md-button class="md-icon-button md-primary">
+                                  <i class="fa fa-angle-up"></i>
+                                </md-button>
+                              </div>
+                              <div flex="auto">
+                                <md-button class="md-icon-button md-primary">
+                                  <i class="fa fa-angle-down"></i>
+                                </md-button>
+                              </div>
+                            </div>
+                          </div>
+                          <div flex="auto">
                         <md-item-content>
                           <div class="md-tile-content">
-                            <font class="font-size-course-title">{{item.title}}</font>
-                            <p>
-                              <font class="font-size-normal">Type: {{item.qnType}}</font>
-                            </p>
+                            <font class="font-size-course-title">{{question.qnsTitle}}</font>
                           </div>
                           <div class="md-tile-right inset" hide-sm>
+                            <md-button class="md-icon-button" ng-click="editQuestion(question.qnsId,item.cid)">
+                              <i class="fa fa-pencil fa-lg"></i>
+                            </md-button>
                             <md-button class="md-icon-button">
-                              <i class="fa fa-pencil"></i>
+                              <i class="fa fa-times fa-lg"></i>
                             </md-button>
                           </div>
-                        </md-item-content>
-                        <md-divider ng-if="!$last"></md-divider>
-                  </md-item>
-              <md-divider></md-divider>
+                          </md-item-content>
+                          <md-divider ng-if="!$last"></md-divider>
+                      </md-item>
+                      <md-divider></md-divider>
+                      </div>
+                      </div>
+                    </md-list>
                   </div>
+                
+
+              </div>
+
+              
+              <md-divider></md-divider>
+
+              <div layout="row"" flex>
+                <div flex="5">
+                  <div layout="column"" flex>
+                    <div flex="auto">
+                      <md-button class="md-icon-button md-primary">
+                        <i class="fa fa-angle-up"></i>
+                      </md-button>
+                    </div>
+                    <div flex="auto">
+                      <md-button class="md-icon-button md-primary">
+                        <i class="fa fa-angle-down"></i>
+                      </md-button>
+                    </div>
+                  </div>
+                </div>
+                <div flex="auto">
+                  <h2>Chapter 2: Google Sheets</h2>
+                  <md-list>
+                    <md-item ng-repeat="item in courseMaterial | filter:search">
+                      <div layout="row" flex>
+                        <div flex="5">
+                          <div layout="column"" flex>
+                            <div flex="auto">
+                              <md-button class="md-icon-button md-primary">
+                                <i class="fa fa-angle-up"></i>
+                              </md-button>
+                            </div>
+                            <div flex="auto">
+                              <md-button class="md-icon-button md-primary">
+                                <i class="fa fa-angle-down"></i>
+                              </md-button>
+                            </div>
+                          </div>
+                        </div>
+                        <div flex="auto">
+                          <md-item-content>
+                            <div class="md-tile-content">
+                              <font class="font-size-course-title">{{item.title}}</font>
+                              <p>
+                                <font class="font-size-normal">Type: {{item.qnType}}</font>
+                              </p>
+                            </div>
+                            <div class="md-tile-right inset" hide-sm>
+                              <md-button class="md-icon-button">
+                                <i class="fa fa-pencil"></i>
+                              </md-button>
+                            </div>
+                          </md-item-content>
+                          <md-divider ng-if="!$last"></md-divider>
+                    </md-item>
+                <md-divider></md-divider>
+                    </div>
+              </div>
+              </md-list>
+              </div>
+              </div>
             </div>
-            </md-list>
-            </div>
-            </div>
-
-
-
-
           </md-card-content>
         </md-card>
   </md-content>
@@ -173,13 +261,5 @@
   <div flex="auto"></div>
   </div>
   </div>
-    <!-- Angular Material Dependencies -->
-    <script src="js/angular.min.js"></script>
-    <script src="js/angular-animate.min.js"></script>
-    <script src="js/angular-aria.min.js"></script>
-    <script src="js/angular-material.min.js"></script>
-    <script src="js/angular-material-icons.min.js"></script>
-
-    <script src="js/index.js"></script>
 
 

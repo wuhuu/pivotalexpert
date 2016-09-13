@@ -132,7 +132,7 @@
               <div layout="column" ng-repeat="item in courseMap" flex >
                   <div id='chapButtons' style='position:relative;'>
                       <div layout="row"" flex>
-                        <div layout="column">
+                        <!--<div layout="column">
                           <div flex="auto">
                             <md-button class="md-icon-button md-primary">
                               <i class="fa fa-angle-up"></i>
@@ -143,10 +143,12 @@
                               <i class="fa fa-angle-down"></i>
                             </md-button>
                           </div>
-                        </div>
+                        </div>-->
                         <div layout="row "flex="auto">
-                          <button class="md-icon-button md-button md-default-theme" ng-transclude=""><i class="fa fa-upload fa-lg ng-scope" aria-hidden="true"></i><div class="md-ripple-container"></div></button>
-                          <button class="md-icon-button md-button md-default-theme" ng-transclude=""><i class="fa fa-trash fa-lg ng-scope" aria-hidden="true"></i></button>
+                          <div layout="row">
+                            <md-button class="md-icon-button" style="background-color:white;"><i class="fa fa-upload fa-lg" aria-hidden="true"></i></md-button>
+                            <md-button class="md-icon-button" style="background-color:white;"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></md-button>
+                          </div>
                         </div>
                       </div>
                   </div>

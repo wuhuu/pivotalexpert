@@ -1,91 +1,35 @@
-<style>
-	html{
-		height:100%;
-	}
-	body{
-		height:100%;
-	}
-	div.course{
-		width: 100%;
-		background-color: #ffffff;
-	}
+<!--left bar-->
+<div layout="row" flex>
+  <div flex="15"></div>
+  <div class="md-whiteframe-z2" layout="column" flex="70">
+    <div style="padding: 0px 20px">
+      <h2 class="pull-left">{{qnsTitle}}</h2>
+      <h3 class="pull-right">score: ({{currentScore}}/{{totalScore}})</h3>
+    </div>
+    <md-divider></md-divider>
+    <div style="padding: 0px 20px">
+      <div ng-repeat="mcq in questions" ng-init="qnsID = $index">
+          <p>
+            <span ng-if="checked">
+              <i class="fa fa-check" style="color: green"></i>
+              <i class="fa fa-times" style="color: red"></i></span>
+            <strong>Q{{qnsID + 1}}.</strong> {{mcq.qns}}</p>
+            
+            <div ng-repeat="option in mcq.options">
 
-	.mainHeader{
-		font-family: "Karla", sans-serif !important;
-		font-size: 300%;
-	}
+                <input type="radio" ng-model="$parent.qnsID" name="{{qnsID}}" ng-value="option" > {{option}}<br/>
 
-	.push-down{
-		margin-top: 80px;
-	}
-
-	.login{
-		border-radius: 25px;
-		background: #CC6666;
-		padding: 70px 25px;
-	}
+            </div>
 
 
-</style>
+          <br>
+      </div>
+    </div>
 
+    <div style="padding: 0 100px"layout="row">
+      <center flex="80"></center>
+      <md-button flex="20" class="md-raised" ng-click="submit()">Submit</md-button>
+    </div>
 
-<div class="col-md-12" style="margin: 0px; padding: 0px; height:100%">
-	<div class="mcq" style="height:100%">
-		<div class="col-md-12 course" style="margin: 0px; padding: 0px; border-bottom: solid; border-bottom-color: #c3c3c3;">
-			<H2 style="padding-left: 30px">{{qnsTitle}}</H2>
-		</div>
-		<div class="col-md-3" style="height:calc(100% - 63px); background-color: white; padding: 20px 10px">
-			<h2>Instructions:</h2>
-			<h3>Please answer the questions on the right.</h3>
-			<br/>
-			<h3>Unable to get the right answer?</h3>
-			<p><strong>You may want to do these steps:</strong></p>
-			<p style="padding-left: 10px">1) Watch the videos or read the slides again.</p>
-			<p style="padding-left: 10px">2) Ask a friend on the gitter channel.</p>
-			<p style="padding-left: 10px">3) Email a professor at <a href="mailto:cboesch@smu.edu.sg?Subject=Hello%20again" style="font-size:1em">cbosch@smu.edu.sg</a></p>
-		</div>
-		<div class="col-md-9" style="padding: 20px 30px">
-			<div class="col-md-6">
-				<div ng-show="qnsInstruction">
-					<H2>Question:</H2>
-					<br/>
-					<h4>{{qnsInstruction}}</h4>
-					<br>
-				</div>
-				<div ng-repeat="option in options">
-					<label>
-						<input type="radio" ng-model="$parent.answer" name="radio" ng-value="option" ><label for="radio1"><span><span></span></span></span>{{option}}<br/></label>
-					</label>
-				</div>
-				<input type="submit" value="Submit" ng-click="submit()">
-			</div>
-			
-
-			<div class="col-md-4 push-down">
-				<div ng-show='incorrect' class="col-md-12" style="box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .3); padding: 0px">
-					<div class="col-md-12 text-center" style="background-color: red; padding:2px; margin: 0; border: 1px">
-						<h3 style="color: white; margin: 0px"> INCORRECT </h3>
-					</div>
-					<div class="col-md-12 text-center" style="padding:0; margin: 0">
-						<h4> {{hint}} </h4>
-					</div>
-					
-				</div>
-
-				 
-				 <div ng-show='correct' class="col-md-12" style="box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .3); padding: 0px">
-				 	<div class="col-md-12 text-center" style="background-color: green; padding: 2px; margin: 0; border: 1px">
-						<h3 style="color: white; margin: 0px"> CORRECT </h3>
-					</div>
-					<div class="col-md-12 text-center" style="padding:0; margin: 0">
-						<h4> 
-							Well done!!! You got the answer correct. Click next to challenge yourself for another questions! 
-							<input type="submit" class="btn-primary" value="Next Qns" ng-click="next()"> 
-						</h4>
-					</div>
-					
-				</div>
-			</div>	
-		</div>	
-	 </div>   
+  </div>
 </div>

@@ -34,15 +34,48 @@
             $scope.srclink = $sce.trustAsResourceUrl(question.link);
         }
         
+        //Slides type question
         if(qnsType == 'slides'){
+           var slides = question.slides;
             
+            $scope.currentSlide = 1;
+            $scope.totalSlide = slides.length
+
+            $scope.changeSlide = function(changeBy) {
+                $scope.currentSlide += changeBy;
+                
+                var currentSlide = slides[$scope.currentSlide - 1];
+                $scope.srclink = $sce.trustAsResourceUrl(currentSlide.imageLink);
+                $scope.explanation = currentSlide.explanation;
+            }
+            //initial run
+            $scope.changeSlide(0);
+        }
+        
+        //MCQ type question
+        if(qnsType == 'mcq') {
+            
+            
+            $scope.questions = question.mcq;
+            
+            $scope.currentScore = 0;
+            $scope.totalScore = $scope.questions.length;
+            $scope.data = {selectedOption: "a"};
         }
    
     
         //Submit answer or go next qns
         $scope.submit = function() {
-            if (qnsType == 'video'){
+
+            if (qnsType == 'video' || qnsType == 'slides'){
                 nextQns(chapter,qns);
+            }
+            
+            if (qnsType == 'mcq'){
+                $scope.checked = true;
+                console.log("MCQ TEST");
+                console.log($scope.data);
+                console.log($scope.answer);
             }
         }
     });

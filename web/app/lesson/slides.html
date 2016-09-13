@@ -1,53 +1,24 @@
-<style>
-	html{
-		height:100%;
-	}
-	body{
-		height:100%;
-	}
-	div.course{
-		width: 100%;
-		background-color: #ffffff;
-	}
+<!--left bar-->
+<div layout="row" flex>
+  <div flex="15"></div>
+  <div class="md-whiteframe-z2" layout="column" flex="70">
+    <div style="padding: 0px 20px">
+      <h2 class="pull-left">{{qnsTitle}}</h2>
+    </div>
+    <md-divider></md-divider>
+    <div style="padding: 10px 100px">
+      <img height="315" width="100%" ng-src="{{srclink}}"></img>
+      <md-content style="max-height: 100px">
+        <p>{{explanation}}</p>
+        </md-content>
+      <div style="padding: 20px 0px"layout="row">
+        <md-button flex="20" class="md-raised md-primary pull-left" ng-show="currentSlide != 1" ng-click="changeSlide(-1)">prev</md-button>
+        <center flex="60">({{currentSlide}}/{{totalSlide}})</center>
+        <md-button flex="20" class="md-raised md-primary pull-right" ng-show="currentSlide != totalSlide" ng-click="changeSlide(1)">next</md-button>
+        <md-button flex="20" class="md-raised md-primary pull-right" ng-show="currentSlide == totalSlide" ng-click="submit()">complete</md-button>
+      </div>
+    </div>
 
-	.mainHeader{
-		font-family: "Karla", sans-serif !important;
-		font-size: 300%;
-	}
 
-	.push-down{
-		margin-top: 50px;
-	}
-
-	.login{	
-		border-radius: 25px;
-		background: #CC6666;
-		padding: 70px 25px;
-	}
-</style>
-
-<div class="col-md-12" style="margin: 0px; padding: 0px; height:100%">
-	<div class="col-md-12 course" style="margin: 0px; padding: 0px; border-bottom: solid; border-bottom-color: #c3c3c3;">
-		<H2 style="padding-left: 30px">{{qnsTitle}}</H2>
-	</div>
-	<div class="col-md-3" style="height:calc(100% - 67px); background-color: white; padding: 20px 10px">
-		<h2>Instructions:</h2>
-		<h3>Please read the slides on the right.</h3>
-		<br/>
-		<h3>Content of slides:</h3>
-		{{qnsDescription}}
-	</div>
-	<div class="col-md-9 center" style="padding: 15px 30px 0px 30px; margin: 0">
-		<div class="col-md-12">
-			<div class="center">
-				<iframe ng-src="{{srclink}}" frameborder="0" width="700" height="415" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-			</div>
-		</div>
-		<div class="col-md-12" style="margin-top: 3px">
-			<form ng-submit="submit()">
-				<input type="submit" value="Complete">
-			<form/>
-		</div>
-	</div>	
- 
+  </div>
 </div>

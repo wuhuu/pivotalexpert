@@ -3,7 +3,49 @@
   angular
     .module('app.contentMgmt')
     .controller('ContentMgmtController', ContentMgmtController)
-    .controller('CourseMapController',CourseMapController);
+    .controller('CourseMapController',CourseMapController)
+    .directive('onFinishRender', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attr) {
+            if (scope.$last === true) {
+                $timeout(function () {
+                    $( ".accordion1" )
+                      .accordion({
+                        header: "> div > h2",
+                        collapsible: true
+                      })
+                      .sortable({
+                        collapsible: true,
+                        axis: "y",
+                        handle: "h2",
+                        stop: function( event, ui ) {
+                          // IE doesn't register the blur when sorting
+                          // so trigger focusout handlers to remove .ui-state-focus
+                          ui.item.children( "h2" ).triggerHandler( "focusout" );
+
+                          // Refresh accordion to handle new order
+                          $( this ).accordion( "refresh" );
+                        }
+                      });
+
+                      $( ".accordion2" )
+                      .sortable({
+                        axis: "y",
+                        handle: "md-item",
+                        stop: function( event, ui ) {
+                          // IE doesn't register the blur when sorting
+                          // so trigger focusout handlers to remove .ui-state-focus
+                          ui.item.children( "h4" ).triggerHandler( "focusout" );
+                          // Refresh accordion to handle new order
+                          $( this ).accordion( "refresh" );
+                        }
+                      });
+                });
+            }
+        }
+      }
+    });
 
   function ContentMgmtController($http,$scope, $routeParams, $location, $firebaseObject,contentMgmtService) {
 	  console.log("ContentMgmtController");
@@ -22,7 +64,7 @@
 
     $scope.saveQns = function() {
       contentMgmtService.updateQuestion($scope.qns,false);
-    }  
+    } 
       
   }
 

@@ -20,8 +20,9 @@
   	  updateCourseSeq:updateCourseSeq,
   	  deleteChapter:deleteChapter,
   	  getQuestion:getQuestion,
-  	  updateQuestion:updateQuestion,
-  	  updateQuestionSeq:updateQuestionSeq,
+  	  updateVideoQuestion:updateVideoQuestion,
+      updateSlideQuestion:updateSlideQuestion,
+      updateQuestionSeq:updateQuestionSeq,
   	  getChapterIndex:getChapterIndex,
   	  deleteQuestion:deleteQuestion
       };
@@ -137,7 +138,7 @@
 		return $firebaseObject(commonService.firebaseRef().child('course/questions/'+qid));
 	}
 
-	function updateQuestion(question,isNewQuestion) {
+	function updateVideoQuestion(question,isNewQuestion) {
 
 		// retrieve courseSeq node
 		var questionNode = $firebaseObject(questionNodeRef);
@@ -164,29 +165,18 @@
 			// create new question node & fill it up
 
 			var questionNode = {
-                hint:question.hint,
 								qnsDescription:question.qnsDescription,
 								qnsInstruction:question.qnsInstruction,
 								qnsTitle:question.qnsTitle,
 								qnsType:question.qnsType,
-								qns:question.qns,
 								link:question.link
               };
-      //prevent adding null objects
-      for (var item in questionNode) {
-        if (!questionNode[item]) {
-          questionNode[item] = "";
-        }
-      }
-
 			// create courseSeq node & fill it up
 			var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle};
-			// create answerkey node & fill it up
-			var answerkeyNode = {answer:"",msg:[],syntax:[],values:[],answerCells:{}};
 
 			// update database
 			questionNodeRef.child(qid).update(questionNode);
-			//answerKeyNodeRef.update({qid:answerkeyNode});
+
       var courseArray = $firebaseObject(courseSeqNodeRef);
 			getChapterIndex(cid).then(function(chapIndex){
         getQnsIndex(chapIndex,qid).then(function(qnsIndex){
@@ -207,6 +197,76 @@
       });
 		});
 	}
+
+  function updateSlideQuestion(question,isNewQuestion) {
+		// retrieve courseSeq node
+		var questionNode = $firebaseObject(questionNodeRef);
+    var q =$q.defer();
+		questionNode.$loaded().then(function(){
+  		 	// if user wants to create chapter
+			var qid = question.qid;
+			var cid = question.cid;
+
+			if(isNewQuestion) {
+				// checking if chapterTitle already exist
+				for(var element in questionNode) {
+					if(element.qnsTitle === question.qnsTitle) {
+						//response this chapter is being used now.
+						return "This Question Title is being used now.";
+					}
+				}
+
+			}
+
+			if(!qid) {
+				//generate new qid
+				qid = 000;
+			}
+			// create new question node & fill it up
+      var tempSlides = question.slides;
+      question.slides =[];
+      for(var i = 0; i<tempSlides.length;i++){
+        var currentSlide = {
+          explanation:tempSlides[i]['explanation'],
+          imageLink:tempSlides[i]['imageLink']
+        }
+        question.slides.push(currentSlide);
+      }
+
+			var questionNode = {
+								qnsTitle:question.qnsTitle,
+								qnsType:question.qnsType,
+                slides:question.slides
+              };
+			// create courseSeq node & fill it up
+			var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle};
+			// update database
+			questionNodeRef.child(qid).update(questionNode);
+      var courseArray = $firebaseObject(courseSeqNodeRef);
+			getChapterIndex(cid).then(function(chapIndex){
+        getQnsIndex(chapIndex,qid).then(function(qnsIndex){
+          courseArray.$loaded().then(function(){
+            if(courseArray[chapIndex]!=null) {
+              qnsIndex = ""+qnsIndex;
+              courseArray[chapIndex].qns[qnsIndex] = questionSeqNode;
+                courseArray.$save(chapIndex).then(function(){
+                  q.resolve(true);
+                  if(isNewQuestion) {
+			              return "Question created!"
+      					  }else {
+	                  return "Question updated!"
+      					  }
+                  
+                });
+            }
+
+          });
+			  });
+      });
+		});
+    return q.promise;
+	}
+
 
 	function updateQuestionSeq(questionSeq,cid) {
 		var newQuestionSeq = [];

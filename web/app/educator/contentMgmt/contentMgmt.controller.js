@@ -63,19 +63,34 @@
     });
 
     $scope.saveQns = function() {
-      contentMgmtService.updateQuestion($scope.qns,false);
-    } 
-      
+      if(question.qnsType == "video"){
+        contentMgmtService.updateVideoQuestion($scope.qns,false);
+      }else if (question.qnsType == "slides") {
+        contentMgmtService.updateSlideQuestion($scope.qns,false).then(function(){
+          window.location.reload();
+        });
+      }
+
+    }
+
+    $scope.deleteSlide = function(index){
+      $scope.qns.slides.splice(index,1);
+    }
+
+    $scope.addSlide = function(){
+      $scope.qns.slides.push({explanation:" ",imageLink:" "});
+    }
+
   }
 
 
   function CourseMapController($http,$scope, $routeParams, $location, $firebaseObject, contentMgmtService) {
-    
+
     var courseMap = contentMgmtService.getCourseSeq();
     courseMap.$loaded().then(function(){
       $scope.courseMap = courseMap;
     });
-    
+
     $scope.editQuestion = function(qid,cid) {
       var question = contentMgmtService.getQuestion(qid);
       question.$loaded().then(function() {
@@ -87,7 +102,6 @@
     }
   }
 
-  
+
 
 })();
-

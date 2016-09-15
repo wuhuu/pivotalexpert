@@ -25,6 +25,10 @@
   when('/lesson/GSheet/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/gsheet.html',
     controller: 'LessonController'
+    }).
+  when('/lesson/code/:chapter/:qns/:qid', {
+      templateUrl: 'app/lesson/codebox.html',
+    controller: 'LessonController'
     });
   }
   

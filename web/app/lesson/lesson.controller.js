@@ -27,6 +27,7 @@
         $scope.qnsTitle = question.qnsTitle;
 		$scope.qnsInstruction = question.qnsInstruction;
 		$scope.qnsDescription = question.qnsDescription;
+        $scope.qnsHint = question.hint;
         var qnsType = question.qnsType;
         
         //Video type question
@@ -43,7 +44,6 @@
 
             $scope.changeSlide = function(changeBy) {
                 $scope.currentSlide += changeBy;
-                
                 var currentSlide = slides[$scope.currentSlide - 1];
                 $scope.srclink = $sce.trustAsResourceUrl(currentSlide.imageLink);
                 $scope.explanation = currentSlide.explanation;
@@ -55,12 +55,33 @@
         //MCQ type question
         if(qnsType == 'mcq') {
             
-            
             $scope.questions = question.mcq;
-            
             $scope.currentScore = 0;
             $scope.totalScore = $scope.questions.length;
-            $scope.data = {selectedOption: "a"};
+        }
+        
+        //Codebox type question
+        if(qnsType == 'code') {
+            var editor = ace.edit("editor");
+
+            editor.setTheme("ace/theme/chrome");
+            editor.getSession().setMode("ace/mode/javascript");
+            editor.setOption("maxLines", 30);
+            editor.setOption("minLines", 10);
+            //Question here, need to change to retrieve from json
+            editor.insert(question.initialCode);
+            
+            
+            /* Bind to commands
+            editor.commands.addCommand({
+                name: 'myCommand',
+                bindKey: {win: 'Ctrl-Enter',  mac: 'Command-Enter'},
+                exec: function(editor) {
+                    alert("you have just press CTRL-ENTER")
+                },
+                readOnly: true // false if this command should not apply in readOnly mode
+            });
+            */
         }
    
     
@@ -71,12 +92,52 @@
                 nextQns(chapter,qns);
             }
             
-            if (qnsType == 'mcq'){
-                $scope.checked = true;
-                console.log("MCQ TEST");
-                console.log($scope.data);
-                console.log($scope.answer);
-            }
+            //Load answer key of the question
+            var answerKey = $firebaseObject(ref.child('answerKey/' + qid));
+            answerKey.$loaded().then(function(){
+                
+                //MCQ question type
+                if (qnsType == 'mcq'){
+                    $scope.checked = true;
+                    console.log("MCQ TEST");
+                    $scope.currentScore = 0;
+                    for (i = 0; i < $scope.totalScore; i++) { 
+                        var result = $scope.questions[i].qnsID == answerKey.answer[i];
+                        $scope.questions[i].qnsID = result;
+                        //increase score if correct
+                        if(result) {
+                            $scope.currentScore += 1;
+                        }
+                    }
+                    //all correct, go to next qns
+                    if($scope.currentScore == $scope.totalScore) {
+                        nextQns(chapter,qns);
+                    }
+                }
+                
+                
+                //Codebox question type
+                if (qnsType == 'code') {
+                    // Check for syntax error
+                    var annot = editor.getSession().getAnnotations();
+                    if (annot.length == 0) {
+                        var input = editor.getValue().replace(/\n/g, " ");
+                        var code = "code = function(input){ var ans = \"var myName;\"; return input.indexOf(ans) != -1; }";
+                        var test = "var test = \"" + input + "\"; var result = code(test)== true;"
+                        
+                        var ww = new Worker(getInlineJSandTest(code, test));
+                        //Send any message to worker
+                        ww.postMessage("and message");
+                        ww.onmessage = function (e) {
+                        var msg = e.data;
+                            $scope.incorrect = true;
+                        };
+               
+                    } else {
+                        $scope.incorrect = true;
+                    }
+                }
+            });
         }
     });
     
@@ -103,6 +164,15 @@
 			}
         });
     }
+    
+    function getInlineJSandTest (code, test) {
+		var top = 'onmessage = function(msg){';
+		var bottom = 'postMessage(result);};';
+
+		var all = code +"\n\n"+top+"\n"+test+"\n"+bottom+"\n"
+		var blob = new Blob([all], {"type": "text\/plain"});
+		return URL.createObjectURL(blob);
+	}
     
     /*
 	//Load course

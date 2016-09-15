@@ -7,7 +7,7 @@
 
   function navBarService($rootScope, $firebaseObject, $firebaseAuth, authService) {
     var ref = firebase.database().ref();
-    var user = authService.fetchAuthData();
+    
 
     var service = {
       updateNavBar: updateNavBar,
@@ -24,10 +24,9 @@
 
     function getUserAchievements($scope) {
         var courseTitle = $firebaseObject(getCourseTitle());
-        var user = authService.fetchAuthData();
         courseTitle.$loaded().then(function(){
             courseTitle = courseTitle.$value;
-        
+            var user = firebase.auth().currentUser;
             var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
 
             courseProgressRef.once('value', function(snapshot) {

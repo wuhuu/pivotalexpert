@@ -4,11 +4,36 @@
     .module('app.landing')
     .controller('LandingController', LandingController);
 
-  LandingController.$inject = ['$scope','$http','$firebaseObject','$location','authService'];
+  LandingController.$inject = ['$scope','$firebaseObject','$location'];
 
-  function LandingController($scope, $http, $firebaseObject,$location ,authService) {
+  function LandingController($rootScope, $firebaseObject,$location) {
 	  console.log("LandingController");
-	  
+	     
+      firebase.auth().onAuthStateChanged(function(user) {
+         
+        if (user) {
+          // User is signed in.
+          var usersRef = firebase.database().ref().child('auth/users');
+          var userData = $firebaseObject(usersRef.child(user.uid));
+          //navBarService.updateNavBar(user.displayName);
+          userData.$loaded().then(function(){
+               
+            $rootScope.logined = true;
+            if(userData.profileLink == null) {
+              $location.path('/createProfileLink');
+            }
+            else{
+              $location.path('/profile/' + userData.profileLink);
+            }
+          });
+        } else {
+          // User not signed in.
+          $location.path('/login/');
+        }
+      });
+      
+      
+      /* OLD CODE
 	  var ref = firebase.database().ref();
 	  var user = firebase.auth().currentUser;
       
@@ -34,6 +59,7 @@
 			$location.path('/lesson/' + questions.qnsType + '/' + modID + '/' + qnsID);
 		});
 	});
+    */
   }
 
 })();

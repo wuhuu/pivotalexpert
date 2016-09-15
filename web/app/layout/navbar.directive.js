@@ -23,12 +23,13 @@
           console.log("Logging in");
 	      authService.login();      
       }
+      
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           // User is signed in.
           navBarService.getUserAchievements($scope);
           $scope.displayPic = user.photoURL;
-          
+          $scope.logined = true;
            var userData = $firebaseObject(usersRef.child(user.uid));
           //navBarService.updateNavBar(user.displayName);
           userData.$loaded().then(function(){

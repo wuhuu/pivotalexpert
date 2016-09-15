@@ -8,26 +8,23 @@
     </div>
     <md-divider></md-divider>
     <div style="padding: 0px 20px">
-      <div ng-repeat="mcq in questions" ng-init="qnsID = $index">
+      <div ng-repeat="mcq in questions">
           <p>
-            <span ng-if="checked">
-              <i class="fa fa-check" style="color: green"></i>
-              <i class="fa fa-times" style="color: red"></i></span>
-            <strong>Q{{qnsID + 1}}.</strong> {{mcq.qns}}</p>
+            <span ng-if="checked && (mcq.qnsID == true || mcq.qnsID == false)" ng-model="mcq.qns">
+              <i class="fa fa-check" style="color: green" ng-show="mcq.qnsID"></i>
+              <i class="fa fa-times" style="color: red" ng-hide="mcq.qnsID"></i></span>
+            <strong>Q{{$index + 1}}.</strong> {{mcq.qns}}</p>
             
-            <div ng-repeat="option in mcq.options">
-
-                <input type="radio" ng-model="$parent.qnsID" name="{{qnsID}}" ng-value="option" > {{option}}<br/>
-
-            </div>
-
-
+          <md-radio-group ng-model="mcq.qnsID" style="border: none">
+            <md-radio-button ng-repeat="option in mcq.options" value="{{option}}">{{option}}</md-radio-button>
+          </md-radio-group>
           <br>
       </div>
     </div>
 
     <div style="padding: 0 100px"layout="row">
       <center flex="80"></center>
+      
       <md-button flex="20" class="md-raised" ng-click="submit()">Submit</md-button>
     </div>
 

@@ -4,7 +4,7 @@
     <h2>Question:</h2>
     <p>{{qnsInstruction}}</p>
     <div style="padding: 20px">
-      <md-button class="md-raised md-primary" style="width: 100%">Submit</md-button>
+      <md-button class="md-raised md-primary" style="width: 100%" ng-click="submit()">Submit</md-button>
     </div>
     <!--if ans is incorrect display this-->
     <div style="padding: 20px" ng-show="incorrect">
@@ -30,8 +30,8 @@
       <h2>{{qnsTitle}}</h2>
     </div>
     <md-divider></md-divider>
-    <div style="padding: 20px" flex>
-      <iframe style="height: 400px; width: 100%" src="https://docs.google.com/spreadsheets/d/15BR_mgdyQ1aYxoWzOosc2QaC6wLEdwI9LaY_BbA4rFc/pubhtml?widget=true&amp;headers=false"></iframe>
+    <div id="editor" style="padding: 20px" flex > 
+    
     </div>
   </div>
 </div>

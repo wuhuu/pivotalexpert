@@ -29,6 +29,7 @@
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/userinfo.email');
       provider.addScope('https://www.googleapis.com/auth/drive.file');
+      provider.addScope('https://www.googleapis.com/auth/spreadsheets');
       
       firebase.auth().signInWithPopup(provider).then(function(result) {
 
@@ -64,22 +65,23 @@
     }
 
     function fetchAuthData() {
-      var user = firebase.auth().currentUser;
+      firebase.auth().onAuthStateChanged(function(user) {
 
-      if (user) {
-        // User is signed in.
-        console.log("Fetching fetchAuthData " + user.uid);
-        return user;
-        
-      } else {
-        // No user is signed in.
-        console.log("not login, auth.service");
-		if($location.path != "/login") {
-			$location.path('/login');
-		} else {
-			return null;
-		}
-      }
+          if (user) {
+            // User is signed in.
+            console.log("Fetching fetchAuthData " + user.uid);
+            return firebase.auth().currentUser;
+            
+          } else {
+            // No user is signed in.
+            console.log("not login, auth.service");
+            if($location.path != "/login") {
+                $location.path('/login');
+            } else {
+                return null;
+            }
+          }
+      });
     }
 
     function fetchAuthPic() {

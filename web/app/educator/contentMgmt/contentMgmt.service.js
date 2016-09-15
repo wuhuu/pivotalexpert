@@ -23,7 +23,8 @@
 	  updateQuestion:updateQuestion,
 	  updateQuestionSeq:updateQuestionSeq,
 	  getChapterIndex:getChapterIndex,
-	  deleteQuestion:deleteQuestion
+	  deleteQuestion:deleteQuestion,
+	  updateEntireSeq:updateEntireSeq
     };
 	
 	return service;    
@@ -106,6 +107,10 @@
 
 			courseSeqNodeRef.update(newCourseSeq);
 		});
+	}
+
+	function updateEntireSeq(courseSeq) {
+		courseSeqNodeRef.update(courseSeq);
 	}    
 
   	function deleteChapter (cid) {

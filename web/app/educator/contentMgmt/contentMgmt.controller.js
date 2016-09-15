@@ -29,18 +29,19 @@
                         }
                       });
 
-                      $( ".accordion2" )
+                   $( ".accordion2" )
                       .sortable({
-                        axis: "y",
-                        handle: "md-item",
                         stop: function( event, ui ) {
                           // IE doesn't register the blur when sorting
                           // so trigger focusout handlers to remove .ui-state-focus
-                          ui.item.children( "h4" ).triggerHandler( "focusout" );
+                          //ui.item.children( "md-item-content" ).triggerHandler( "focusout" );
+                          // if ($(ui.item).hasClass('.sublist') && $(ui.placeholder).parent()[0] != this) {
+                          //     $(this).sortable('cancel');
+                          // }
                           // Refresh accordion to handle new order
-                          $( this ).accordion( "refresh" );
+                          // $( this ).accordion( "refresh" );
                         }
-                      });
+                      });   
                 });
             }
         }
@@ -64,8 +65,9 @@
 
     $scope.saveQns = function() {
       contentMgmtService.updateQuestion($scope.qns,false);
-    } 
-      
+    }
+
+    
   }
 
 
@@ -85,6 +87,43 @@
         console.error("Error:", error);
       });
     }
+
+    $scope.saveSeq = function() {
+      var courseSequence = [];
+      var chap ={};
+      var qlist =[];
+      var qns ={};
+      $( "div#chapter" ).each( function( index, value ) {
+        var c = $(this).find('h2.cid');
+        console.log(index + ":" + $(this).attr('id'));
+        var cid = c.attr('cid');
+        var title = c.text().trim();
+        chap['cid'] = cid;
+        chap['chapterTitle']=title;
+        var qElements = $(this).find('h4.question');
+        // all question here
+        for(i=0;i<qElements.length;i++) {
+          var obj = qElements[i];
+          console.log("questionid: "+ obj.id);
+          qns['qid']=obj.id;
+          qns['qnsTitle']= obj.textContent;
+          qlist.push(qns);
+          qns ={};
+        }
+
+        chap['qns']=qlist;
+        courseSequence.push(chap);
+        chap={};
+        qlist=[];
+
+      });
+
+      
+      contentMgmtService.updateEntireSeq(courseSequence);
+      window.location.reload();
+      //$location.path('/educator/courseMap');
+    } 
+
   }
 
   

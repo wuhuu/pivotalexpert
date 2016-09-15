@@ -10,7 +10,7 @@
         <div flex="auto"></div>
         <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 0px 10px;height: 120px;">
               <h1>Pivotal Expert Course Map</h1>
-              <md-button class="md-raised" style="margin-top: -10px;" href="./courseMap">Save all changes</md-button>
+              <md-button class="md-raised" style="margin-top: -10px;" ng-click="saveSeq()">Save all changes</md-button>
               <md-button class="md-raised" style="margin-top: -10px;">Add Chapter</md-button>
               <md-button class="md-raised" style="margin-top: -10px;" href="./add_question.html">Add Question</md-button>
         </div>
@@ -23,33 +23,35 @@
           <md-content flex md-scroll-y>
           <md-card-content >
             <div class="accordion1">
-              <div layout="column" ng-repeat="item in courseMap" flex  on-finish-render="ngRepeatFinished">
-
-                <h2>
+              <div id="chapter" layout="column" ng-repeat="item in courseMap" flex  on-finish-render="ngRepeatFinished">
+                <h2 class='cid' cid='{{item.cid}}'>
                   {{item.chapterTitle}}
                   <md-button class="md-icon-button" ><i class="fa fa-upload" aria-hidden="true"></i></md-button>
                   <md-button class="md-icon-button" ><i class="fa fa-trash" aria-hidden="true"></i></md-button>
                 </h2>
                 <div layout="column">
                   <md-list>
-                    <md-item ng-repeat="question in item.qns | filter:search">
-                      <md-item-content>
-                        <div layout="row" flex>
-                          <md-button class="md-icon-button">
-                            <i class="fa fa-times fa-lg"></i>
-                          </md-button>
-                          <div flex="70" class="md-tile-content">
-                            <font class="font-size-course-title">{{question.qnsTitle}}</font>
-
-                          </div>
-                          <div class="md-tile-right inset" hide-sm>
-                            <md-button class="md-icon-button" ng-click="editQuestion(question.qnsId,item.cid)">
-                              <i class="fa fa-pencil fa-lg"></i>
+                    <div class="accordion2">
+                    <div ng-repeat="question in item.qns">
+                      <md-item>
+                        <md-item-content>
+                          <div layout="row" flex>
+                            <md-button class="md-icon-button">
+                              <i class="fa fa-times fa-lg"></i>
                             </md-button>
+                            <div flex="70" class="md-tile-content">
+                              <h4 class="question" id='{{question.qid}}'>{{question.qnsTitle}}</h4>
+                            </div>
+                            <div class="md-tile-right inset" hide-sm>
+                              <md-button class="md-icon-button" ng-click="editQuestion(question.qnsId,item.cid)">
+                                <i class="fa fa-pencil fa-lg"></i>
+                              </md-button>
+                            </div>
                           </div>
-                        </div>
-                      </md-item-content>
-                    </md-item>
+                        </md-item-content>
+                      </md-item>
+                    </div>
+                    </div>
                   </md-list>
                 </div>
                 <md-divider></md-divider>

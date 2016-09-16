@@ -3,7 +3,7 @@
     <div layout="column" class="relative" layout-fill role="main">
         <script>
   $( function() {
-    
+
   } );
   </script>
       <div layout="row" flex>
@@ -31,6 +31,21 @@
                 </h2>
                 <div layout="column">
                   <md-list>
+<!--<<<<<<< HEAD
+                    <md-item ng-repeat="question in item.qns | filter:search">
+                      <md-item-content>
+                        <div layout="row" flex>
+                          <md-button class="md-icon-button">
+                            <i class="fa fa-times fa-lg"></i>
+                          </md-button>
+                          <div flex="70" class="md-tile-content">
+                            <font class="font-size-course-title">{{question.qnsTitle}}</font>
+
+                          </div>
+                          <div class="md-tile-right inset" hide-sm>
+                            <md-button class="md-icon-button" ng-click="editQuestion(question.qid,item.cid)">
+                              <i class="fa fa-pencil fa-lg"></i>
+=======-->
                     <div class="accordion2">
                     <div ng-repeat="question in item.qns">
                       <md-item>
@@ -38,6 +53,7 @@
                           <div layout="row" flex>
                             <md-button class="md-icon-button">
                               <i class="fa fa-times fa-lg"></i>
+
                             </md-button>
                             <div flex="70" class="md-tile-content">
                               <h4 class="question" id='{{question.qid}}'>{{question.qnsTitle}}</h4>

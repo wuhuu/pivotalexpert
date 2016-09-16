@@ -88,7 +88,9 @@
 
     $scope.saveQns = function() {
       if(question.qnsType == "video"){
-        contentMgmtService.updateVideoQuestion($scope.qns,false);
+        contentMgmtService.updateVideoQuestion($scope.qns,false).then(function(){
+          window.location.reload();
+        });
       }else if (question.qnsType == "slides") {
         contentMgmtService.updateSlideQuestion($scope.qns,false).then(function(){
           window.location.reload();

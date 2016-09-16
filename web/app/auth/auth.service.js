@@ -37,7 +37,7 @@
         // The signed-in user info.
         var user = result.user;
         $rootScope.userID = user.uid;
-        
+
         usersRef.child(user.uid).update({
           pic: user.photoURL,
           email: user.email,
@@ -59,9 +59,9 @@
         //navBarService.updateNavBar(user.displayName);
         userData.$loaded().then(function(){
             //load drive API to create if have not created before
-            if(!userData.driveExcel) {
+            //if(!userData.driveExcel) {
                 loadDriveApi();   
-            }
+            //}
             //Create Google Folder upon login
             $rootScope.logined = true;
             if(userData.profileLink == null) {
@@ -99,7 +99,9 @@
     }
 
     function loadDriveApi() {
-      gapi.client.load('drive', 'v3', createSpread);
+        var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+        gapi.client.load(discoveryUrl);
+        gapi.client.load('drive', 'v3', createSpread);
     }
     
     function createSpread() {
@@ -133,6 +135,7 @@
                     spreadsheetID = response.id;
                     //Update Firebase with folderID
                     usersRef.child($rootScope.userID).update({ driveExcel: spreadsheetID });
+                    
                     gapi.client.sheets.spreadsheets.batchUpdate({
                       spreadsheetId: spreadsheetID,
                       requests:[{
@@ -147,10 +150,7 @@
                           }
                         }
                       ]
-                    }).then(function(response){
-                      appendPre('Error: ' + response.result.error.message);
-                    });
-
+                    })
                 });
             });
         });

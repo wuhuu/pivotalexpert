@@ -4,7 +4,7 @@
     .module('app.contentMgmt')
     .factory('contentMgmtService', contentMgmtService);
   
-  function contentMgmtService($q,$firebaseObject, $firebaseAuth,$location, commonService) {
+  function contentMgmtService($q,$firebaseObject,$firebaseArray, $firebaseAuth,$location, commonService) {
   	//updating chapterNode
   	 	
   	// get node of course content and course map
@@ -24,7 +24,8 @@
 	  updateQuestionSeq:updateQuestionSeq,
 	  getChapterIndex:getChapterIndex,
 	  deleteQuestion:deleteQuestion,
-	  updateEntireSeq:updateEntireSeq
+	  updateEntireSeq:updateEntireSeq,
+	  getAnswerKey:getAnswerKey
     };
 	
 	return service;    
@@ -258,6 +259,9 @@
 		});
   	}  
     
+	function getAnswerKey(qid){
+		return $firebaseObject(answerKeyNodeRef.child(qid));
+	}
   }
 
 })();

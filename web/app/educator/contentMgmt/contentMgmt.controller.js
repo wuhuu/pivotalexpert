@@ -46,18 +46,41 @@
             }
         }
       }
+    })
+    .directive('toggleButton', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attr) {
+          var id = scope.mcqObj.qnsID;
+          $timeout(function () {   
+            $("#text_"+id).hide();
+            angular.forEach(scope.mcqObj.options,function(value,key){
+              $("#text_"+id+"_"+key).hide();
+            });
+            
+          });
+        }
+      }
     });
 
-  function ContentMgmtController($http,$scope, $routeParams, $location, $firebaseObject,contentMgmtService) {
+  function ContentMgmtController($http,$scope, $routeParams, $location,$firebaseArray, $firebaseObject,contentMgmtService) {
 	  console.log("ContentMgmtController");
     var qid = $routeParams.qid;
     $scope.qid = qid;
     var question = contentMgmtService.getQuestion(qid);
     question.$loaded().then(function() {
-      question.qid = question.$id;
-      question.cid = $routeParams.cid;
-      $scope.qns = question;
-      //$scope.qnsLink = $scope.qns.link;
+      var answer = contentMgmtService.getAnswerKey(qid)
+      answer.$loaded().then(function(answerKey){
+        if(answerKey && question.qnsType==='mcq') {
+          angular.forEach(question.mcq, function(value, key) {
+            var ans = answerKey.answer[key];
+            value.ans = ans;
+          });
+        }
+        question.qid = question.$id;
+        question.cid = $routeParams.cid;
+        $scope.qns = question;
+      });
     })
     .catch(function(error) {
       console.error("Error:", error);
@@ -67,9 +90,35 @@
       contentMgmtService.updateQuestion($scope.qns,false);
     }
 
-    
-  }
+    $scope.toggleQns = function(id) {
+      $("#text_"+id).toggle();
+    }
 
+    $scope.toggleChoice = function(id,index) {
+      $("#text_"+id+"_"+index).toggle();
+    }
+
+    $scope.addChoice = function(mcq_id) {
+      var length = $scope.qns.mcq[mcq_id].options.length;
+      $scope.qns.mcq[mcq_id].options.push("type something_"+length);
+      
+      var choice = "<div layout='row' style='margin: -15px 0'><div layout='row' layout-align='center center'>"
+                   + "<md-button ng-click='toggleChoice("+mcq_id+","+length+")'class='md-icon-button' aria-label='Settings'>"
+                    +"<i class='fa fa-pencil'></i></md-button><md-button class='md-icon-button' aria-label='Settings'>"
+                    +"<i class='fa fa-times'></i></md-button></div><md-radio-button value='"+
+                    $scope.qns.mcq[mcq_id].options[length]+"'> "+$scope.qns.mcq[mcq_id].options[length]+" </md-radio-button>"
+                     +"<md-input-container class='md-block' id='text_"+mcq_id+"_"+length+"'><label>Choice:</label>" 
+                    +"<input ng-change='change()' ng-model='"+$scope.qns.mcq[mcq_id].options[length]+"'></md-input-container> </div>";
+
+
+      $('#choice_'+mcq_id).append(choice);
+      $("#text_"+mcq_id+"_"+length).hide();
+    }
+
+    $scope.saveAllChanges = function(mcq){
+      var qns = $scope.qns;
+    }
+  }
 
   function CourseMapController($http,$scope, $routeParams, $location, $firebaseObject, contentMgmtService) {
     

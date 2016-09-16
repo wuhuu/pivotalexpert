@@ -37,7 +37,7 @@
 	  var ref = firebase.database().ref();
 	  var user = firebase.auth().currentUser;
       
-	  var lastAttempt = $firebaseObject(ref.child('userProfiles').child(user.$id).child('lastAttempt'));
+	  var lastAttempt = $firebaseObject(ref.child('userProfiles').child(user.uid).child('lastAttempt'));
       
 	  lastAttempt.$loaded(function(){
 		if(lastAttempt.$value == 'completed') {

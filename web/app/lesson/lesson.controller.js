@@ -60,6 +60,11 @@
             $scope.totalScore = $scope.questions.length;
         }
         
+        //Excel type question
+        if (qnsType == 'excel') {
+                    
+        }
+        
         //Codebox type question
         if(qnsType == 'code') {
             var editor = ace.edit("editor");
@@ -115,6 +120,10 @@
                     }
                 }
                 
+                //Excel question type
+                if (qnsType == 'excel') {
+                    
+                }
                 
                 //Codebox question type
                 if (qnsType == 'code') {
@@ -122,19 +131,44 @@
                     var annot = editor.getSession().getAnnotations();
                     if (annot.length == 0) {
                         var input = editor.getValue().replace(/\n/g, " ");
-                        var code = "code = function(input){ var ans = \"var myName;\"; return input.indexOf(ans) != -1; }";
-                        var test = "var test = \"" + input + "\"; var result = code(test)== true;"
                         
-                        var ww = new Worker(getInlineJSandTest(code, test));
-                        //Send any message to worker
-                        ww.postMessage("and message");
-                        ww.onmessage = function (e) {
-                        var msg = e.data;
-                            $scope.incorrect = true;
-                        };
-               
+                        var code = answerKey.codeTemplate1 + input + answerKey.codeTemplate2;
+                        
+                        var totalTestNum = answerKey.testcase.length;
+                        
+                        $scope.result = true;
+                        $scope.applied = false;
+
+
+    
+                        for (i = 0; i < totalTestNum; i++) { 
+                            var test = answerKey.testcase[i];
+                            var ww = new Worker(getInlineJSandTest(test, code));
+                            //Send any message to worker
+                            ww.postMessage("and message");
+                            ww.onmessage = function (e) {
+                                var msg = e.data;
+                                console.log("Message from worker--> ",msg);
+                                if(msg == false) {
+                                    $scope.result = false;
+                                    
+                                }
+                                $scope.incorrect = true;
+                            };
+
+                        }
+/*                        
+                        $scope.$watch('applied', function() {
+                            console.log("TESTING");
+                            console.log($scope.result);
+                            if($scope.result) {
+                                nextQns(chapter,qns);
+                            }
+                        });
+*/
                     } else {
                         $scope.incorrect = true;
+                        $scope.errMsg = "Error with the syntax. Please check your answer again."
                     }
                 }
             });
@@ -149,9 +183,9 @@
 				$location.path('/lesson/' + nextQns.qnsType + '/' + currentChapter + '/' + (parseInt(currentQns) + 1) + '/' + nextQns.qnsId);
 			} else {
 				//Complete current module, go to next module
-				nextQns = courseContent[parseInt(modID) + 1].qns[0];
+				nextQns = courseSeq[parseInt(currentChapter) + 1].qns[1];
 				if(nextQns) {
-					$location.path('/lesson/' + nextQns.qnsType + '/' + nextQns.moduleID + '/0');
+					$location.path('/lesson/' + nextQns.qnsType + '/' + (parseInt(currentChapter) + 1) + '/1/'+ nextQns.qnsId );
 				} else {
 					//update last attemp in firebase db
 					ref.child('userProfiles').child(user.uid).child('lastAttempt').set("completed");
@@ -165,15 +199,53 @@
         });
     }
     
-    function getInlineJSandTest (code, test) {
+	var getInlineJSandTest = function (test, code) {
 		var top = 'onmessage = function(msg){';
 		var bottom = 'postMessage(result);};';
 
-		var all = code +"\n\n"+top+"\n"+test+"\n"+bottom+"\n"
+		var all = test +"\n\n"+top+"\n"+code+"\n"+bottom+"\n"
 		var blob = new Blob([all], {"type": "text\/plain"});
 		return URL.createObjectURL(blob);
 	}
     
+    function loadSheetsApi() {
+        var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+        gapi.client.load(discoveryUrl).then(loadQn);
+    }
+    
+    //Haven Load Qns
+    function loadQn() {
+        var sheetId1 ;
+        gapi.client.sheets.spreadsheets.sheets.copyTo({
+          spreadsheetId: '18xco1vxDl2I8ZcLVu20lpzHT20NHF-GnD2Pm6ACV-Lw',
+          sheetId: 0,
+          destinationSpreadsheetId: '1-EKjGfGa7j8cmLkDROLzj2wgeJdJctGssnhXEIzhskg',
+        }).then(function(response) {
+          appendPre('Success 1' );
+          sheetId1 = response.result.sheetId;//
+          gapi.client.sheets.spreadsheets.batchUpdate({
+            spreadsheetId: '1-EKjGfGa7j8cmLkDROLzj2wgeJdJctGssnhXEIzhskg',
+            requests: [
+              {
+                updateSheetProperties:{
+                  properties:{
+                    title: "Question 1",
+                    sheetId: sheetId1
+                  },
+                  fields: "title"
+                }
+              }
+            ]
+          }).then(function(response){
+
+
+          });
+
+        }, function(response) {
+          appendPre('Error: ' + response.result.error.message);
+        });
+    }
+      
     /*
 	//Load course
 	var course =  $firebaseObject(ref.child('course'));

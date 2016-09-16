@@ -18,7 +18,7 @@
       templateUrl: 'app/lesson/video.html',
 	  controller: 'LessonController'
     }).
-	when('/lesson/LSheet/:chapter/:qns/:qid', {
+	when('/lesson/excel/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/spreadsheet.html',
 	  controller: 'LessonController'
     }).

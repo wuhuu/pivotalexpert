@@ -116,23 +116,37 @@
 
     $scope.addChoice = function(mcq_id) {
       var length = $scope.qns.mcq[mcq_id].options.length;
-      $scope.qns.mcq[mcq_id].options.push("type something_"+length);
+      $scope.qns.mcq[mcq_id].options.push("Choice "+ length);
       
       var choice = "<div layout='row' style='margin: -15px 0'><div layout='row' layout-align='center center'>"
                    + "<md-button ng-click='toggleChoice("+mcq_id+","+length+")'class='md-icon-button' aria-label='Settings'>"
                     +"<i class='fa fa-pencil'></i></md-button><md-button class='md-icon-button' aria-label='Settings'>"
-                    +"<i class='fa fa-times'></i></md-button></div><md-radio-button value='"+
-                    $scope.qns.mcq[mcq_id].options[length]+"'> "+$scope.qns.mcq[mcq_id].options[length]+" </md-radio-button>"
+                    +"<i class='fa fa-times'></i></md-button></div><md-radio-button ng-model='mcqObj.options["+length+"]"+
+                    "' value='{{mcqObj.options["+length+"]}}"+
+                    "'> {{mcqObj.options["+length+"]}} </md-radio-button>"
                      +"<md-input-container class='md-block' id='text_"+mcq_id+"_"+length+"'><label>Choice:</label>" 
-                    +"<input ng-change='change()' ng-model='"+$scope.qns.mcq[mcq_id].options[length]+"'></md-input-container> </div>";
+                    +"<input ng-change='change()' ng-model='mcqObj.options["+length+"]"+"'></md-input-container> </div>";
 
 
       $('#choice_'+mcq_id).append(choice);
       $("#text_"+mcq_id+"_"+length).hide();
     }
 
-    $scope.saveAllChanges = function(mcq){
+    $scope.saveAllChanges = function(){
       var qns = $scope.qns;
+    }
+
+    $scope.deleteChoice = function(mcq_id,index){
+      $scope.qns.mcq[mcq_id].options.splice(index,1);
+    }
+
+    $scope.deleteMcq = function(index){
+      $scope.qns.mcq.splice(index,1);
+    }
+
+    $scope.addMcq = function() {
+      var qnsID = "Q"+$scope.qns.mcq.length;
+      $scope.qns.mcq.push({options:[],qns:"",qnsID:qnsID});
     }
   }
 

@@ -1,0 +1,167 @@
+
+   <script>
+  $( function() {
+    
+  });
+  </script>
+    <div layout="row" flex>
+      <div flex="15"></div>
+      <div class="md-whiteframe-z2" layout="column" flex="70">
+        <div style="padding: 0px 20px">
+          <h2 class="pull-left">Chapter 2-1</h2>
+          <div class="pull-right"style="padding:20px">
+            <md-button class="md-raised pull-right" ng-click='saveAllChanges(qns.mcq)'>save all changes</md-button>
+          </div>
+        </div>
+        <md-divider></md-divider>
+        <div style="padding: 0px 20px" layout="column">
+          <!-- Question 1 -->
+          <div layout="row" ng-repeat="mcqObj in qns.mcq" $index toggle-button="done">
+            <div flex>
+              <p><strong>Q{{$index+1}}.</strong> {{mcqObj.qns}}
+                <md-button ng-click="toggleQns(mcqObj.qnsID)" class="md-icon-button" aria-label="Settings" >
+                  <i class="fa fa-pencil" ></i>
+                </md-button>
+                <md-button class="md-icon-button" aria-label="Settings">
+                  <i class="fa fa-times"></i>
+                </md-button>
+               
+              </p>
+              <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}'>
+                      <label>Question:</label>
+              <input ng-model="mcqObj.qns">
+              </md-input-container>
+              <md-radio-group ng-model="mcqObj.ans" id='choice_{{mcqObj.qnsID}}' style="border: none" ng-change='change()'>
+
+                <div layout="row"  style="margin: -15px 0" ng-repeat="option in mcqObj.options" $index >
+                  <div layout="row" layout-align="center center">
+                    <md-button ng-click="toggleChoice(mcqObj.qnsID,$index)"class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-pencil"></i>
+                    </md-button>
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-times"></i>
+                    </md-button>
+                  </div>
+                  <md-radio-button value="{{option}}" > {{option}} </md-radio-button>
+                  <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}_{{$index}}'>
+                      <label>Choice:</label>
+                  <input ng-model="option" ng-change='change()'>
+                  </md-input-container>
+                </div>
+
+                <div layout="row" style="margin: -15px 0">
+                  <div layout="row" layout-align="center center">
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-pencil"></i>
+                    </md-button>
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-times"></i>
+                    </md-button>
+                  </div>
+                  <md-radio-button value="Banana"> Banana </md-radio-button>
+                </div>
+
+                <div layout="row" style="margin: -15px 0">
+                  <div layout="row" layout-align="center center">
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-pencil"></i>
+                    </md-button>
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-times"></i>
+                    </md-button>
+                  </div>
+                  <md-radio-button value="Mango">Mango</md-radio-button>
+                </div>
+
+              </md-radio-group>
+              <div style="padding: 10px">
+                <md-button class="md-raised" ng-click="addChoice($index)">add option</md-button>
+              </div>
+            </div>
+          </div>
+           <!-- end of Question 1 -->
+          <br>
+          <!-- Question 2 -->
+
+          <div layout="row">
+            <div flex="5" layout="column">
+              <div flex="50" layout="row" layout-align="center center">
+                <div>
+                  <md-button class="md-icon-button md-primary" aria-label="Settings">
+                    <i class="fa fa-angle-up"></i>
+                  </md-button>
+                </div>
+              </div>
+              <div flex="50" layout="row" layout-align="center center">
+                <div>
+                  <md-button class="md-icon-button md-primary" aria-label="Settings">
+                    <i class="fa fa-angle-down"></i>
+                  </md-button>
+                </div>
+              </div>
+            </div>
+
+            <div flex>
+              <p><strong>Q2.</strong> this is question 2 and here are the options
+                <md-button class="md-icon-button" aria-label="Settings">
+                  <i class="fa fa-pencil"></i>
+                </md-button>
+                <md-button class="md-icon-button" aria-label="Settings">
+                  <i class="fa fa-times"></i>
+                </md-button>
+              </p>
+              <md-radio-group ng-model="data.group1" style="border: none">
+
+                <div layout="row" style="margin: -15px 0">
+                  <div layout="row" layout-align="center center">
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-pencil"></i>
+                    </md-button>
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-times"></i>
+                    </md-button>
+                  </div>
+                  <md-radio-button value="Apple"> Apple </md-radio-button>
+                </div>
+
+                <div layout="row" style="margin: -15px 0">
+                  <div layout="row" layout-align="center center">
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-pencil"></i>
+                    </md-button>
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-times"></i>
+                    </md-button>
+                  </div>
+                  <md-radio-button value="Banana"> Banana </md-radio-button>
+                </div>
+
+                <div layout="row" style="margin: -15px 0">
+                  <div layout="row" layout-align="center center">
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-pencil"></i>
+                    </md-button>
+                    <md-button class="md-icon-button" aria-label="Settings">
+                      <i class="fa fa-times"></i>
+                    </md-button>
+                  </div>
+                  <md-radio-button value="Mango">Mango</md-radio-button>
+                </div>
+
+              </md-radio-group>
+              <div style="padding: 10px">
+                <md-button class="md-raised" >add option</md-button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div layout="row" layout-align="center center">
+        <div style="width: 50%">
+          <md-button style="width: 100%" class="md-primary md-raised">add question</md-button>
+        </div>
+
+
+      </div>
+    </div>
+   </div>
+

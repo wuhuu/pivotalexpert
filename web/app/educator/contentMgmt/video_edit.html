@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--left bar-->
+<div layout="row" flex>
+  <div flex="15"></div>
+  <div class="md-whiteframe-z2" layout="column" flex="70">
+    <div style="padding: 0px 20px">
+      <h2 class="pull-left">{{qns.qnsTitle}}</h2>
+      <div class="pull-right"style="padding:20px">
+        <md-button class="md-raised" ng-click='saveQns(qns)'>Save all changes</md-button>
+      </div>
+    </div>
+    <md-divider></md-divider>
+    <div style="padding: 10px 100px">
+      <div layout="column">
+        <div layout="column" layout-align=" center">
+          <form>
+            <div flex style="padding:10px">
+              <md-input-container class="md-block">
+                <label>Title</label>
+                <textarea ng-model="qns.qnsTitle" rows="1" md-select-on-focus></textarea>
+              </md-input-container>
+            </div>
+            <div flex style="padding:10px">
+              <md-input-container class="md-block">
+                <label>Description</label>
+                <textarea ng-model="qns.qnsDescription" rows="1" md-select-on-focus></textarea>
+              </md-input-container>
+            </div>
+            <div flex style="padding:10px">
+              <md-input-container class="md-block">
+                <label>Instructions</label>
+                <textarea ng-model="qns.qnsInstruction" rows="1" md-select-on-focus></textarea>
+              </md-input-container>
+            </div>
+            <div flex style="padding:10px">
+              <input type="hidden" ng-model='qns.qid'>
+              <md-input-container class="md-block">
+                <label>Youtube link</label>
+                <input ng-model="qns.link" >
+              </md-input-container>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

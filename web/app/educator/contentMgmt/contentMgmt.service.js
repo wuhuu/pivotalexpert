@@ -4,30 +4,37 @@
     .module('app.contentMgmt')
     .factory('contentMgmtService', contentMgmtService);
 
-  function contentMgmtService($q,$firebaseArray,$firebaseObject, $firebaseAuth,$location, commonService) {
+
+  
+  function contentMgmtService($q,$firebaseObject,$firebaseArray, $firebaseAuth,$location, commonService) {
+
   	//updating chapterNode
 
   	// get node of course content and course map
-    var courseSeqNodeRef = commonService.firebaseRef().child('courseSequence');
-  	var chapterNodeRef = commonService.firebaseRef().child('course/chapters');
-  	var questionNodeRef = commonService.firebaseRef().child('course/questions');
-  	var answerKeyNodeRef = commonService.firebaseRef().child('answerKey');
-  	var service = {
-        updateChapter: updateChapter,
-        getAllChapters: getAllChapters,
-        getCourseSeq:getCourseSeq,
-  	  getChapter:getChapter,
-  	  updateCourseSeq:updateCourseSeq,
-  	  deleteChapter:deleteChapter,
-  	  getQuestion:getQuestion,
-  	  updateVideoQuestion:updateVideoQuestion,
-      updateSlideQuestion:updateSlideQuestion,
-      updateQuestionSeq:updateQuestionSeq,
-  	  getChapterIndex:getChapterIndex,
-  	  deleteQuestion:deleteQuestion
-      };
-	  return service;
 
+  	var courseSeqNodeRef = commonService.firebaseRef().child('courseSequence');
+	var chapterNodeRef = commonService.firebaseRef().child('course/chapters');
+	var questionNodeRef = commonService.firebaseRef().child('course/questions');
+	var answerKeyNodeRef = commonService.firebaseRef().child('answerKey');
+	var service = {
+      updateChapter: updateChapter,
+      getAllChapters: getAllChapters,
+      getCourseSeq:getCourseSeq,
+			getChapter:getChapter,
+			updateCourseSeq:updateCourseSeq,
+			deleteChapter:deleteChapter,
+			getQuestion:getQuestion,
+			updateVideoQuestion:updateVideoQuestion,
+			updateSlideQuestion:updateSlideQuestion,
+			updateQuestionSeq:updateQuestionSeq,
+			getChapterIndex:getChapterIndex,
+			deleteQuestion:deleteQuestion,
+			updateEntireSeq:updateEntireSeq,
+			getAnswerKey:getAnswerKey
+    };
+	
+	return service;    
+	
   	//chapter functions
   	function updateChapter (chapter,isNewChapter) {
   		// retrieve courseSeq node
@@ -103,6 +110,10 @@
 			courseSeqNodeRef.update(newCourseSeq);
 		});
 	}
+
+	function updateEntireSeq(courseSeq) {
+		courseSeqNodeRef.update(courseSeq);
+	}    
 
   	function deleteChapter (cid) {
 		// get chapter qns and delete them
@@ -337,7 +348,12 @@
 				return true;
 			});
 		});
-  	}
+
+  	}  
+    
+	function getAnswerKey(qid){
+		return $firebaseObject(answerKeyNodeRef.child(qid));
+	}
 
   }
 

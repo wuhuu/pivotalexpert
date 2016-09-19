@@ -8,11 +8,11 @@
   </script>
       <div layout="row" flex>
         <div flex="auto"></div>
-        <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 0px 10px;height: 120px;">
+        <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 30px;height:auto;">
               <h1>Pivotal Expert Course Map</h1>
-              <md-button class="md-raised" style="margin-top: -10px;" ng-click="saveSeq()">Save all changes</md-button>
-              <md-button class="md-raised" style="margin-top: -10px;">Add Chapter</md-button>
-              <md-button class="md-raised" style="margin-top: -10px;" href="./add_question.html">Add Question</md-button>
+              <md-button class="md-raised" ng-click="saveAllChanges($event)">Save all changes</md-button>
+              <md-button class="md-raised" ng-click="addChapter()">Add Chapter</md-button>
+              <md-button class="md-raised" >Add Question</md-button>
         </div>
         <div flex="auto"></div>
       </div>
@@ -23,44 +23,71 @@
           <md-content flex md-scroll-y>
           <md-card-content >
             <div class="accordion1">
-              <div id="chapter" layout="column" ng-repeat="item in courseMap" flex  on-finish-render="ngRepeatFinished">
-                <h2 class='cid' cid='{{item.cid}}'>
-                  {{item.chapterTitle}}
-                  <md-button class="md-icon-button" ><i class="fa fa-upload" aria-hidden="true"></i></md-button>
-                  <md-button class="md-icon-button" ><i class="fa fa-trash" aria-hidden="true"></i></md-button>
-                </h2>
-                <div layout="column">
+              <div id="chapter" style="height:auto;" layout="column" ng-repeat="item in courseMap track by $index" on-finish-render="ngRepeatFinished">
+                
+                <!--chapterTitle div-->
+                <div layout=row id="chapterHeader">
+                  <h2 class='cid' cid='{{item.cid}}'>
+                    {{item.chapterTitle}}
+                    <md-tooltip md-delay="200">
+                      Click to toggle Chapter details. Click & Drag to change chapter order.
+                    </md-tooltip>
+                  </h2>
+                </div>
+                <!--end of chapterTitle div-->
+                <div layout="column" style="height:auto;">
+                  <!--chapter buttons-->
+                  <div layout="row">
+                    <div flex="70">
+                      <md-input-container class="md-block" id='text_{{$index}}'>
+                        <label>Chapter Title:</label>
+                        <input ng-model="item.chapterTitle">
+                      </md-input-container>
+                    </div>
+                    <div flex style="position:relative; top:-50px">
+                      <md-button ng-click="toggleChapterTextbox($index)" class="md-icon-button" aria-label="Settings" >
+                        <i class="fa fa-pencil" ></i>
+                        <md-tooltip md-delay="200">
+                          Toggle edit chapter
+                        </md-tooltip>
+                      </md-button>
+                      <md-button class="md-primary md-icon-button" >
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                         <md-tooltip md-delay="200">
+                          Export chapter
+                        </md-tooltip>
+                      </md-button>
+                      <md-button class="md-warn md-icon-button" ng-click="deleteChapter($index,item.cid)">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                        <md-tooltip md-delay="200">
+                          Delete chapter
+                        </md-tooltip>
+                      </md-button>
+                    </div>
+                  </div>
+                   <!--end of chapter buttons-->
                   <md-list>
-<!--<<<<<<< HEAD
-                    <md-item ng-repeat="question in item.qns | filter:search">
-                      <md-item-content>
-                        <div layout="row" flex>
-                          <md-button class="md-icon-button">
-                            <i class="fa fa-times fa-lg"></i>
-                          </md-button>
-                          <div flex="70" class="md-tile-content">
-                            <font class="font-size-course-title">{{question.qnsTitle}}</font>
-
-                          </div>
-                          <div class="md-tile-right inset" hide-sm>
-                            <md-button class="md-icon-button" ng-click="editQuestion(question.qid,item.cid)">
-                              <i class="fa fa-pencil fa-lg"></i>
-=======-->
                     <div class="accordion2">
-                    <div ng-repeat="question in item.qns">
+                    <div ng-repeat="question in item.qns track by $index">
                       <md-item>
                         <md-item-content>
                           <div layout="row" flex>
-                            <md-button class="md-icon-button">
+                            <md-button class="md-icon-button" ng-click="deleteQuestion($parent.$index,$index,question.qid)">
                               <i class="fa fa-times fa-lg"></i>
-
+                              <md-tooltip md-direction="left" md-delay="200">
+                                    Delete question
+                              </md-tooltip>
                             </md-button>
                             <div flex="70" class="md-tile-content">
-                              <h4 class="question" id='{{question.qid}}'>{{question.qnsTitle}}</h4>
+                              <h4 class="question" ng-model="item.qns[$index].qnsTitle" id='{{question.qid}}' qnsType="{{question.qnsType}}">{{question.qnsTitle}}</h4>
+
                             </div>
                             <div class="md-tile-right inset" hide-sm>
                               <md-button class="md-icon-button" ng-click="editQuestion(question.qid,item.cid)">
                                 <i class="fa fa-pencil fa-lg"></i>
+                                  <md-tooltip md-direction="right" md-delay="200">
+                                    Edit question
+                                  </md-tooltip>
                               </md-button>
                             </div>
                           </div>

@@ -12,38 +12,36 @@
                 $timeout(function () {
                     $( ".accordion1" )
                       .accordion({
-                        header: "> div > h2",
+                        header: "> div > #chapterHeader",
                         collapsible: true
                       })
                       .sortable({
                         collapsible: true,
                         axis: "y",
-                        handle: "h2",
+                        handle: "#chapterHeader",
                         stop: function( event, ui ) {
                           // IE doesn't register the blur when sorting
                           // so trigger focusout handlers to remove .ui-state-focus
-                          ui.item.children( "h2" ).triggerHandler( "focusout" );
+                          ui.item.children( "#chapterHeader" ).triggerHandler( "focusout" );
 
                           // Refresh accordion to handle new order
                           $( this ).accordion( "refresh" );
                         }
                       });
 
-                   $( ".accordion2" )
-                      .sortable({
-                        stop: function( event, ui ) {
-                          // IE doesn't register the blur when sorting
-                          // so trigger focusout handlers to remove .ui-state-focus
-                          //ui.item.children( "md-item-content" ).triggerHandler( "focusout" );
-                          // if ($(ui.item).hasClass('.sublist') && $(ui.placeholder).parent()[0] != this) {
-                          //     $(this).sortable('cancel');
-                          // }
-                          // Refresh accordion to handle new order
-                          // $( this ).accordion( "refresh" );
-                        }
-                      });   
+                   $( ".accordion2" ).sortable();
+
+                     
                 });
             }
+            $timeout(function(){
+              var cid =  scope.$index;
+              if(! scope.chapterAdded){
+                $("#text_"+cid).hide();
+              }
+               
+            });
+
         }
       }
     })
@@ -59,11 +57,16 @@
             });
             
           });
+          if (scope.$last === true) {
+            $timeout(function () { 
+              $("#mcq").sortable();
+            });
+          }
         }
       }
     });
 
-  function ContentMgmtController($http,$scope, $routeParams, $location,$firebaseArray, $firebaseObject,contentMgmtService) {
+  function ContentMgmtController($http,$scope, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,contentMgmtService) {
 	  console.log("ContentMgmtController");
     var qid = $routeParams.qid;
     $scope.qid = qid;
@@ -74,7 +77,7 @@
         if(answerKey && question.qnsType==='mcq') {
           angular.forEach(question.mcq, function(value, key) {
             var ans = answerKey.answer[key];
-            value.ans = ans;
+            value.answer = ans;
           });
         }
         question.qid = question.$id;
@@ -86,16 +89,25 @@
       console.error("Error:", error);
     });
 
-    $scope.saveQns = function() {
-      if(question.qnsType == "video"){
-        contentMgmtService.updateVideoQuestion($scope.qns,false).then(function(){
-          window.location.reload();
-        });
-      }else if (question.qnsType == "slides") {
-        contentMgmtService.updateSlideQuestion($scope.qns,false).then(function(){
-          window.location.reload();
-        });
-      }
+    $scope.saveQns = function(ev) {
+      var confirm = $mdDialog.confirm()
+            .title('Would you want to save all changes?')
+            .textContent('This question will be saved to what you configured, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Please do it!')
+            .cancel('Cancel!');
+
+      $mdDialog.show(confirm).then(function() {
+        if(question.qnsType == "video"){
+          contentMgmtService.updateVideoQuestion($scope.qns,false).then(function(){
+            window.location.reload();
+          });
+        }else if (question.qnsType == "slides") {
+          contentMgmtService.updateSlideQuestion($scope.qns,false).then(function(){
+            window.location.reload();
+          });
+        }
+      });
 
     }
 
@@ -118,25 +130,48 @@
 
     $scope.addChoice = function(mcq_id) {
       var length = $scope.qns.mcq[mcq_id].options.length;
-      $scope.qns.mcq[mcq_id].options.push("Choice "+ length);
+      $scope.qns.mcq[mcq_id].options.push("Choice "+ (length+1));
       
-      var choice = "<div layout='row' style='margin: -15px 0'><div layout='row' layout-align='center center'>"
-                   + "<md-button ng-click='toggleChoice("+mcq_id+","+length+")'class='md-icon-button' aria-label='Settings'>"
-                    +"<i class='fa fa-pencil'></i></md-button><md-button class='md-icon-button' aria-label='Settings'>"
-                    +"<i class='fa fa-times'></i></md-button></div><md-radio-button ng-model='mcqObj.options["+length+"]"+
-                    "' value='{{mcqObj.options["+length+"]}}"+
-                    "'> {{mcqObj.options["+length+"]}} </md-radio-button>"
-                     +"<md-input-container class='md-block' id='text_"+mcq_id+"_"+length+"'><label>Choice:</label>" 
-                    +"<input ng-change='change()' ng-model='mcqObj.options["+length+"]"+"'></md-input-container> </div>";
-
-
-      $('#choice_'+mcq_id).append(choice);
       $("#text_"+mcq_id+"_"+length).hide();
     }
 
-    $scope.saveAllChanges = function(){
-      var qns = $scope.qns;
-    }
+    $scope.saveMCQChanges = function(ev) {
+    // Appending dialog to document.body to cover sidenav in docs app
+      var confirm = $mdDialog.confirm()
+            .title('Would you want to save all changes?')
+            .textContent('This question will be saved to what you configured, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Please do it!')
+            .cancel('Cancel!');
+
+      $mdDialog.show(confirm).then(function() {
+        
+        var listToUpdate = [];
+        var qns = $scope.qns;
+        var mcqList = qns.mcq;
+        var qids = $("#mcq").find('strong');
+        // updating the question sequence
+          for(i=0;i<qids.length;i++) {
+              var qid =qids[i].innerText.replace('.','');
+              $.each(mcqList,function(index, value){
+                if(value.qnsID === qid) {
+                  listToUpdate.push(mcqList[index]);
+                  return false;
+                }
+              });
+          }
+          $scope.qns.mcq = listToUpdate;
+
+          contentMgmtService.updateMCQ($scope.qns,false).then(function(){
+            window.location.reload();
+          });
+        }, function() {
+          // cancel function
+        });
+
+    };
+
+    
 
     $scope.deleteChoice = function(mcq_id,index){
       $scope.qns.mcq[mcq_id].options.splice(index,1);
@@ -147,16 +182,57 @@
     }
 
     $scope.addMcq = function() {
-      var qnsID = "Q"+$scope.qns.mcq.length;
+      var qnsID = "Q"+($scope.qns.mcq.length+1);
       $scope.qns.mcq.push({options:[],qns:"",qnsID:qnsID});
+    }
+
+    $scope.deleteQns = function(ev,cid,qid) {
+      var confirm = $mdDialog.confirm()
+            .title('Do you really want to DELETE this question?')
+            .textContent('This question will deleted, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Delete it now!')
+            .cancel('Cancel');
+
+      $mdDialog.show(confirm).then(function() {
+        contentMgmtService.deleteQuestion(cid,qid).then(function(){
+         window.location.href = "#/educator/courseMap"
+         //window.location.reload();
+        });
+      }, function() {
+        // cancel function
+      });
+    }
+
+    $scope.deleteChap = function(ev,cid) {
+      var confirm = $mdDialog.confirm()
+            .title('Do you really want to DELETE this question?')
+            .textContent('This question will deleted, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Delete it now!')
+            .cancel('Cancel');
+
+      $mdDialog.show(confirm).then(function() {
+        contentMgmtService.deleteChapter(cid).then(function(){
+          window.location.reload();
+        });
+      }, function() {
+        // cancel function
+      });
     }
   }
 
-  function CourseMapController($http,$scope, $routeParams, $location, $firebaseObject, contentMgmtService) {
-
+  function CourseMapController($http,$scope, $routeParams,$mdDialog, $location, $firebaseObject, contentMgmtService) {
+    $scope.chapTBD = [];
+    $scope.qnsTBD = [];
     var courseMap = contentMgmtService.getCourseSeq();
     courseMap.$loaded().then(function(){
-      $scope.courseMap = courseMap;
+      var seq = [];
+      for(i=0;i<courseMap.length;i++) {
+        seq.push(courseMap[i]);
+      }
+
+      $scope.courseMap = seq;
     });
 
     $scope.editQuestion = function(qid,cid) {
@@ -169,40 +245,81 @@
       });
     }
 
-    $scope.saveSeq = function() {
-      var courseSequence = [];
-      var chap ={};
-      var qlist =[];
-      var qns ={};
-      $( "div#chapter" ).each( function( index, value ) {
-        var c = $(this).find('h2.cid');
-        console.log(index + ":" + $(this).attr('id'));
-        var cid = c.attr('cid');
-        var title = c.text().trim();
-        chap['cid'] = cid;
-        chap['chapterTitle']=title;
-        var qElements = $(this).find('h4.question');
-        // all question here
-        for(i=0;i<qElements.length;i++) {
-          var obj = qElements[i];
-          console.log("questionid: "+ obj.id);
-          qns['qid']=obj.id;
-          qns['qnsTitle']= obj.textContent;
-          qlist.push(qns);
-          qns ={};
-        }
+    $scope.addChapter = function(){
+      $scope.courseMap.push({chapterTitle:"",});
+      $("#text_"+($scope.courseMap.length-1)).show();
+      $scope.chapterAdded = true;
+      //window.scrollTo(0,document.body.scrollHeight); 
+      $('html, body').animate({scrollTop:$(document).height()}, 'slow');
+    }
 
-        chap['qns']=qlist;
-        courseSequence.push(chap);
-        chap={};
-        qlist=[];
+    $scope.saveAllChanges = function(ev) {
 
+      var confirm = $mdDialog.confirm()
+            .title('Would you want to save all changes?')
+            .textContent('System will be saved to what you configured, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Please do it!')
+            .cancel('Cancel!');
+
+      $mdDialog.show(confirm).then(function() {
+        
+        var courseSequence = [];
+        var chap ={};
+        var qlist =[];
+        var qns ={};
+        $( "div#chapter" ).each(function( index, value ) {
+          var c = $(this).find('h2.cid');
+          console.log(index + ":" + $(this).attr('id'));
+          var cid = c.attr('cid');
+          var title = c.text().trim();
+          chap['cid'] = cid;
+          chap['chapterTitle']=title;
+          var qElements = $(this).find('h4.question');
+
+          // all question here
+          for(i=0;i<qElements.length;i++) {
+            var obj = qElements[i];
+            console.log("questionid: "+ obj.id);
+            qns['qid']=obj.id;
+            qns['qnsTitle']= obj.textContent;
+            qns['qnsType']= obj.getAttribute("qnsType");
+            qlist.push(qns);
+            qns ={};
+          }
+
+          chap['qns']=qlist;
+          courseSequence.push(chap);
+          chap={};
+          qlist=[];
+
+        });
+
+        
+        contentMgmtService.deleteQuestion($scope.qnsTBD);
+        contentMgmtService.deleteChapter($scope.chapTBD).then(function(){
+          contentMgmtService.updateEntireSeq(courseSequence).then(function() {
+            window.location.reload();
+          });
+        });
+        
+        //$location.path('/educator/courseMap');
       });
+    }
 
-      
-      contentMgmtService.updateEntireSeq(courseSequence);
-      window.location.reload();
-      //$location.path('/educator/courseMap');
+    
+    $scope.deleteChapter = function(index,cid){
+      $scope.courseMap.splice(index,1);
+      $scope.chapTBD.push(cid); 
+    }
+
+    $scope.deleteQuestion = function(chapterIndex,index,qid){
+      $scope.courseMap[chapterIndex].qns.splice(index,1);
+      $scope.qnsTBD.push(qid);
+    }
+
+    $scope.toggleChapterTextbox = function(id) {
+      $("#text_"+id).toggle();
     } 
 
   }

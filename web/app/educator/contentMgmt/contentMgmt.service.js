@@ -13,348 +13,460 @@
   	// get node of course content and course map
 
   	var courseSeqNodeRef = commonService.firebaseRef().child('courseSequence');
-	var chapterNodeRef = commonService.firebaseRef().child('course/chapters');
-	var questionNodeRef = commonService.firebaseRef().child('course/questions');
-	var answerKeyNodeRef = commonService.firebaseRef().child('answerKey');
-	var service = {
-      updateChapter: updateChapter,
-      getAllChapters: getAllChapters,
-      getCourseSeq:getCourseSeq,
-			getChapter:getChapter,
-			updateCourseSeq:updateCourseSeq,
-			deleteChapter:deleteChapter,
-			getQuestion:getQuestion,
-			updateVideoQuestion:updateVideoQuestion,
-			updateSlideQuestion:updateSlideQuestion,
-			updateQuestionSeq:updateQuestionSeq,
-			getChapterIndex:getChapterIndex,
-			deleteQuestion:deleteQuestion,
-			updateEntireSeq:updateEntireSeq,
-			getAnswerKey:getAnswerKey
-    };
-	
-	return service;    
-	
-  	//chapter functions
-  	function updateChapter (chapter,isNewChapter) {
-  		// retrieve courseSeq node
-  		var courseSeq = $firebaseObject(courseSeqNodeRef);
-  		courseSeq.$loaded().then(function(){
-    		 	// if user wants to create chapter
-  			var cid = chapter.cid;
-  			if(isNewChapter) {
-  				// checking if chapterTitle already exist
-  				for(var element in courseSeq) {
-  					if(element.chapterTitle === chapter.chapterTitle) {
-  						//response this chapter is being used now.
-  						return "This chapter name is being used now.";
-  					}
-  				}
-  			}
+		var chapterNodeRef = commonService.firebaseRef().child('course/chapters');
+		var questionNodeRef = commonService.firebaseRef().child('course/questions');
+		var answerKeyNodeRef = commonService.firebaseRef().child('answerKey');
+		var service = {
+				updateChapter: updateChapter,
+				getAllChapters: getAllChapters,
+				getCourseSeq:getCourseSeq,
+				getChapter:getChapter,
+				updateCourseSeq:updateCourseSeq,
+				deleteChapter:deleteChapter,
+				getQuestion:getQuestion,
+				updateVideoQuestion:updateVideoQuestion,
+				updateSlideQuestion:updateSlideQuestion,
+				updateQuestionSeq:updateQuestionSeq,
+				getChapterIndex:getChapterIndex,
+				deleteQuestion:deleteQuestion,
+				updateEntireSeq:updateEntireSeq,
+				getAnswerKey:getAnswerKey,
+				updateMCQ:updateMCQ
+			};
+		
+		return service;    
+		
+			//chapter functions
+			function updateChapter (chapter,isNewChapter) {
+				// retrieve courseSeq node
+				var courseSeq = $firebaseObject(courseSeqNodeRef);
+				courseSeq.$loaded().then(function(){
+						// if user wants to create chapter
+					var cid = chapter.cid;
+					if(isNewChapter) {
+						// checking if chapterTitle already exist
+						for(var element in courseSeq) {
+							if(element.chapterTitle === chapter.chapterTitle) {
+								//response this chapter is being used now.
+								return "This chapter name is being used now.";
+							}
+						}
+					}
 
-  			if(chapter.cid) {
-  				//generate new cid
-  				cid = 000;
-  			}
-  			// create new chapter node & fill it up
-  			var chapterNode = {helpRoomCode:"",chapterTitle:""};
-  			// create courseSeq node & fill it up
-  			var courseSeqNode = {cid:cid,chapterTitle:""};
-  			// update database
-  			chapterNodeRef.update({cid:chapterNode});
-  			courseSeqNodeRef.update(courseSeqNode,function onComplete(){
-  				if(isNewChapter) {
-  					return "Chapter created!"
-  				}else {
-  					return "Chapter updated!"
-  				}
-  			});
-  		});
-    }
+					if(chapter.cid) {
+						//generate new cid
+						cid = 000;
+					}
+					// create new chapter node & fill it up
+					var chapterNode = {helpRoomCode:"",chapterTitle:""};
+					// create courseSeq node & fill it up
+					var courseSeqNode = {cid:cid,chapterTitle:""};
+					// update database
+					chapterNodeRef.update({cid:chapterNode});
+					courseSeqNodeRef.update(courseSeqNode,function onComplete(){
+						if(isNewChapter) {
+							return "Chapter created!"
+						}else {
+							return "Chapter updated!"
+						}
+					});
+				});
+			}
 
-  	function getAllChapters(){
-		//get all editible chapter information for all chapters
-  		var chapters = $firebaseObject(chapterNodeRef);
-  		chapters.$loaded().then(function(){
-  			return chapters;
-  		});
-		// return them
-  	}
+			function getAllChapters(){
+			//get all editible chapter information for all chapters
+				var chapters = $firebaseObject(chapterNodeRef);
+				chapters.$loaded().then(function(){
+					return chapters;
+				});
+			// return them
+			}
 
-	function getCourseSeq(){
-		return $firebaseObject(courseSeqNodeRef);
-  }
+		function getCourseSeq(){
+			return $firebaseArray(courseSeqNodeRef);
+		}
 
-	function getChapter(cid) {
-		chapterNodeRef.once("value", function(snapshot) {
-			snapshot.forEach(function(element) {
-				if(cid === element.key) {
-					return $firebaseObject(chapterNodeRef.child(cid));
-				}
+		function getChapter(cid) {
+			chapterNodeRef.once("value", function(snapshot) {
+				snapshot.forEach(function(element) {
+					if(cid === element.key) {
+						return $firebaseObject(chapterNodeRef.child(cid));
+					}
+				});
 			});
-		});
-	}
+		}
 
-	function updateCourseSeq(courseSeq) {
-		var newCourseSeq = [];
-		var currentSeq = getCourseSeq();
-		currentSeq.$loaded().then(function(){
-			for(i=0;i<courseSeq.length;i++) {
-				for(var chapter in courseSeq) {
-					if(courseSeq[i].title === currentSeq.chapterTitle){
-						newCourseSeq.push(chapter);
-					}
-				}
-			}
-
-			courseSeqNodeRef.update(newCourseSeq);
-		});
-	}
-
-	function updateEntireSeq(courseSeq) {
-		courseSeqNodeRef.update(courseSeq);
-	}    
-
-  	function deleteChapter (cid) {
-		// get chapter qns and delete them
-		var userProfileNodeRef = commonService.firebaseRef().child('userProfiles');
-
-		courseSeqNodeRef.once("value", function(snapshot){
-
-			snapshot.forEach(function(chapter) {
-				if(chapter.cid === cid) {
-					//delete each qns from qns node ,course progress and answerkey node
-					for(var qns in chapter.qns) {
-						commonService.firebaseRef().child('course/questions/'+qns.qid).remove();
-						commonService.firebaseRef().child('answerKey/'+qns.qid).remove();
-
-						// retrieve user profiles
-						userProfileNodeRef.once("value", function(snapshot){
-							// for each user, remove from their courseProgress the current qns
-							snapshot.forEach(function(user) {
-								var key = user.key();
-								userProfileNodeRef.child(key+'/courseProgress/'+qns.qid).remove();
-							});
-						});
+		function updateCourseSeq(courseSeq) {
+			var newCourseSeq = [];
+			var currentSeq = getCourseSeq();
+			currentSeq.$loaded().then(function(){
+				for(i=0;i<courseSeq.length;i++) {
+					for(var chapter in courseSeq) {
+						if(courseSeq[i].title === currentSeq.chapterTitle){
+							newCourseSeq.push(chapter);
+						}
 					}
 				}
 
-				return true;
+				courseSeqNodeRef.update(newCourseSeq);
 			});
-		});
-  	}
+		}
 
-	//questions functions
-	function getQuestion(qid) {
-		return $firebaseObject(commonService.firebaseRef().child('course/questions/'+qid));
-	}
-
-	function updateVideoQuestion(question,isNewQuestion) {
-
-		// retrieve courseSeq node
-		var questionNode = $firebaseObject(questionNodeRef);
-		questionNode.$loaded().then(function(){
-  		 	// if user wants to create chapter
-			var qid = question.qid;
-			var cid = question.cid;
-
-			if(isNewQuestion) {
-				// checking if chapterTitle already exist
-				for(var element in questionNode) {
-					if(element.qnsTitle === question.qnsTitle) {
-						//response this chapter is being used now.
-						return "This Question Title is being used now.";
-					}
-				}
-
-			}
-
-			if(!qid) {
-				//generate new qid
-				qid = 000;
-			}
-			// create new question node & fill it up
-
-			var questionNode = {
-								qnsDescription:question.qnsDescription,
-								qnsInstruction:question.qnsInstruction,
-								qnsTitle:question.qnsTitle,
-								qnsType:question.qnsType,
-								link:question.link
-              };
-			// create courseSeq node & fill it up
-			var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle};
-
-			// update database
-			questionNodeRef.child(qid).update(questionNode);
-
-      var courseArray = $firebaseObject(courseSeqNodeRef);
-			getChapterIndex(cid).then(function(chapIndex){
-        getQnsIndex(chapIndex,qid).then(function(qnsIndex){
-          courseArray.$loaded().then(function(){
-            if(courseArray[chapIndex]!=null) {
-              qnsIndex = ""+qnsIndex;
-              courseArray[chapIndex].qns[qnsIndex] = questionSeqNode;
-                courseArray.$save(chapIndex).then(function(){
-                  if(isNewQuestion) {
-			              return "Question created!"
-      					  }else {
-	                  return "Question updated!"
-      					  }
-                });
-            }
-          });
-			  });
-      });
-		});
-	}
-
-  function updateSlideQuestion(question,isNewQuestion) {
-		// retrieve courseSeq node
-		var questionNode = $firebaseObject(questionNodeRef);
-    var q =$q.defer();
-		questionNode.$loaded().then(function(){
-  		 	// if user wants to create chapter
-			var qid = question.qid;
-			var cid = question.cid;
-
-			if(isNewQuestion) {
-				// checking if chapterTitle already exist
-				for(var element in questionNode) {
-					if(element.qnsTitle === question.qnsTitle) {
-						//response this chapter is being used now.
-						return "This Question Title is being used now.";
-					}
-				}
-
-			}
-
-			if(!qid) {
-				//generate new qid
-				qid = 000;
-			}
-			// create new question node & fill it up
-      var tempSlides = question.slides;
-      question.slides =[];
-      for(var i = 0; i<tempSlides.length;i++){
-        var currentSlide = {
-          explanation:tempSlides[i]['explanation'],
-          imageLink:tempSlides[i]['imageLink']
-        }
-        question.slides.push(currentSlide);
-      }
-
-			var questionNode = {
-								qnsTitle:question.qnsTitle,
-								qnsType:question.qnsType,
-                slides:question.slides
-              };
-			// create courseSeq node & fill it up
-			var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle};
-			// update database
-			questionNodeRef.child(qid).update(questionNode);
-      var courseArray = $firebaseObject(courseSeqNodeRef);
-			getChapterIndex(cid).then(function(chapIndex){
-        getQnsIndex(chapIndex,qid).then(function(qnsIndex){
-          courseArray.$loaded().then(function(){
-            if(courseArray[chapIndex]!=null) {
-              qnsIndex = ""+qnsIndex;
-              courseArray[chapIndex].qns[qnsIndex] = questionSeqNode;
-                courseArray.$save(chapIndex).then(function(){
-                  q.resolve(true);
-                  if(isNewQuestion) {
-			              return "Question created!"
-      					  }else {
-	                  return "Question updated!"
-      					  }
-                  
-                });
-            }
-
-          });
-			  });
-      });
-		});
-    return q.promise;
-	}
-
-
-	function updateQuestionSeq(questionSeq,cid) {
-		var newQuestionSeq = [];
-		var index = getChapterIndex(cid);
-		var currentSeq = $firebaseObject(courseSeqNodeRef.child(index+'/qns'));
-		currentSeq.$loaded().then(function(){
-			for(i=0;i<questionSeq.length;i++) {
-				for(var chapter in questionSeq) {
-					if(questionSeq[i].title === currentSeq.qnsTitle){
-						newQuestionSeq.push(chapter);
-					}
-				}
-			}
-			courseSeqNodeRef.child(index+'/qns').update(newQuestionSeq);
-		});
-	}
-
-	function getChapterIndex(cid) {
-		var courseSeq = $firebaseObject(courseSeqNodeRef);
-		var q =$q.defer();
-		courseSeq.$loaded().then(function(){
-			angular.forEach(courseSeq, function(value, key) {
-				if(value.cid === cid) {
-					q.resolve(key);
-					return false;
-				}
+		function updateEntireSeq(courseSequence) {
+			var q = $q.defer();
+			courseSeqNodeRef.set(courseSequence,function(error){
+				q.resolve(true);
 			});
-		});
-		return q.promise;
-  	}
+			return q.promise;
+		}
+		
 
-    function getQnsIndex(chapIndex,qid) {
-  		var courseSeq = $firebaseArray(courseSeqNodeRef);
-  		var q =$q.defer();
-  		courseSeq.$loaded().then(function(){
-        var qnsArr = courseSeq[chapIndex].qns;
-  			angular.forEach(qnsArr, function(value, key) {
-  				if(value.qid === qid) {
-  					q.resolve(key);
-  					return false;
-  				}
-  			});
-  		});
-  		return q.promise;
-    	}
+		//questions functions
+		function getQuestion(qid) {
+			return $firebaseObject(commonService.firebaseRef().child('course/questions/'+qid));
+		}
 
-	function deleteQuestion (cid,qid) {
-		// get chapter qns and delete them
-		var userProfileNodeRef = commonService.firebaseRef().child('userProfiles');
-		var index = getChapterIndex(cid);
+		function updateVideoQuestion(question,isNewQuestion) {
 
-		courseSeqNodeRef.child('qns/'+index).once("value", function(snapshot){
-			snapshot.forEach(function(question) {
-				if(question.qid === qid) {
-					//delete each qns from qns node ,course progress and answerkey node
-					commonService.firebaseRef().child('course/questions/'+qid).remove();
-					commonService.firebaseRef().child('answerKey/'+qid).remove();
+			// retrieve courseSeq node
+			var questionNode = $firebaseObject(questionNodeRef);
+			questionNode.$loaded().then(function(){
+					// if user wants to create chapter
+				var qid = question.qid;
+				var cid = question.cid;
 
-					// retrieve user profiles
-					userProfileNodeRef.once("value", function(snapshot){
-						// for each user, remove from their courseProgress the current qns
-						snapshot.forEach(function(user) {
-							var key = user.key();
-							userProfileNodeRef.child(key+'/courseProgress/'+qid).remove();
+				if(isNewQuestion) {
+					// checking if chapterTitle already exist
+					for(var element in questionNode) {
+						if(element.qnsTitle === question.qnsTitle) {
+							//response this chapter is being used now.
+							return "This Question Title is being used now.";
+						}
+					}
+
+				}
+
+				if(!qid) {
+					//generate new qid
+					qid = 000;
+				}
+				// create new question node & fill it up
+
+				var questionNode = {
+									qnsDescription:question.qnsDescription,
+									qnsInstruction:question.qnsInstruction,
+									qnsTitle:question.qnsTitle,
+									qnsType:question.qnsType,
+									link:question.link
+								};
+				// create courseSeq node & fill it up
+				var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle};
+
+				// update database
+				questionNodeRef.child(qid).update(questionNode);
+
+				var courseArray = $firebaseObject(courseSeqNodeRef);
+				getChapterIndex(cid).then(function(chapIndex){
+					getQnsIndex(chapIndex,qid).then(function(qnsIndex){
+						courseArray.$loaded().then(function(){
+							if(courseArray[chapIndex]!=null) {
+								qnsIndex = ""+qnsIndex;
+								courseArray[chapIndex].qns[qnsIndex] = questionSeqNode;
+									courseArray.$save(chapIndex).then(function(){
+										if(isNewQuestion) {
+											return "Question created!"
+										}else {
+											return "Question updated!"
+										}
+									});
+							}
 						});
 					});
-				}
-				return true;
+				});
 			});
-		});
+		}
 
-  	}  
-    
-	function getAnswerKey(qid){
-		return $firebaseObject(answerKeyNodeRef.child(qid));
-	}
+		function updateSlideQuestion(question,isNewQuestion) {
+			// retrieve courseSeq node
+			var questionNode = $firebaseObject(questionNodeRef);
+			var q =$q.defer();
+			questionNode.$loaded().then(function(){
+					// if user wants to create chapter
+				var qid = question.qid;
+				var cid = question.cid;
 
+				if(isNewQuestion) {
+					// checking if chapterTitle already exist
+					for(var element in questionNode) {
+						if(element.qnsTitle === question.qnsTitle) {
+							//response this chapter is being used now.
+							return "This Question Title is being used now.";
+						}
+					}
+
+				}
+
+				if(!qid) {
+					//generate new qid
+					qid = 000;
+				}
+				// create new question node & fill it up
+				var tempSlides = question.slides;
+				question.slides =[];
+				for(var i = 0; i<tempSlides.length;i++){
+					var currentSlide = {
+						explanation:tempSlides[i]['explanation'],
+						imageLink:tempSlides[i]['imageLink']
+					}
+					question.slides.push(currentSlide);
+				}
+
+				var questionNode = {
+									qnsTitle:question.qnsTitle,
+									qnsType:question.qnsType,
+									slides:question.slides
+								};
+				// create courseSeq node & fill it up
+				var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle};
+				// update database
+				questionNodeRef.child(qid).update(questionNode);
+				var courseArray = $firebaseObject(courseSeqNodeRef);
+				getChapterIndex(cid).then(function(chapIndex){
+					getQnsIndex(chapIndex,qid).then(function(qnsIndex){
+						courseArray.$loaded().then(function(){
+							if(courseArray[chapIndex]!=null) {
+								qnsIndex = ""+qnsIndex;
+								courseArray[chapIndex].qns[qnsIndex] = questionSeqNode;
+									courseArray.$save(chapIndex).then(function(){
+										q.resolve(true);
+										if(isNewQuestion) {
+											return "Question created!"
+										}else {
+											return "Question updated!"
+										}
+										
+									});
+							}
+
+						});
+					});
+				});
+			});
+			return q.promise;
+		}
+
+
+		function updateQuestionSeq(questionSeq,cid) {
+			var newQuestionSeq = [];
+			var index = getChapterIndex(cid);
+			var currentSeq = $firebaseObject(courseSeqNodeRef.child(index+'/qns'));
+			currentSeq.$loaded().then(function(){
+				for(i=0;i<questionSeq.length;i++) {
+					for(var chapter in questionSeq) {
+						if(questionSeq[i].title === currentSeq.qnsTitle){
+							newQuestionSeq.push(chapter);
+						}
+					}
+				}
+				courseSeqNodeRef.child(index+'/qns').update(newQuestionSeq);
+			});
+		}
+
+		function getChapterIndex(cid) {
+			var courseSeq = $firebaseObject(courseSeqNodeRef);
+			var q =$q.defer();
+			courseSeq.$loaded().then(function(){
+				angular.forEach(courseSeq, function(value, key) {
+					if(value.cid === cid) {
+						q.resolve(key);
+						return false;
+					}
+				});
+			});
+			return q.promise;	
+		}
+
+		function getQnsIndex(chapIndex,qid) {
+			var courseSeq = $firebaseArray(courseSeqNodeRef);
+			var q =$q.defer();
+			courseSeq.$loaded().then(function(){
+				var qnsArr = courseSeq[chapIndex].qns;
+				angular.forEach(qnsArr, function(value, key) {
+					if(value.qid === qid) {
+						q.resolve(key);
+						return false;
+					}
+				});
+			});
+			return q.promise;
+		}
+
+		
+		function deleteQuestion (cid,qid) {
+			// get chapter qns and delete them
+			var userProfileNodeRef = commonService.firebaseRef().child('userProfiles');
+			var courseArray = $firebaseObject(courseSeqNodeRef);
+			var q = $q.defer();
+
+			getChapterIndex(cid).then(function(chapIndex){
+				getQnsIndex(chapIndex,qid).then(function(qnsIndex){
+					courseArray.$loaded().then(function(){
+						if(courseArray[chapIndex]!=null) {
+							courseArray[chapIndex].qns.splice(qnsIndex,1);
+							courseArray.$save().then(function(ref) {
+								// data has been deleted locally and in the database
+								console.log(ref);
+							}, function(error) {
+								console.log("Error:", error);
+
+							});
+							commonService.firebaseRef().child('course/questions/'+qid).remove();
+							commonService.firebaseRef().child('answerKey/'+qid).remove();
+
+							userProfileNodeRef.once("value", function(snapshot){
+								// for each user, remove from their courseProgress the current qns
+								snapshot.forEach(function(user) {
+									var key = user.key;
+									userProfileNodeRef.child(key+'/courseProgress/'+qid).remove();
+								});
+								q.resolve(true);
+							});
+						}
+					});
+				});
+			});
+
+			return q.promise;
+		}
+
+		function deleteQuestion(qidList){
+			var userProfileNodeRef = commonService.firebaseRef().child('userProfiles');
+			$.each(qidList,function(key,value){
+				commonService.firebaseRef().child('course/questions/'+value).remove();
+				commonService.firebaseRef().child('answerKey/'+value).remove();
+
+				userProfileNodeRef.once("value", function(snapshot){
+					// for each user, remove from their courseProgress the current qns
+					snapshot.forEach(function(user) {
+						var key = user.key;
+						userProfileNodeRef.child(key+'/courseProgress/'+value).remove();
+					});
+				});
+			});
+		}  
+
+		function deleteChapter (cidList) {
+			// get chapter qns and delete them
+			var userProfileNodeRef = commonService.firebaseRef().child('userProfiles');
+			var courseArray = $firebaseObject(courseSeqNodeRef);
+			var q = $q.defer();
+			$.each(cidList,function(key,value){
+
+				getChapterIndex(value).then(function(chapIndex){
+					courseArray.$loaded().then(function(){
+						if(courseArray[chapIndex]!=null) {
+							var chapToDelete = courseArray[chapIndex];
+							// deleting each question in this chapter from question and answerKey node 
+							angular.forEach(chapToDelete.qns, function(value, key) {
+								commonService.firebaseRef().child('course/questions/'+value.qid).remove();
+								commonService.firebaseRef().child('answerKey/'+value.qid).remove();
+							});
+
+							// deleting the chapter from course node
+							commonService.firebaseRef().child('course/chapters/'+value).remove();
+
+							userProfileNodeRef.once("value", function(snapshot){
+								// for each user, remove from their courseProgress the current qns
+								snapshot.forEach(function(user) {
+									var key = user.key;
+									angular.forEach(chapToDelete.qns, function(value, key) {
+										userProfileNodeRef.child(key+'/courseProgress/'+value.qid).remove();
+									});
+								});
+								q.resolve(true);
+							});
+						}
+					});
+				});
+			});
+			return q.promise;	
+		}
+
+		function getAnswerKey(qid){
+			return $firebaseObject(answerKeyNodeRef.child(qid));
+		}
+
+		function updateMCQ(question,isNewQuestion) {
+			// retrieve courseSeq node
+			var questionNode = $firebaseObject(questionNodeRef);
+			var q =$q.defer();
+			questionNode.$loaded().then(function(){
+					// if user wants to create chapter
+				var qid = question.qid;
+				var cid = question.cid;
+
+				if(isNewQuestion) {
+					// checking if chapterTitle already exist
+					for(var element in questionNode) {
+						if(element.qnsTitle === question.qnsTitle) {
+							//response this chapter is being used now.
+							return "This Question Title is being used now.";
+						}
+					}
+
+				}
+
+				if(!qid) {
+					//generate new qid
+					qid = 000;
+				}
+				// create new question node & fill it up
+				var answer = [];
+				// create answerkey node & fill it up
+				$.each(question.mcq, function(index,value){
+					answer.push(value.answer);
+					delete value.answer;
+				});
+
+				delete question.$$conf;
+				delete question.$priority;
+				delete question.cid;
+				delete question.$id;
+
+				var questionNode = question;
+				// create courseSeq node & fill it up
+				var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle};
+				
+				// update database
+				questionNodeRef.child(qid).update(questionNode);
+				answerKeyNodeRef.child(qid).update({answer});
+				var courseArray = $firebaseObject(courseSeqNodeRef);
+				getChapterIndex(cid).then(function(chapIndex){
+					getQnsIndex(chapIndex,qid).then(function(qnsIndex){
+						courseArray.$loaded().then(function(){
+							if(courseArray[chapIndex]!=null) {
+								qnsIndex = ""+qnsIndex;
+								courseArray[chapIndex].qns[qnsIndex] = questionSeqNode;
+									courseArray.$save(chapIndex).then(function(){
+										q.resolve(true);
+										if(isNewQuestion) {
+											return "Question created!"
+										}else {
+											return "Question updated!"
+										}
+										
+									});
+							}
+
+						});
+					});
+				})
+				.catch(function(reason){
+					console.log("ERROR CAUGHT: "+ reason)
+				});
+			});
+			return q.promise;
+		}
   }
 
 })();

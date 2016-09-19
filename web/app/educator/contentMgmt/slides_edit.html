@@ -6,7 +6,8 @@
     <div style="padding: 0px 20px">
       <h2 class="pull-left">{{qns.qnsTitle}}</h2>
       <div class="pull-right"style="padding:20px">
-        <md-button class="md-raised" ng-click='saveQns()'>Save all changes</md-button>
+        <md-button class="md-raised" ng-click='saveQns($event)'>Save all changes</md-button>
+        <md-button class="md-warn md-raised " ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
       </div>
     </div>
     <md-divider></md-divider>

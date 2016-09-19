@@ -8,18 +8,40 @@
       <div flex="15"></div>
       <div class="md-whiteframe-z2" layout="column" flex="70">
         <div style="padding: 0px 20px">
-          <h2 class="pull-left">Chapter 2-1</h2>
+          <h2 class="pull-left" ng-model="qns.qnsTitle">{{qns.qnsTitle}}</h2>
           <div class="pull-right"style="padding:20px">
-            <md-button class="md-raised pull-right" ng-click='saveAllChanges()'>save all changes</md-button>
+            <md-button class="md-raised " ng-click='saveMCQChanges($event)'>Save all changes</md-button>
+            <md-button class="md-warn md-raised " ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
           </div>
         </div>
         <md-divider></md-divider>
-        <div style="padding: 0px 20px" layout="column" >
+        <div style="padding: 0px 20px">
+          <md-input-container class="md-block">
+            <label>Question Title</label>
+            <input ng-model="qns.qnsTitle">
+          </md-input-container>
+        </div>
+
+        <div style="padding: 0px 20px">
+          <md-input-container class="md-block">
+            <label>Hints</label>
+            <input ng-model="qns.hint">
+          </md-input-container>
+        </div>
+
+        <div style="padding: 0px 20px">
+          <md-input-container class="md-block">
+            <label>Instructions</label>
+            <input ng-model="qns.qnsInstruction">
+          </md-input-container>
+        </div>
+        <div style="padding: 0px 20px" layout="column" id='mcq'>
           <!-- Question 1 -->
           
-          <div layout="row" ng-repeat="mcqObj in qns.mcq track by $index"  toggle-button="done">
+          <div layout="row" ng-repeat="mcqObj in qns.mcq track by $index"  toggle-button="done" >
             <div flex>
-              <p><strong>Q{{$index+1}}.</strong> {{mcqObj.qns}}
+              <p >
+                <strong>Q{{$index+1}}.</strong> {{mcqObj.qns}}
                 <md-button ng-click="toggleQns(mcqObj.qnsID)" class="md-icon-button" aria-label="Settings" >
                   <i class="fa fa-pencil" ></i>
                 </md-button>
@@ -33,7 +55,7 @@
               <input ng-model="mcqObj.qns">
 
               </md-input-container>
-              <md-radio-group ng-model="mcqObj.ans" id='choice_{{mcqObj.qnsID}}' style="border: none" ng-change='change()'>
+              <md-radio-group ng-model="mcqObj.answer" id='choice_{{mcqObj.qnsID}}' style="border: none" ng-change='change()'>
                 <div layout="row"  style="margin: -15px 0" ng-repeat="option in mcqObj.options track by $index">
                   <div layout="row" layout-align="center center">
                     <md-button ng-click="toggleChoice(mcqObj.qnsID,$index)"class="md-icon-button" aria-label="Settings">
@@ -44,7 +66,7 @@
                     </md-button>
                   </div>
                   <md-radio-button ng-model="mcqObj.options[$index]" value="{{mcqObj.options[$index]}}"> {{mcqObj.options[$index]}} </md-radio-button>
-                  <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}_{{$index}}'>
+                  <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}_{{$index}}' style="margin-left:15px">
                       <label>Choice:</label>
                   <input ng-model="mcqObj.options[$index]">
                   </md-input-container>
@@ -62,7 +84,7 @@
         </div>
         <div layout="row" layout-align="center center">
         <div style="width: 50%">
-          <md-button style="width: 100%" ng-click="addMcq()" class="md-primary md-raised">add question</md-button>
+          <md-button style="width: 100%; margin: 40px 0px" ng-click="addMcq()" class="md-primary md-raised">add question</md-button>
         </div>
 
 

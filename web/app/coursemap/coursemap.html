@@ -19,9 +19,6 @@
                 <md-item-content>
                   <div class="md-tile-content">
                     <a ng-href="#/lesson/{{qns.qnsType}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}"><font class="font-size-course-title">{{qns.qnsTitle}}</font></a>
-                    <p>
-                      <font class="font-size-normal"> Type: {{qns.qnsType}}</font>
-                    </p>
                   </div>
                   <div class="md-tile-right inset" hide-sm ng-show="complete(qns.qnsId)">
                     <!--

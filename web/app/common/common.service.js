@@ -5,20 +5,29 @@
     .factory('commonService', commonService);
 	
   
+  // Initialize Firebase
+  var config = {      
+    apiKey: "AIzaSyDt22-VriobDs7cNfkmY8yxHur9IQBewWo",
+    authDomain: "pivotal-expert.firebaseapp.com",
+    databaseURL: "https://pivotal-expert.firebaseio.com",
+    storageBucket: "",
+  };
+  
+  firebase.initializeApp(config);
+  
   function commonService() {
 	  
-
-    var ref = firebase.database().ref();
-	// create an instance of the authentication service
+    //Replace with your login google account email
+    var adminEmail = "Jianhua.Wu.2014@smu.edu.sg";
 
 	var service = {
-      firebaseRef: firebaseRef
+      getAdminEmail: getAdminEmail
     };
 	
 	return service;
 
-    function firebaseRef() {
-      return ref;
+    function getAdminEmail() {
+      return adminEmail;
     }
   
   }

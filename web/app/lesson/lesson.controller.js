@@ -62,7 +62,9 @@
         
         //Excel type question
         if (qnsType == 'excel') {
-                    
+            //var sheetID = question.sheetID;
+            var sheetID = "test123";
+
         }
         
         //Codebox type question
@@ -138,8 +140,6 @@
                         
                         $scope.result = true;
                         $scope.applied = false;
-
-
     
                         for (i = 0; i < totalTestNum; i++) { 
                             var test = answerKey.testcase[i];
@@ -198,7 +198,7 @@
 			}
         });
     }
-    
+
 	var getInlineJSandTest = function (test, code) {
 		var top = 'onmessage = function(msg){';
 		var bottom = 'postMessage(result);};';
@@ -207,13 +207,18 @@
 		var blob = new Blob([all], {"type": "text\/plain"});
 		return URL.createObjectURL(blob);
 	}
-    
+
     function loadSheetsApi() {
         var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-        gapi.client.load(discoveryUrl).then(loadQn);
+        
+        //gapi.client.load(discoveryUrl).then(loadQn);
     }
     
     //Haven Load Qns
+    //What i need from firebase :
+    // {Edu spreadsheetId(from auth/user), sheetID(from course/question). 
+    // Sudent spreadsheetId(from auth/user), sheetID(copy from edu)}
+    
     function loadQn() {
         var sheetId1 ;
         gapi.client.sheets.spreadsheets.sheets.copyTo({
@@ -238,14 +243,13 @@
             ]
           }).then(function(response){
 
-
           });
 
         }, function(response) {
           appendPre('Error: ' + response.result.error.message);
         });
     }
-      
+
     /*
 	//Load course
 	var course =  $firebaseObject(ref.child('course'));
@@ -484,5 +488,6 @@
       return inputValue;
     }
     */
+
   };
 })();

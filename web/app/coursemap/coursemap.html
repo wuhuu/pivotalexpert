@@ -4,7 +4,34 @@
         <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 0px 10px;height: 70px;">
               <h1>Pivotal Expert Course Map</h1>
         </div>
-        <div flex="auto"></div>
+        <!--<script>
+           $( function() {
+             $( ".accordion2" )
+              .accordion({
+                header: "> div > h2",
+                collapsible: true
+              }); 
+            
+          } );
+             
+        </script>
+        <div class="accordion2">
+              <div>
+                <h2>test1</h2>
+                <div>asd</div>
+              </div>
+              <div>
+                <h2>test1</h2>
+                <div>asd</div>
+              </div>
+              <div>
+                <h2>test1</h2>
+                <div>asd</div>
+              </div>
+          </div>-->
+        <div flex="auto">
+          
+        </div>
     </div>
 
     <div layout="row" flex>
@@ -12,32 +39,34 @@
     <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: 0px;padding: 20px 20px;">
       <md-content flex md-scroll-y>
       <md-card-content>
-        <div ng-repeat="chapter in courseMaterial" ng-init="courseIndex = $index">
-            <h2>{{chapter.chapterTitle}}</h2>
-            <md-list>
-              <md-item ng-repeat="qns in chapter.qns" ng-init="qnsIndex = $index">
-                <md-item-content>
-                  <div class="md-tile-content">
-                    <a ng-href="#/lesson/{{qns.qnsType}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}"><font class="font-size-course-title">{{qns.qnsTitle}}</font></a>
-                    <p>
-                      <font class="font-size-normal"> Type: {{qns.qnsType}}</font>
-                    </p>
-                  </div>
-                  <div class="md-tile-right inset" hide-sm ng-show="complete(qns.qnsId)">
-                    <!--
-                    <md-checkbox ng-disabled="true" aria-label="Disabled checked checkbox" ng-model="data.cb" ng-init="data.cb=true">
-                    -->
-                    <img class="coursemap-check" ng-src="content/images/check-circle-outline-128.png">
+        <div id="accordion1">
+          <div ng-repeat="chapter in courseMaterial" ng-init="courseIndex = $index" on-finish-render="ngRepeatFinished">
+              <h2>{{chapter.chapterTitle}}</h2>
+              <div>
+                <md-list>
+                  <md-item ng-repeat="qns in chapter.qns" ng-init="qnsIndex = $index">
+                    <md-item-content>
+                      <div class="md-tile-content">
+                        <a ng-href="#/lesson/{{qns.qnsType}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}"><font class="font-size-course-title">{{qns.qnsTitle}}</font></a>
+                        <p>
+                          <font class="font-size-normal"> Type: {{qns.qnsType}}</font>
+                        </p>
+                      </div>
+                      <div class="md-tile-right inset" hide-sm ng-show="complete(qns.qnsId)">
+                        <!--
+                        <md-checkbox ng-disabled="true" aria-label="Disabled checked checkbox" ng-model="data.cb" ng-init="data.cb=true">
+                        -->
+                        <img class="coursemap-check" ng-src="content/images/check-circle-outline-128.png">
 
-                  </div>
-                </md-item-content>
-                <md-divider ng-if="!$last"></md-divider>
-              </md-item>
-              <md-divider></md-divider>
-            </md-list>
-
-          <md-divider></md-divider>
-          <md-divider></md-divider>
+                      </div>
+                    </md-item-content>
+                    <md-divider ng-if="!$last"></md-divider>
+                  </md-item>
+                  <md-divider></md-divider>
+                </md-list>
+              </div>
+            <md-divider></md-divider>
+          </div>
         </div>
       </md-card-content>
     </md-content>

@@ -13,7 +13,8 @@
                     $( ".accordion1" )
                       .accordion({
                         header: "> div > #chapterHeader",
-                        collapsible: true
+                        collapsible: true,
+                        heightStyle: "content"
                       })
                       .sortable({
                         collapsible: true,
@@ -39,7 +40,9 @@
               if(! scope.chapterAdded){
                 $("#text_"+cid).hide();
               }
-               
+               $("#text_"+cid).focusout(function(){
+                  $(this).hide();
+              });
             });
 
         }
@@ -50,10 +53,20 @@
         restrict: 'A',
         link: function (scope, element, attr) {
           var id = scope.mcqObj.qnsID;
-          $timeout(function () {   
-            $("#text_"+id).hide();
+          $timeout(function () {
+
+            $("#text_"+id).focusout(function(){
+                  $(this).hide();
+            });
+
+            if(! scope.qnsAdded) {               
+              $("#text_"+id).hide();
+            }
             angular.forEach(scope.mcqObj.options,function(value,key){
               $("#text_"+id+"_"+key).hide();
+              $("#text_"+id+"_"+key).focusout(function(){
+                  $(this).hide();
+              });
             });
             
           });
@@ -68,26 +81,48 @@
 
   function ContentMgmtController($http,$scope, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,contentMgmtService) {
 	  console.log("ContentMgmtController");
-    var qid = $routeParams.qid;
-    $scope.qid = qid;
-    var question = contentMgmtService.getQuestion(qid);
-    question.$loaded().then(function() {
-      var answer = contentMgmtService.getAnswerKey(qid)
-      answer.$loaded().then(function(answerKey){
-        if(answerKey && question.qnsType==='mcq') {
-          angular.forEach(question.mcq, function(value, key) {
-            var ans = answerKey.answer[key];
-            value.answer = ans;
+    if($routeParams.qid!=null) {
+        var qid = $routeParams.qid;
+        $scope.qid = qid;
+        $scope.isNewQuestion = false;
+        var question = contentMgmtService.getQuestion(qid);
+        question.$loaded().then(function() {
+          var answer = contentMgmtService.getAnswerKey(qid)
+          answer.$loaded().then(function(answerKey){
+            if(answerKey && question.qnsType==='mcq') {
+              angular.forEach(question.mcq, function(value, key) {
+                var ans = answerKey.answer[key];
+                value.answer = ans;
+              });
+            }
+            question.qid = question.$id;
+            question.cid = $routeParams.cid;
+            $scope.qns = question;
           });
-        }
-        question.qid = question.$id;
-        question.cid = $routeParams.cid;
-        $scope.qns = question;
-      });
-    })
-    .catch(function(error) {
-      console.error("Error:", error);
-    });
+        })
+        .catch(function(error) {
+          console.error("Error:", error);
+        });
+
+    }else {
+      //"/educator/slides_create/C0"
+      var path = $location.$$path;
+      path = path.substr(path.indexOf('/educator/'),path.indexOf('_create'));
+      var qnsType= path.substr(path.lastIndexOf('/')+1);
+      $scope.isNewQuestion = true;
+      $scope.qns = {qnsTitle:" ",qnsType:qnsType,cid:$routeParams.cid}
+      if(qnsType === "slides"){
+        $scope.qns['slides'] = [];
+      }else if (qnsType === "video"){
+        $scope.qns['qnsDescription'] = "";
+        $scope.qns['qnsInstruction'] = "";
+        $scope.qns['link'] = "";
+      }else if (qnsType === "mcq"){
+        $scope.qns['mcq'] = [];
+        $scope.qns['hint'] = "";
+        $scope.qns['qnsInstruction'] = [];
+      }
+    }
 
     $scope.saveQns = function(ev) {
       var confirm = $mdDialog.confirm()
@@ -98,13 +133,13 @@
             .cancel('Cancel!');
 
       $mdDialog.show(confirm).then(function() {
-        if(question.qnsType == "video"){
-          contentMgmtService.updateVideoQuestion($scope.qns,false).then(function(){
-            window.location.reload();
+        if($scope.qns.qnsType == "video"){
+          contentMgmtService.updateVideoQuestion($scope.qns,$scope.isNewQuestion).then(function(){
+            window.location.href = "#/educator/courseMap"
           });
-        }else if (question.qnsType == "slides") {
-          contentMgmtService.updateSlideQuestion($scope.qns,false).then(function(){
-            window.location.reload();
+        }else if ($scope.qns.qnsType == "slides") {
+          contentMgmtService.updateSlideQuestion($scope.qns,$scope.isNewQuestion).then(function(){
+            window.location.href = "#/educator/courseMap"
           });
         }
       });
@@ -162,16 +197,14 @@
           }
           $scope.qns.mcq = listToUpdate;
 
-          contentMgmtService.updateMCQ($scope.qns,false).then(function(){
+          contentMgmtService.updateMCQ($scope.qns,$scope.isNewQuestion).then(function(){
             window.location.reload();
           });
         }, function() {
           // cancel function
         });
 
-    };
-
-    
+    };    
 
     $scope.deleteChoice = function(mcq_id,index){
       $scope.qns.mcq[mcq_id].options.splice(index,1);
@@ -184,6 +217,7 @@
     $scope.addMcq = function() {
       var qnsID = "Q"+($scope.qns.mcq.length+1);
       $scope.qns.mcq.push({options:[],qns:"",qnsID:qnsID});
+      $scope.qnsAdded = true;
     }
 
     $scope.deleteQns = function(ev,cid,qid) {
@@ -225,15 +259,77 @@
   function CourseMapController($http,$scope, $routeParams,$mdDialog, $location, $firebaseObject, contentMgmtService) {
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
+    $scope.chapters = [];
+    $scope.qnsTypes = ["Video","Slides","MCQ","Excel","Code"];
     var courseMap = contentMgmtService.getCourseSeq();
     courseMap.$loaded().then(function(){
       var seq = [];
       for(i=0;i<courseMap.length;i++) {
         seq.push(courseMap[i]);
+        $scope.chapters.push({cid:courseMap[i].cid,chapterTitle:courseMap[i].chapterTitle});
       }
 
       $scope.courseMap = seq;
     });
+
+    $scope.showPrompt = function(ev) {
+    // Appending dialog to document.body to cover sidenav in docs app
+      var parentEl = angular.element(document.body);
+       $mdDialog.show({
+         parent: parentEl,
+         targetEvent: ev,
+         template:
+         
+          '<md-dialog style="padding:20px">' +
+          '<h3>Options to create question:</h3><br>'+
+           '  <md-dialog-content>'+
+           '  <md-input-container style="width:500px;height:auto;">'+
+           '    <label>Select Chapter to put question in.</label> '+
+           '    <md-select ng-model="selectedChapter" required>'+
+           '      <md-option ng-repeat="item in chapters" value="{{item.cid}}">'+
+           '       {{item.chapterTitle}}' +
+           '      '+
+           '    </md-option></md-select></md-input-container><br>'+
+           '  <md-input-container style="width:500px;height:auto;">'+    
+           '    <label>Select question Type.</label> '+
+           '    <md-select ng-model="selectedQnsType" required>'+
+           '      <md-option ng-repeat="item in qnsTypes" value="{{item}}">'+
+           '       {{item}}' +
+           '      '+
+           '    </md-option></md-select>'+
+           '  </md-input-container>'+
+           '  </md-dialog-content>' +
+           '  <md-dialog-actions>' +
+           '    <md-button ng-click="closeDialog()" class="md-primary">' +
+           '      Close' +
+           '    </md-button>' +
+           '    <md-button ng-click="nextStep()" class="md-primary">' +
+           '      Proceed' +
+           '    </md-button>' +
+           '  </md-dialog-actions>' +
+           '</md-dialog>',
+         locals: {
+           chapters: $scope.chapters,
+           qnsTypes:$scope.qnsTypes
+         },
+         controller: DialogController
+      });
+      function DialogController($scope, $mdDialog,chapters,qnsTypes) {
+        $scope.chapters = chapters;
+        $scope.selectedChapter = '';
+        $scope.selectedQnsType = '';
+        $scope.qnsTypes = qnsTypes;
+        $scope.closeDialog = function() {
+          $mdDialog.hide();
+        }
+        $scope.nextStep = function() {
+          $scope.selectedQnsType = $scope.selectedQnsType.toLowerCase();
+          
+          $location.path('educator/'+$scope.selectedQnsType+'_create/'+$scope.selectedChapter);
+          $mdDialog.hide();
+        }
+      }
+    };
 
     $scope.editQuestion = function(qid,cid) {
       var question = contentMgmtService.getQuestion(qid);
@@ -294,9 +390,8 @@
           qlist=[];
 
         });
-
         
-        contentMgmtService.deleteQuestion($scope.qnsTBD);
+        contentMgmtService.deleteQuestionFromCM($scope.qnsTBD);
         contentMgmtService.deleteChapter($scope.chapTBD).then(function(){
           contentMgmtService.updateEntireSeq(courseSequence).then(function() {
             window.location.reload();

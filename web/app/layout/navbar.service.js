@@ -30,8 +30,7 @@
             var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
 
             courseProgressRef.once('value', function(snapshot) {
-              // The callback function will get called twice, once for "fred" and once for "barney"
-              
+
               $scope.$apply(function(){
                 $rootScope.numAchievement = snapshot.numChildren();
               });

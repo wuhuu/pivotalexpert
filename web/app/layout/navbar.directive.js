@@ -14,7 +14,6 @@
     };
   }
  
- 
   function NavbarController($firebaseObject, $scope, $location, authService, navBarService) {
       
       var usersRef = firebase.database().ref().child('auth/users');

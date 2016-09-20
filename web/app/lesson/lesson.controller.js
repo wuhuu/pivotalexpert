@@ -4,7 +4,7 @@
     .module('app.lesson')
     .controller('LessonController', LessonController);
 	
-  function LessonController($http,$scope, $routeParams, $location, $firebaseObject, $sce, navBarService) {
+  function LessonController($q, $scope, $routeParams, $location, $firebaseObject, $sce, navBarService) {
 	
     console.log("LessonController");
 	var ref = firebase.database().ref();
@@ -75,9 +75,9 @@
             editor.getSession().setMode("ace/mode/javascript");
             editor.setOption("maxLines", 30);
             editor.setOption("minLines", 10);
-            //Question here, need to change to retrieve from json
-            editor.insert(question.initialCode);
             
+            //insert code to codebox from firebase
+            editor.insert(question.initialCode);
             
             /* Bind to commands
             editor.commands.addCommand({
@@ -132,31 +132,33 @@
                     // Check for syntax error
                     var annot = editor.getSession().getAnnotations();
                     if (annot.length == 0) {
-                        var input = editor.getValue().replace(/\n/g, " ");
-                        
-                        var code = answerKey.codeTemplate1 + input + answerKey.codeTemplate2;
-                        
-                        var totalTestNum = answerKey.testcase.length;
-                        
-                        $scope.result = true;
-                        $scope.applied = false;
+                        var input = editor.getValue().replace(/\s+/g, " ");
+
+                        var code = answerKey.testcodeDeclare + input + answerKey.testcode;
+                        console.log(code);
+                        $scope.testCase = answerKey.testcase;
+                        var totalTestNum =  $scope.testCase.length;
     
+                        var promises = [];
+                        console.log("TEST " + totalTestNum);
+                        console.log($scope.testCase);
                         for (i = 0; i < totalTestNum; i++) { 
-                            var test = answerKey.testcase[i];
+                            var test =  $scope.testCase[i];
                             var ww = new Worker(getInlineJSandTest(test, code));
                             //Send any message to worker
                             ww.postMessage("and message");
                             ww.onmessage = function (e) {
                                 var msg = e.data;
                                 console.log("Message from worker--> ",msg);
-                                if(msg == false) {
-                                    $scope.result = false;
-                                    
-                                }
-                                $scope.incorrect = true;
+                                promises.push(msg);
                             };
-
                         }
+                        $q.all(promises).then(function() {
+                            console.log("RESULT");
+                            console.log(promises);
+                            //console.log(promises[0]);
+                        });
+
 /*                        
                         $scope.$watch('applied', function() {
                             console.log("TESTING");
@@ -175,6 +177,8 @@
         }
     });
     
+    
+    //ERROR
     function nextQns(currentChapter, currentQns){
         var courseSeq = $firebaseObject(ref.child('courseSequence'));
         courseSeq.$loaded().then(function() {

@@ -66,9 +66,9 @@
         //navBarService.updateNavBar(user.displayName);
         userData.$loaded().then(function(){
             //load drive API to create if have not created before
-            //if(!userData.driveExcel) {
-                //loadDriveApi();   
-            //}
+            if(!userData.driveExcel) {
+                loadDriveApi();   
+            }
             //Create Google Folder upon login
             $rootScope.logined = true;
             if(userData.profileLink == null) {

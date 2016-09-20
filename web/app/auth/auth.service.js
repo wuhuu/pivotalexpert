@@ -4,7 +4,7 @@
     .module('app.auth')
     .factory('authService', authService);
 
-  function authService($firebaseObject, $firebaseAuth, $location, $rootScope) {
+  function authService($firebaseObject, $firebaseAuth, $location, $rootScope, commonService) {
 	  
 	// create an instance of the authentication service
 	var ref = firebase.database().ref();
@@ -37,10 +37,11 @@
         // The signed-in user info.
         var user = result.user;
         $rootScope.userID = user.uid;
+        var loginEmail = user.providerData[0].email;
 
         usersRef.child(user.uid).update({
           pic: user.photoURL,
-          email: user.email,
+          email: loginEmail,
           displayName: user.displayName
         });
         
@@ -50,18 +51,24 @@
         gapi.auth.setToken({
             access_token: token
         });
-             
         
-
+        //Check whether login user email belong to admin account email
+        var adminEmail = commonService.getAdminEmail().toUpperCase();
+        
+        //update admin role
+        if(adminEmail === loginEmail.toUpperCase()) {
+            ref.child('auth/admin/' + user.uid).set("admin");
+        }
+        
         ref.child('/signinLogs/' + user.uid).set(new Date().toLocaleString("en-US"));
         
         var userData = $firebaseObject(usersRef.child(user.uid));
         //navBarService.updateNavBar(user.displayName);
         userData.$loaded().then(function(){
             //load drive API to create if have not created before
-            //if(!userData.driveExcel) {
+            if(!userData.driveExcel) {
                 loadDriveApi();   
-            //}
+            }
             //Create Google Folder upon login
             $rootScope.logined = true;
             if(userData.profileLink == null) {
@@ -128,6 +135,7 @@
                   name: sheetName,
                   parents: [folderId]
                 });
+                
                 //Update Firebase with folderID
                 usersRef.child($rootScope.userID).update({ driveFolder: folderId });
 

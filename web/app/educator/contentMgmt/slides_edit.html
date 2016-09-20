@@ -17,7 +17,7 @@
           <div flex="45" style="padding:10px">
             <md-input-container class="md-block">
               <label>Question Title</label>
-              <input ng-model="qns.qnsTitle">
+              <input ng-model="qns.qnsTitle" required>
             </md-input-container>
           </div>
         </div>
@@ -28,13 +28,13 @@
               <div flex="45" style="padding:10px">
                 <md-input-container class="md-block">
                   <label>Slide Image Link</label>
-                  <input ng-model="slide.imageLink">
+                  <input ng-model="slide.imageLink" required>
                 </md-input-container>
               </div>
               <div flex="45" style="padding:10px">
                 <md-input-container class="md-block">
                   <label>Explanation</label>
-                  <textarea ng-model="slide.explanation" rows="1" md-select-on-focus></textarea>
+                  <input ng-model="slide.explanation" rows="1" md-select-on-focus required>
                 </md-input-container>
               </div>
               <div felx="10">

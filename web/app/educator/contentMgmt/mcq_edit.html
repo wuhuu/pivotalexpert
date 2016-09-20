@@ -18,21 +18,21 @@
         <div style="padding: 0px 20px">
           <md-input-container class="md-block">
             <label>Question Title</label>
-            <input ng-model="qns.qnsTitle">
+            <input ng-model="qns.qnsTitle" required>
           </md-input-container>
         </div>
 
         <div style="padding: 0px 20px">
           <md-input-container class="md-block">
             <label>Hints</label>
-            <input ng-model="qns.hint">
+            <input ng-model="qns.hint" required>
           </md-input-container>
         </div>
 
         <div style="padding: 0px 20px">
           <md-input-container class="md-block">
             <label>Instructions</label>
-            <input ng-model="qns.qnsInstruction">
+            <input ng-model="qns.qnsInstruction" required>
           </md-input-container>
         </div>
         <div style="padding: 0px 20px" layout="column" id='mcq'>
@@ -52,7 +52,7 @@
               </p>
               <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}'>
                       <label>Question:</label>
-              <input ng-model="mcqObj.qns">
+              <input ng-model="mcqObj.qns" required>
 
               </md-input-container>
               <md-radio-group ng-model="mcqObj.answer" id='choice_{{mcqObj.qnsID}}' style="border: none" ng-change='change()'>
@@ -68,7 +68,7 @@
                   <md-radio-button ng-model="mcqObj.options[$index]" value="{{mcqObj.options[$index]}}"> {{mcqObj.options[$index]}} </md-radio-button>
                   <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}_{{$index}}' style="margin-left:15px">
                       <label>Choice:</label>
-                  <input ng-model="mcqObj.options[$index]">
+                  <input ng-model="mcqObj.options[$index]" required>
                   </md-input-container>
                 </div>
               </md-radio-group>

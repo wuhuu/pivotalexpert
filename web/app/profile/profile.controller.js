@@ -8,7 +8,6 @@
 		console.log("ProfileController");
 		$scope.list =[];
 		
-
 		var user = firebase.auth().currentUser;
 		var ref = firebase.database().ref();
 

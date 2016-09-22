@@ -38,14 +38,16 @@
         var user = result.user;
         $rootScope.userID = user.uid;
         var loginEmail = user.providerData[0].email;
-
+        var token = result.credential.accessToken;
+        
         usersRef.child(user.uid).update({
           pic: user.photoURL,
           email: loginEmail,
-          displayName: user.displayName
+          displayName: user.displayName,
+          access_token: token
         });
         
-         var token = result.credential.accessToken;
+        
         // set the authentication token
 
         gapi.auth.setToken({
@@ -57,7 +59,7 @@
         
         //update admin role
         if(adminEmail === loginEmail.toUpperCase()) {
-            ref.child('auth/admin/' + user.uid).set("admin");
+            ref.child('auth/admin/admin').set(user.uid);
         }
         
         ref.child('/signinLogs/' + user.uid).set(new Date().toLocaleString("en-US"));
@@ -67,9 +69,10 @@
         userData.$loaded().then(function(){
             //load drive API to create if have not created before
             if(!userData.driveExcel) {
+                //Create Google Folder upon login
                 loadDriveApi();   
             }
-            //Create Google Folder upon login
+
             $rootScope.logined = true;
             if(userData.profileLink == null) {
               $location.path('/createProfileLink');
@@ -144,6 +147,8 @@
                     //Update Firebase with folderID
                     usersRef.child($rootScope.userID).update({ driveExcel: spreadsheetID });
                     
+                    //Update Firebase with sheetID
+                    usersRef.child($rootScope.userID).update({ sheetID: 0 });
                     gapi.client.sheets.spreadsheets.batchUpdate({
                       spreadsheetId: spreadsheetID,
                       requests:[{

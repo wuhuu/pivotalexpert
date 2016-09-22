@@ -81,6 +81,45 @@
 
   function ContentMgmtController($http,$scope, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,contentMgmtService) {
 	  console.log("ContentMgmtController");
+    
+    //Delete Qns
+    $scope.deleteQns = function(ev,cid,qid) {
+      var confirm = $mdDialog.confirm()
+            .title('Do you really want to DELETE this question?')
+            .textContent('This question will deleted, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Delete it now!')
+            .cancel('Cancel');
+
+      $mdDialog.show(confirm).then(function() {
+        contentMgmtService.deleteQuestion(cid,qid).then(function(){
+         window.location.href = "#/educator/courseMap"
+         //window.location.reload();
+        });
+      }, function() {
+        // cancel function
+      });
+    }
+
+    //Delete Chapter
+    $scope.deleteChap = function(ev,cid) {
+      var confirm = $mdDialog.confirm()
+            .title('Do you really want to DELETE this question?')
+            .textContent('This question will deleted, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Delete it now!')
+            .cancel('Cancel');
+
+      $mdDialog.show(confirm).then(function() {
+        contentMgmtService.deleteChapter(cid).then(function(){
+          window.location.reload();
+        });
+      }, function() {
+        // cancel function
+      });
+    }
+ 
+      
     if($routeParams.qid!=null) {
         var qid = $routeParams.qid;
         $scope.qid = qid;
@@ -121,9 +160,31 @@
         $scope.qns['mcq'] = [];
         $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = [];
+      } else if (qnsType === "excel") {
+        $scope.qns['hint'] = "";
+        $scope.qns['qnsInstruction'] = "";
+        $scope.qns['initialCode'] = "";
+        //answer key scope
+        
+      } else if (qnsType === "code") {
+        $scope.qns['hint'] = "";
+        $scope.qns['qnsInstruction'] = "";
+        $scope.qns['initialCode'] = "";
+        //answer key scope
+        $scope.qns['testcase'] = [];
+        $scope.qns['testcodeDeclare'] = "";
+        $scope.qns['testcode'] = "";
+        
+        //Set code box display
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/chrome");
+        editor.getSession().setMode("ace/mode/javascript");
+        editor.setOption("maxLines", 30);
+        editor.setOption("minLines", 10);
       }
     }
 
+    //Video & Slides Save Qns
     $scope.saveQns = function(ev) {
       var confirm = $mdDialog.confirm()
             .title('Would you want to save all changes?')
@@ -153,7 +214,6 @@
     $scope.addSlide = function(){
       $scope.qns.slides.push({explanation:" ",imageLink:" "});
     }
-
 
     $scope.toggleQns = function(id) {
       $("#text_"+id).toggle();
@@ -220,41 +280,24 @@
       $scope.qnsAdded = true;
     }
 
-    $scope.deleteQns = function(ev,cid,qid) {
-      var confirm = $mdDialog.confirm()
-            .title('Do you really want to DELETE this question?')
-            .textContent('This question will deleted, is it ok to proceed?')
-            .targetEvent(ev)
-            .ok('Delete it now!')
-            .cancel('Cancel');
-
-      $mdDialog.show(confirm).then(function() {
-        contentMgmtService.deleteQuestion(cid,qid).then(function(){
-         window.location.href = "#/educator/courseMap"
-         //window.location.reload();
-        });
-      }, function() {
-        // cancel function
-      });
+    ////Excel
+    //Add
+    
+    //Save Changes
+    
+    //Delete Qns
+    
+    
+    // Code box
+    $scope.addTestcase = function() {
+        
     }
-
-    $scope.deleteChap = function(ev,cid) {
-      var confirm = $mdDialog.confirm()
-            .title('Do you really want to DELETE this question?')
-            .textContent('This question will deleted, is it ok to proceed?')
-            .targetEvent(ev)
-            .ok('Delete it now!')
-            .cancel('Cancel');
-
-      $mdDialog.show(confirm).then(function() {
-        contentMgmtService.deleteChapter(cid).then(function(){
-          window.location.reload();
-        });
-      }, function() {
-        // cancel function
-      });
-    }
-  }
+    //Add
+    
+    //Save Changes
+    
+    //Delete Qns
+ }
 
   function CourseMapController($http,$scope, $routeParams,$mdDialog, $location, $firebaseObject, contentMgmtService) {
     $scope.chapTBD = [];
@@ -418,7 +461,5 @@
     } 
 
   }
-
-
 
 })();

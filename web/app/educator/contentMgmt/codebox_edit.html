@@ -42,7 +42,7 @@
         </md-input-container>
       </h2>
         <div class="pull-right"style="padding:20px">
-            <md-button class="md-raised " ng-click='saveMCQChanges($event)'>Save all changes</md-button>
+            <md-button class="md-raised " ng-click='saveCodeBoxChanges($event)'>Save all changes</md-button>
             <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
         </div>
     </div>
@@ -50,7 +50,9 @@
         <div id="editor" style="padding: 20px" flex > 
     
         </div>
+        
         <div style="padding: 10px 0px">
+        <label ng-show="qns.testcodeDeclare"> Example of test : {{qns.testcodeDeclare}} input {{qns.testcode}} </label>
           <md-input-container class="md-block">
             <label>Test code Declaration</label>
             <input ng-model="qns.testcodeDeclare">
@@ -59,14 +61,13 @@
             <label>Test code Continue</label>
             <input ng-model="qns.testcode">
           </md-input-container>
-          <label ng-show="qns.testcodeDeclare">
-          Example of test : {{qns.testcodeDeclare}} input {{qns.testcode}}
-          </label>
-
-          <md-input-container class="md-block">
-            <label>Testcase</label>
-            <input ng-model="qns.testcase">
-          </md-input-container>
+          <div ng-repeat="test in qns.testcases">
+              <md-input-container class="md-block">
+                <label>Test case</label>
+                <input type="hidden" ng-model="case.id" ng-value="{{$index}}" />
+                <input ng-model="test.testcase">
+              </md-input-container>
+          </div>
           <div style="width: 50%">
             <md-button style="width: 100%; margin: 40px 0px" ng-click="addTestcase()" class="md-primary md-raised">add test case</md-button>
            </div>

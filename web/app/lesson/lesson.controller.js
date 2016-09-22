@@ -4,7 +4,7 @@
     .module('app.lesson')
     .controller('LessonController', LessonController);
 	
-  function LessonController($q, $scope, $routeParams, $location, $firebaseObject, $sce, navBarService, lessonService) {
+  function LessonController($q, $scope, $routeParams, $location, $firebaseObject, $sce, navBarService) {
 	
     console.log("LessonController");
 	var ref = firebase.database().ref();
@@ -177,7 +177,7 @@
                     if (annot.length == 0) {
                         var input = editor.getValue().replace(/\s+/g, " ");
                         var code = answerKey.testcodeDeclare + input + answerKey.testcode;
-                        $scope.testCase = answerKey.testcase;
+                        $scope.testCase = answerKey.testcases;
                         
                         $scope.codeResult = [];
                         var promises = []

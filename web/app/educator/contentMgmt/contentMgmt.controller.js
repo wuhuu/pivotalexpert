@@ -119,14 +119,13 @@
       });
     }
  
-      
     if($routeParams.qid!=null) {
         var qid = $routeParams.qid;
         $scope.qid = qid;
         $scope.isNewQuestion = false;
         var question = contentMgmtService.getQuestion(qid);
         question.$loaded().then(function() {
-          var answer = contentMgmtService.getAnswerKey(qid)
+          var answer = contentMgmtService.getAnswerKey(qid);
           answer.$loaded().then(function(answerKey){
             if(answerKey && question.qnsType==='mcq') {
               angular.forEach(question.mcq, function(value, key) {
@@ -137,12 +136,27 @@
             question.qid = question.$id;
             question.cid = $routeParams.cid;
             $scope.qns = question;
-          });
+          
+            if (question.qnsType === "code") {
+                //answer key scope
+                $scope.qns['testcases'] = [];
+                $scope.qns['testcodeDeclare'] = "";
+                $scope.qns['testcode'] = "";
+            
+                //Set code box display
+                var editor = ace.edit("editor");
+                editor.setTheme("ace/theme/chrome");
+                editor.getSession().setMode("ace/mode/javascript");
+                editor.setOption("maxLines", 30);
+                editor.setOption("minLines", 10);
+            }
+           });
         })
         .catch(function(error) {
           console.error("Error:", error);
         });
-
+        
+        
     }else {
       //"/educator/slides_create/C0"
       var path = $location.$$path;
@@ -161,17 +175,22 @@
         $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = [];
       } else if (qnsType === "excel") {
+          
         $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = "";
-        $scope.qns['initialCode'] = "";
+        $scope.qns['sheetID'] = "";
         //answer key scope
+        $scope.qns['range'] = "";
+        $scope.qns['FormulaCell'] = "";
+        $scope.qns['FormulaUsed'] = "";
+        $scope.qns['answer'] = [];
         
       } else if (qnsType === "code") {
         $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['initialCode'] = "";
         //answer key scope
-        $scope.qns['testcase'] = [];
+        $scope.qns['testcases'] = [];
         $scope.qns['testcodeDeclare'] = "";
         $scope.qns['testcode'] = "";
         
@@ -184,7 +203,7 @@
       }
     }
 
-    //Video & Slides Save Qns
+    //video & Slides Save Qns
     $scope.saveQns = function(ev) {
       var confirm = $mdDialog.confirm()
             .title('Would you want to save all changes?')
@@ -223,6 +242,7 @@
       $("#text_"+id+"_"+index).toggle();
     }
 
+    // mcq
     $scope.addChoice = function(mcq_id) {
       var length = $scope.qns.mcq[mcq_id].options.length;
       $scope.qns.mcq[mcq_id].options.push("Choice "+ (length+1));
@@ -280,23 +300,82 @@
       $scope.qnsAdded = true;
     }
 
-    ////Excel
-    //Add
+    //Excel
+    //Add more cell answer
+    $scope.addCellAnswer = function() {
+        $scope.qns.answer.push({col: "", row: "", value: ""});
+    }
     
-    //Save Changes
-    
-    //Delete Qns
+    $scope.showAll = function() {
+        
+        console.log("EXCEL TEST");
+
+        var formulaCell = String($scope.qns.FormulaCell);
+        var col = formulaCell.charAt(0).toUpperCase();
+        var row = parseInt(formulaCell.substring(1));
+        $scope.qns.FormulaCell = {col:col, row:row };
+        console.log($scope.qns);
+        
+    }
+    //Create && Update
+    $scope.saveExcelChanges = function(ev) {
+    // Appending dialog to document.body to cover sidenav in docs app
+      var confirm = $mdDialog.confirm()
+            .title('Would you want to save all changes?')
+            .textContent('This question will be saved to what you configured, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Please do it!')
+            .cancel('Cancel!');
+
+      $mdDialog.show(confirm).then(function() {
+          
+        var formulaCell = String($scope.qns.FormulaCell);
+        var col = formulaCell.charAt(0).toUpperCase();
+        var row = parseInt(formulaCell.substring(1));
+        $scope.qns.FormulaCell = {col:col, row:row };
+        $scope.qns.sheetID = 123;
+        console.log($scope.qns);
+        contentMgmtService.updateExcel($scope.qns,$scope.isNewQuestion).then(function(result){
+              console.log(result);
+            //window.location.reload();
+          });
+        }, function() {
+          // cancel function
+        });
+
+    };
     
     
     // Code box
+    //Add more test cases
     $scope.addTestcase = function() {
-        
+        $scope.qns.testcases.push({testcase: ""});
     }
-    //Add
     
-    //Save Changes
     
-    //Delete Qns
+    //Create && Update
+    $scope.saveCodeBoxChanges = function(ev) {
+    // Appending dialog to document.body to cover sidenav in docs app
+      var confirm = $mdDialog.confirm()
+            .title('Would you want to save all changes?')
+            .textContent('This question will be saved to what you configured, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Please do it!')
+            .cancel('Cancel!');
+
+      $mdDialog.show(confirm).then(function() {
+          
+          $scope.qns.initialCode = editor.getValue();
+          
+          contentMgmtService.updateCodebox($scope.qns,$scope.isNewQuestion).then(function(result){
+              console.log(result);
+            window.location.reload();
+          });
+        }, function() {
+          // cancel function
+        });
+
+    };
  }
 
   function CourseMapController($http,$scope, $routeParams,$mdDialog, $location, $firebaseObject, contentMgmtService) {
@@ -305,6 +384,7 @@
     $scope.chapters = [];
     $scope.qnsTypes = ["Video","Slides","MCQ","Excel","Code"];
     var courseMap = contentMgmtService.getCourseSeq();
+    
     courseMap.$loaded().then(function(){
       var seq = [];
       for(i=0;i<courseMap.length;i++) {
@@ -445,7 +525,6 @@
       });
     }
 
-    
     $scope.deleteChapter = function(index,cid){
       $scope.courseMap.splice(index,1);
       $scope.chapTBD.push(cid); 

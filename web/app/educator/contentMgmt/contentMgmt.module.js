@@ -28,7 +28,7 @@
 	     controller: 'ContentMgmtController'
     })
     .when('/educator/code_edit/:cid/:qid', {
-      templateUrl: 'app/educator/contentMgmt/excel_edit.html',
+      templateUrl: 'app/educator/contentMgmt/codebox_edit.html',
 	     controller: 'ContentMgmtController'
     })
     // for creation

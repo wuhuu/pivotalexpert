@@ -17,6 +17,9 @@
     var questionNodeRef = ref.child('course/questions');
     var answerKeyNodeRef = ref.child('answerKey');
     
+    // generate new Qid
+    //var newQid = questionNodeRef.push().key;
+    
     var service = {
         updateChapter: updateChapter,
         getAllChapters: getAllChapters,
@@ -32,7 +35,10 @@
         deleteQuestion:deleteQuestion,
         updateEntireSeq:updateEntireSeq,
         getAnswerKey:getAnswerKey,
-        updateMCQ:updateMCQ
+        updateMCQ:updateMCQ,
+        updateExcel:updateExcel,
+        updateCodebox:updateCodebox
+
     };
     
     return service;    
@@ -321,15 +327,22 @@
 
     function getQnsIndex(chapIndex,qid) {
         var courseSeq = $firebaseArray(courseSeqNodeRef);
-        var q =$q.defer();
+        var q = $q.defer();
+        
+        var hasKey = false;
+        
         courseSeq.$loaded().then(function(){
             var qnsArr = courseSeq[chapIndex].qns;
             angular.forEach(qnsArr, function(value, key) {
                 if(value.qid === qid) {
                     q.resolve(key);
-                    return false;
+                    hasKey = true;
+                    return;
                 }
             });
+            if (!hasKey) {
+                q.resolve(qnsArr.length);
+            }
         });
         return q.promise;
     }
@@ -508,6 +521,182 @@
         });
         return q.promise;
     }
+  
+    function updateExcel(question, isNewQuestion) {
+        
+        var q = $q.defer();
+        
+        // retrieve question node
+        var questionNode = $firebaseObject(questionNodeRef);
+        
+        var validQnsTitle = true;
+        var cid = question.cid;
+        
+        questionNode.$loaded().then(function(){
+                           
+            //Create new
+            if(isNewQuestion) {
+                var qid = questionNodeRef.push().key;
+
+
+                // checking if chapterTitle already exist                
+                questionNode.forEach(function(qns) {
+                    if(qns.qnsTitle === question.qnsTitle) {
+                        //Chapter Title Been used
+                        validQnsTitle = false;
+                        return;
+                    }
+                });
+                
+            } else {
+                var qid = question.qid;
+            }
+            
+            //Valid Question Title
+            if(validQnsTitle || !isNewQuestion) {
+                
+                // create new answer nodes & fill it up
+                var formulaCell = question.FormulaCell;
+                var formulaUsed = question.FormulaUsed;
+                var range = question.range;
+                
+                var answer = [];
+                for (i = 0; i < question.answer.length; i++) { 
+                    answer.push({col: question.answer[i].col, row: question.answer[i].row, value: question.answer[i].value});
+                }
+                
+                
+
+                delete question.cid;
+                delete question.formulaCell;
+                delete question.formulaUsed;
+                delete question.range;
+                delete question.answer;
+
+                //Update to firebase question node
+                questionNodeRef.child(qid).update(question);
+
+                //Update to firebase answer node
+                answerKeyNodeRef.child(qid).update({formulaCell:formulaCell, formulaUsed:formulaUsed, range:range, answer:answer});
+               
+                //Update course sequence
+                var questionSeqNode = {qid:qid, qnsTitle:question.qnsTitle, qnsType: "excel"};
+                
+                //find the chapter cidIndex
+                getChapterIndex(cid).then(function(chapIndex){
+                    
+                    var courseArray = $firebaseObject(courseSeqNodeRef);
+                    getQnsIndex(chapIndex,qid).then(function(qnsIndex){
+                        
+                        courseArray.$loaded().then(function(){
+
+                            if(courseArray[chapIndex]!=null) {
+                                
+                                //Update to firebase sequence node
+                                courseSeqNodeRef.child(chapIndex + "/qns/" + qnsIndex).update(questionSeqNode);
+                            }
+                        });
+                    });
+                })
+                .catch(function(reason){
+                    console.log("ERROR CAUGHT: "+ reason)
+                });
+            } else {
+                q.resolve("This Question Title is being used now.");
+            }
+
+        });
+        
+        return q.promise;
+           
+       
+    }
+  
+    function updateCodebox(question, isNewQuestion) {
+        
+        var q = $q.defer();
+        
+        // retrieve question node
+        var questionNode = $firebaseObject(questionNodeRef);
+        
+        var validQnsTitle = true;
+        var cid = question.cid;
+        
+        questionNode.$loaded().then(function(){
+                           
+            //Create new
+            if(isNewQuestion) {
+                var qid = questionNodeRef.push().key;
+
+
+                // checking if chapterTitle already exist                
+                questionNode.forEach(function(qns) {
+                    if(qns.qnsTitle === question.qnsTitle) {
+                        //Chapter Title Been used
+                        validQnsTitle = false;
+                        return;
+                    }
+                });
+                
+            } else {
+                var qid = question.qid;
+            }
+            
+            //Valid Question Title
+            if(validQnsTitle || !isNewQuestion) {
+                // create new answer nodes & fill it up
+                var testcode = question.testcode;
+                var testcodeDeclare = question.testcodeDeclare;
+                
+                var testcases = [];
+                for (i = 0; i < question.testcases.length; i++) { 
+                    testcases.push(question.testcases[i].testcase);
+                }
+
+                delete question.cid;
+                delete question.testcode;
+                delete question.testcodeDeclare;
+                delete question.testcases;
+
+                //Update to firebase question node
+                questionNodeRef.child(qid).update(question);
+
+                //Update to firebase answer node
+                answerKeyNodeRef.child(qid).update({testcode:testcode, testcodeDeclare:testcodeDeclare, testcases:testcases});
+               
+                //Update course sequence
+                var questionSeqNode = {qid:qid, qnsTitle:question.qnsTitle, qnsType: "code"};
+                
+                //find the chapter cidIndex
+                getChapterIndex(cid).then(function(chapIndex){
+                    
+                    var courseArray = $firebaseObject(courseSeqNodeRef);
+                    getQnsIndex(chapIndex,qid).then(function(qnsIndex){
+                        
+                        courseArray.$loaded().then(function(){
+
+                            if(courseArray[chapIndex]!=null) {
+                                
+                                //Update to firebase sequence node
+                                courseSeqNodeRef.child(chapIndex + "/qns/" + qnsIndex).update(questionSeqNode);
+                            }
+                        });
+                    });
+                })
+                .catch(function(reason){
+                    console.log("ERROR CAUGHT: "+ reason)
+                });
+            } else {
+                q.resolve("This Question Title is being used now.");
+            }
+
+        });
+        
+        return q.promise;
+           
+       
+    }
+    
   }
 
 })();

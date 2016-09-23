@@ -33,6 +33,8 @@
         updateQuestionSeq:updateQuestionSeq,
         getChapterIndex:getChapterIndex,
         deleteQuestion:deleteQuestion,
+        deleteQuestionFromCM:deleteQuestionFromCM,
+        updateEntireSeq:updateEntireSeq,
         updateEntireSeq:updateEntireSeq,
         getAnswerKey:getAnswerKey,
         updateMCQ:updateMCQ,

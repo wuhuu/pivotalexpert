@@ -356,7 +356,7 @@
             
         contentMgmtService.updateExcel($scope.qns,$scope.isNewQuestion).then(function(result){
               console.log(result);
-            //window.location.reload();
+            window.location.reload();
           });
         }, function() {
           // cancel function

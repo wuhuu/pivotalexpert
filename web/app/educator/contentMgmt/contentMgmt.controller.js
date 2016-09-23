@@ -79,7 +79,7 @@
       }
     });
 
-  function ContentMgmtController($http,$scope, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,contentMgmtService) {
+  function ContentMgmtController($http,$scope, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,contentMgmtService, $sce) {
 	  console.log("ContentMgmtController");
     
     //Delete Qns
@@ -139,9 +139,6 @@
           
             if (question.qnsType === "code") {
                 //answer key scope
-                $scope.qns['testcases'] = [];
-                $scope.qns['testcodeDeclare'] = "";
-                $scope.qns['testcode'] = "";
             
                 //Set code box display
                 var editor = ace.edit("editor");
@@ -301,22 +298,43 @@
     }
 
     //Excel
+    if(qnsType = "excel") {
+        //load user spreadsheetId
+        var user = firebase.auth().currentUser;
+        var ref = firebase.database().ref();
+        var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
+        currentUser.$loaded().then(function(){
+            $scope.userExcelID = currentUser.driveExcel;
+            //$scope.userToken = currentUser.access_token;
+            var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit?usp=sharing"
+            $scope.srclink = $sce.trustAsResourceUrl(excelLink);
+            var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+            gapi.client.load(discoveryUrl).then(createSheet);
+        });
+    }
+    
+    function createSheet() {
+        gapi.client.sheets.spreadsheets.batchUpdate({
+            spreadsheetId: $scope.userExcelID,
+            requests: [
+              {
+                addSheet:{
+                  properties:{
+                    title: "New Question Create",
+                  }
+                }
+              }
+            ]
+        }).then(function(response) {
+            $scope.qns.sheetID = (response.result.replies[0].addSheet.properties.sheetId);
+        });
+    }
+    
     //Add more cell answer
     $scope.addCellAnswer = function() {
         $scope.qns.answer.push({col: "", row: "", value: ""});
     }
     
-    $scope.showAll = function() {
-        
-        console.log("EXCEL TEST");
-
-        var formulaCell = String($scope.qns.FormulaCell);
-        var col = formulaCell.charAt(0).toUpperCase();
-        var row = parseInt(formulaCell.substring(1));
-        $scope.qns.FormulaCell = {col:col, row:row };
-        console.log($scope.qns);
-        
-    }
     //Create && Update
     $scope.saveExcelChanges = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
@@ -333,8 +351,9 @@
         var col = formulaCell.charAt(0).toUpperCase();
         var row = parseInt(formulaCell.substring(1));
         $scope.qns.FormulaCell = {col:col, row:row };
-        $scope.qns.sheetID = 123;
-        console.log($scope.qns);
+        var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+        gapi.client.load(discoveryUrl).then(updateSheetTitle);
+            
         contentMgmtService.updateExcel($scope.qns,$scope.isNewQuestion).then(function(result){
               console.log(result);
             //window.location.reload();
@@ -342,8 +361,27 @@
         }, function() {
           // cancel function
         });
-
     };
+    
+    function updateSheetTitle() {
+        gapi.client.sheets.spreadsheets.batchUpdate({
+            spreadsheetId: $scope.userExcelID,
+            requests: [
+              {
+                updateSheetProperties:{
+                  properties:{
+                    title: $scope.qns.qnsTitle,
+                    sheetId : $scope.qns.sheetID
+                  },
+                  fields: "title"
+                }
+              }
+            ]
+        }).then(function(response) {
+            $scope.qns.sheetID = (response.result.replies[0].addSheet.properties.sheetId);
+        });
+    }
+    
     
     
     // Code box

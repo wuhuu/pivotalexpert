@@ -36,15 +36,11 @@
                 <md-list>
                   <md-item ng-repeat="item in achievelist | filter:search">
                     <md-item-content>
-                      <div class="md-tile-content">
-                        <font class="font-size-course-title">{{item.qnsTitle}}</font>
                         <p>
-                          <font class="font-size-normal"></font>
+                            <font class="font-size-course-title">{{item.qnsTitle}}</font>
+                            <img class="coursemap-check pull-right" src="content/images/check-circle-outline-128.png"/>
                         </p>
-                      </div>
-                      <div class="md-tile-right inset" hide-sm>
-                      <img class="coursemap-check" ng-src="content/images/check-circle-outline-128.png">
-                    </div>
+
                     </md-item-content>
                     <md-divider ng-if="!$last"></md-divider>
                   </md-item>

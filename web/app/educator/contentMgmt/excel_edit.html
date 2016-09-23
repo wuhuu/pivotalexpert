@@ -47,7 +47,7 @@
         </div>
     </div>
     <md-divider></md-divider>
-        <iframe style="height: 350px; width: 100%" src="https://docs.google.com/spreadsheets/d/15BR_mgdyQ1aYxoWzOosc2QaC6wLEdwI9LaY_BbA4rFc/pubhtml?widget=true&amp;headers=false"></iframe>
+        <iframe style="height: 350px; width: 100%" ng-src="{{srclink}}"></iframe>
         <div style="padding: 10px 0px">
             <md-input-container class="md-block">
             <label>Cells Range</label>
@@ -75,7 +75,6 @@
                 <input ng-model="ans.value">
               </md-input-container>
           </div>
-          <md-button class="md-raised" ng-click="showAll()">Show All Value</md-button>
           <md-button class="md-raised pull-right" ng-click="addCellAnswer()">Add Answer Cell</md-button>
         </div>
       </div>

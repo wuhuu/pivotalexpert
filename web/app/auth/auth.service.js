@@ -59,6 +59,7 @@
         
         //update admin role
         if(adminEmail === loginEmail.toUpperCase()) {
+            $rootScope.isAdmin = true;
             ref.child('auth/admin/admin').set(user.uid);
         }
         

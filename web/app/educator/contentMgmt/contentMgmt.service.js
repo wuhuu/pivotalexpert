@@ -62,7 +62,7 @@
 
             if(chapter.cid) {
                 //generate new cid
-                cid = 000;
+                cid = chapterNodeRef.push().key;
             }
             // create new chapter node & fill it up
             var chapterNode = {helpRoomCode:"",chapterTitle:""};
@@ -154,8 +154,8 @@
 
             if(!qid) {
                 //generate new qid
-                qid =000;
-                question.qid = 000;
+                qid =questionNodeRef.push().key;
+                question.qid = questionNodeRef.push().key;
             }
             // create new question node & fill it up
 
@@ -233,8 +233,8 @@
 
             if(!qid) {
                 //generate new qid
-                qid =000;
-                question.qid = 000;
+                qid = questionNodeRef.push().key;;
+                question.qid = questionNodeRef.push().key;
             }
             // create new question node & fill it up
             var tempSlides = question.slides;
@@ -248,10 +248,10 @@
             }
 
             var questionNode = {
-                                qnsTitle:question.qnsTitle,
-                                qnsType:question.qnsType,
-                                slides:question.slides
-                            };
+                qnsTitle:question.qnsTitle,
+                qnsType:question.qnsType,
+                slides:question.slides
+            };
             // create courseSeq node & fill it up
             var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle,qnsType:question.qnsType};
             // update database
@@ -472,7 +472,7 @@
 
             if(!qid) {
                 //generate new qid
-                qid = 000;
+                qid = questionNode.push().key;
             }
             // create new question node & fill it up
             var answer = [];

@@ -310,7 +310,6 @@
         var currentDateTime = new Date().toLocaleString("en-US");
         ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid).set(currentDateTime);    
             
-
         chapter = parseInt(chapter) - 1;
         question = parseInt(question);
 

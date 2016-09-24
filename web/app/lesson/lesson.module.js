@@ -19,12 +19,8 @@
 	  controller: 'LessonController'
     }).
 	when('/lesson/excel/:chapter/:qns/:qid', {
-      templateUrl: 'app/lesson/spreadsheet.html',
+      templateUrl: 'app/lesson/excel.html',
 	  controller: 'LessonController'
-    }).
-  when('/lesson/GSheet/:chapter/:qns/:qid', {
-      templateUrl: 'app/lesson/gsheet.html',
-    controller: 'LessonController'
     }).
   when('/lesson/code/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/codebox.html',

@@ -34,16 +34,23 @@
                 <md-divider></md-divider>
                 <u><h2>Completed Courses</h2></u>
                 <md-list>
-                  <md-item ng-repeat="item in achievelist | filter:search">
-                    <md-item-content>
-                        <p>
-                            <font class="font-size-course-title">{{item.qnsTitle}}</font>
-                            <img class="coursemap-check pull-right" src="content/images/check-circle-outline-128.png"/>
-                        </p>
-
-                    </md-item-content>
-                    <md-divider ng-if="!$last"></md-divider>
-                  </md-item>
+                    <div ng-repeat="chapter in achievelist">
+                      <h2>{{chapter.chapterTitle}}</h2>
+                      <div>
+                        <md-list>
+                          <md-item ng-repeat="qns in chapter.qns">
+                            <md-item-content>
+                                <p>
+                                    <font class="font-size-course-title">{{qns.qnsTitle}}</font>
+                                    <img class="coursemap-check pull-right" src="content/images/check-circle-outline-128.png"/>
+                                </p>
+                            </md-item-content>
+                          </md-item>
+                          <md-divider></md-divider>
+                        </md-list>
+                      </div>
+                    <md-divider></md-divider>
+                  </div>
                   <md-divider></md-divider>
                 </md-list>
               </md-card-content>

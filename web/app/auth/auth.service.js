@@ -15,15 +15,11 @@
       login: login,
       logout: logout,
       fetchAuthData: fetchAuthData,
-      //fetchAuthPic: fetchAuthPic,
-      //fetchAuthEmail: fetchAuthEmail,
-      //fetchAuthDisplayName:fetchAuthDisplayName
     };
 	
 	return service;
 	
 	//Different function of the auth service
-	
 	function login() {
       
       var provider = new firebase.auth.GoogleAuthProvider();
@@ -54,15 +50,6 @@
             access_token: token
         });
         
-        //Check whether login user email belong to admin account email
-        var adminEmail = commonService.getAdminEmail().toUpperCase();
-        
-        //update admin role
-        if(adminEmail === loginEmail.toUpperCase()) {
-            $rootScope.isAdmin = true;
-            ref.child('auth/admin/admin').set(user.uid);
-        }
-        
         ref.child('/signinLogs/' + user.uid).set(new Date().toLocaleString("en-US"));
         
         var userData = $firebaseObject(usersRef.child(user.uid));
@@ -72,6 +59,15 @@
             if(!userData.driveExcel) {
                 //Create Google Folder upon login
                 loadDriveApi();   
+            }
+            
+            //Check whether login user email belong to admin account email
+            var adminEmail = commonService.getAdminEmail().toUpperCase();
+            
+            //update admin role
+            if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
+                $rootScope.isAdmin = true;
+                ref.child('auth/admin/admin').set(user.uid);
             }
 
             $rootScope.logined = true;
@@ -157,8 +153,8 @@
                           {
                             properties:
                             {
-                              sheetId:0,
-                              title: "Instructions"
+                              title: "Instructions",
+                              sheetId: 0
                             },
                             fields: "title"
                           }
@@ -169,32 +165,6 @@
             });
         });
       }
-      
-    /* Not in use
-    function fetchAuthPic() {
-      var audData = auth.$getAuth();
-      if (audData) {
-		console.log("Fetching fetchAuthPic " + audData.uid);
-		return $firebaseObject(usersRef.child(audData.uid+'/pic'));
-      }
-    }
-    function fetchAuthEmail() {
-      var audData = auth.$getAuth();
-      if (audData) {
-		console.log("Fetching fetchAuthEmail " + audData.uid);
-		return $firebaseObject(usersRef.child(audData.uid+'/email'));
-      }
-    }
-
-    function fetchAuthDisplayName() {
-      var audData = auth.$getAuth();
-      var audref = ref.child("/auth/users");
-      if (audData) {
-    		console.log("Fetching fetchAuthDisplayName " + audData.uid);
-    		return $firebaseObject(audref.child(audData.uid).child('displayName'));
-      }
-    }
-    */
   }
 
 })();

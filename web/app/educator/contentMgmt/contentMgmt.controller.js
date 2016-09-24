@@ -382,8 +382,6 @@
         });
     }
     
-    
-    
     // Code box
     //Add more test cases
     $scope.addTestcase = function() {
@@ -417,7 +415,9 @@
  }
 
   function CourseMapController($http,$scope, $routeParams,$mdDialog, $location, $firebaseObject, contentMgmtService) {
+    
     $scope.chapTBD = [];
+    $scope.chapTBA = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
     $scope.qnsTypes = ["Video","Slides","MCQ","Excel","Code"];
@@ -503,7 +503,9 @@
     }
 
     $scope.addChapter = function(){
-      $scope.courseMap.push({chapterTitle:"",});
+      var cid = guid();
+      $scope.courseMap.push({chapterTitle:"",cid: cid});
+      $scope.chapTBA.push({chapterTitle:"",cid: cid});
       $("#text_"+($scope.courseMap.length-1)).show();
       $scope.chapterAdded = true;
       //window.scrollTo(0,document.body.scrollHeight); 
@@ -527,7 +529,7 @@
         var qns ={};
         $( "div#chapter" ).each(function( index, value ) {
           var c = $(this).find('h2.cid');
-          console.log(index + ":" + $(this).attr('id'));
+          //console.log(index + ":" + $(this).attr('id'));
           var cid = c.attr('cid');
           var title = c.text().trim();
           chap['cid'] = cid;
@@ -537,7 +539,7 @@
           // all question here
           for(i=0;i<qElements.length;i++) {
             var obj = qElements[i];
-            console.log("questionid: "+ obj.id);
+            //console.log("questionid: "+ obj.id);
             qns['qid']=obj.id;
             qns['qnsTitle']= obj.textContent;
             qns['qnsType']= obj.getAttribute("qnsType");
@@ -554,8 +556,12 @@
         
         contentMgmtService.deleteQuestionFromCM($scope.qnsTBD);
         contentMgmtService.deleteChapter($scope.chapTBD).then(function(){
+          if($scope.chapterAdded) {
+              contentMgmtService.addChapter($scope.chapTBA);
+          }
           contentMgmtService.updateEntireSeq(courseSequence).then(function() {
-            window.location.reload();
+              $scope.chapterAdded = false;
+            //window.location.reload();
           });
         });
         
@@ -579,4 +585,10 @@
 
   }
 
+   function guid() {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+      }
+      return s4() + s4() + s4();
+    }
 })();

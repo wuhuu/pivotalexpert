@@ -32,24 +32,24 @@
       }
       else {
           // TODO: start actual work
-					var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
-					courseProgressRef.once('value', function(snapshot) {
-						snapshot.forEach(function(childSnapshot) {
-							var key = childSnapshot.key;
+        var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
+        courseProgressRef.once('value', function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                var key = childSnapshot.key;
 
-									var modID = key.charAt(1);
-									var qnsID = key.charAt(3);
-									var qid = 'q' + ((modID * 5 + 1) + (qnsID * 1));
-									
-							list.push(qid);
-						});
+                        var modID = key.charAt(1);
+                        var qnsID = key.charAt(3);
+                        var qid = 'q' + ((modID * 5 + 1) + (qnsID * 1));
+                        
+                list.push(qid);
+            });
 
-						// Retrieve from sequence
-						var courseSequence =  $firebaseArray(ref.child('courseSequence'));
-						courseSequence.$loaded().then(function(){
-							$scope.courseMaterial = courseSequence;
-						});
-					});
+            // Retrieve from sequence
+            var courseSequence =  $firebaseArray(ref.child('courseSequence'));
+            courseSequence.$loaded().then(function(){
+                $scope.courseMaterial = courseSequence;
+            });
+        });
       }
     });	
 

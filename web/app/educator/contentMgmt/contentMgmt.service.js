@@ -35,11 +35,11 @@
         deleteQuestion:deleteQuestion,
         deleteQuestionFromCM:deleteQuestionFromCM,
         updateEntireSeq:updateEntireSeq,
-        updateEntireSeq:updateEntireSeq,
         getAnswerKey:getAnswerKey,
         updateMCQ:updateMCQ,
         updateExcel:updateExcel,
-        updateCodebox:updateCodebox
+        updateCodebox:updateCodebox,
+        addChapter:addChapter
 
     };
     
@@ -82,6 +82,19 @@
         });
     }
 
+    //Add functions
+    function addChapter(chapters){
+        var itemNum = chapters.length;
+        for(i = 0 ; i < itemNum ; i++) {
+            var chapter = chapters[i];
+            // create new chapter node & fill it up
+            var chapterNode = {helpRoomCode:chapter.cid, chapterTitle:chapter.chapterTitle};
+            
+            chapterNodeRef.child(chapter.cid).update(chapterNode);
+
+        }
+        
+    }
     function getAllChapters(){
     //get all editible chapter information for all chapters
         var chapters = $firebaseObject(chapterNodeRef);
@@ -124,6 +137,8 @@
     function updateEntireSeq(courseSequence) {
         var q = $q.defer();
         courseSeqNodeRef.set(courseSequence,function(error){
+            console.log("TEStING");
+            console.log(courseSequence);
             q.resolve(true);
         });
         return q.promise;
@@ -567,8 +582,6 @@
                     answer.push({col: question.answer[i].col, row: question.answer[i].row, value: question.answer[i].value});
                 }
                 
-                
-
                 delete question.cid;
                 delete question.formulaCell;
                 delete question.formulaUsed;

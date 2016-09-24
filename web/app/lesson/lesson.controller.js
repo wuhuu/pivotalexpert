@@ -7,6 +7,7 @@
   function LessonController($q, $scope, $routeParams, $location, $firebaseObject, $sce, navBarService) {
 	
     console.log("LessonController");
+    
 	var ref = firebase.database().ref();
     var user = firebase.auth().currentUser;
 	var chapter = $routeParams.chapter;
@@ -53,7 +54,6 @@
         
         //MCQ type question
         if(qnsType == 'mcq') {
-            
             $scope.questions = question.mcq;
             $scope.currentScore = 0;
             $scope.totalScore = $scope.questions.length;
@@ -77,10 +77,17 @@
                     currentUser.$loaded().then(function(){
                         $scope.userExcelID = currentUser.driveExcel;
                         $scope.userSheetID = currentUser.sheetID; //user current sheetID
-                        $scope.userToken = currentUser.access_token;
-                        var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit?usp=sharing"
+                        $scope.token = currentUser.access_token;
+                        
+                        gapi.auth.setToken({
+                            access_token: $scope.token
+                        });
+                        
+                        var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+                        gapi.client.load(discoveryUrl).then(loadQns);
+        
+                        var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit";
                         $scope.srclink = $sce.trustAsResourceUrl(excelLink);
-                        loadSheets();
                     });
                 });
             });
@@ -142,22 +149,20 @@
                 
                 //excel question type
                 if (qnsType == 'excel') {
-                    console.log("EXCEL CHECK ANSWER");
+                    
                     gapi.auth.setToken({
-                        access_token: $scope.userToken
+                        access_token: $scope.token
                     });
                     $scope.range = answerKey.range;
-                    $scope.formula = answerKey.FormulaUsed;
-                    $scope.formulaCell = answerKey.FormulaCell;
-                    $scope.answer = answerKey.answer;
+                    $scope.formulaCheck = answerKey.formulaCheck;
+                    $scope.valueCheck = answerKey.valueCheck;
                     
                     var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
                     gapi.client.load(discoveryUrl).then(function() {
-                        
                         checkCellFormula().then(function(result) {
-                            if(result) {
+                            if(result.indexOf(false) === -1 && result.indexOf('false') === -1) {
                                 checkCellValue().then(function(result){
-                                    if (result.indexOf('false') === -1) {
+                                    if (result.indexOf(false) === -1 && result.indexOf('false') === -1) {
                                         nextQns(chapter,qns);
                                     } else {
                                         $scope.incorrect = true;
@@ -208,12 +213,7 @@
         }
     });
     
-    function loadSheets() {
-        var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-        gapi.client.load(discoveryUrl).then(loadQn);
-    }
-    
-    function loadQn() {
+    function loadQns() {
         var sheetId1 ;
         gapi.client.sheets.spreadsheets.sheets.copyTo({
           spreadsheetId: $scope.eduExcelID,
@@ -224,8 +224,9 @@
           sheetId1 = response.result.sheetId;
           //update user sheetID
           ref.child("/auth/users/" + user.uid).update({ sheetID: sheetId1 });
-          
+         
           gapi.client.sheets.spreadsheets.batchUpdate({
+              
             spreadsheetId: $scope.userExcelID,
             requests: [
               {
@@ -249,10 +250,20 @@
         range: $scope.qnsTitle + "!" + $scope.range,
         valueRenderOption:"FORMULA"
       }).then(function(response) {
-        var row = $scope.formulaCell.row - 1;
-        var col = sheetColMapping($scope.formulaCell.col) - 1;
-        var formula = response.result.values[parseInt(row)][parseInt(col)];
-        $scope.formulaResult = (formula.indexOf($scope.formula) !== -1);
+          
+        $scope.formulaResult = []
+        var totalTestNum =  $scope.formulaCheck.length;
+        for (i = 0; i < totalTestNum; i++) { 
+            var cell = $scope.formulaCheck[i].cell;
+            var functionName = $scope.formulaCheck[i].functionName;
+            
+            var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
+            var row = parseInt(cell.substring(1)) - 1;
+            
+            var formula = String(response.result.values[parseInt(row)][parseInt(col)]);
+            
+            $scope.formulaResult.push(formula.indexOf(functionName) !== -1);
+        }
         
         deferred.resolve($scope.formulaResult);
       
@@ -268,14 +279,28 @@
       }).then(function(response) {
           
         $scope.valueResult = []
-        var totalTestNum =  $scope.answer.length;
+        var totalTestNum =  $scope.valueCheck.length;
         for (i = 0; i < totalTestNum; i++) { 
-            var row = $scope.answer[i].row - 1;
-            var col = sheetColMapping($scope.answer[i].col) - 1;
-            var value = response.result.values[parseInt(row)][parseInt(col)];
-            $scope.valueResult.push(value === $scope.answer[i].value);
+            var cell = $scope.valueCheck[i].cell;
+            var answer = $scope.valueCheck[i].value;
+            
+            var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
+            var row = parseInt(cell.substring(1)) - 1;
+            console.log("TESTING");
+            console.log(col);
+            console.log(row);
+            console.log(response.result.values);
+            
+            
+            var valueRow = response.result.values[parseInt(row)];
+            if(valueRow) {
+                value = valueRow[parseInt(col)];
+                $scope.valueResult.push(value === answer);
+            } else {
+                $scope.valueResult.push(false);
+            }
+            
         }
-
         deferred.resolve($scope.valueResult);
       });
       

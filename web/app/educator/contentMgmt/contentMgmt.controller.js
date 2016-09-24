@@ -79,53 +79,22 @@
       }
     });
 
-  function ContentMgmtController($http,$scope, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,contentMgmtService, $sce) {
+  function ContentMgmtController($http,$scope, $sce, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,contentMgmtService) {
 	  console.log("ContentMgmtController");
-    
-    //Delete Qns
-    $scope.deleteQns = function(ev,cid,qid) {
-      var confirm = $mdDialog.confirm()
-            .title('Do you really want to DELETE this question?')
-            .textContent('This question will deleted, is it ok to proceed?')
-            .targetEvent(ev)
-            .ok('Delete it now!')
-            .cancel('Cancel');
-
-      $mdDialog.show(confirm).then(function() {
-        contentMgmtService.deleteQuestion(cid,qid).then(function(){
-         window.location.href = "#/educator/courseMap"
-         //window.location.reload();
-        });
-      }, function() {
-        // cancel function
-      });
+      
+    var path = $location.$$path;
+    path = path.substr(path.indexOf('/educator/'),path.indexOf('_create'));
+    var qnsType= path.substr(path.lastIndexOf('/')+1);
+    if(qnsType ==='code') { 
+        var editor = ace.edit("editor");
     }
-
-    //Delete Chapter
-    $scope.deleteChap = function(ev,cid) {
-      var confirm = $mdDialog.confirm()
-            .title('Do you really want to DELETE this question?')
-            .textContent('This question will deleted, is it ok to proceed?')
-            .targetEvent(ev)
-            .ok('Delete it now!')
-            .cancel('Cancel');
-
-      $mdDialog.show(confirm).then(function() {
-        contentMgmtService.deleteChapter(cid).then(function(){
-          window.location.reload();
-        });
-      }, function() {
-        // cancel function
-      });
-    }
- 
-    if($routeParams.qid!=null) {
+ if($routeParams.qid!=null) {
         var qid = $routeParams.qid;
         $scope.qid = qid;
         $scope.isNewQuestion = false;
         var question = contentMgmtService.getQuestion(qid);
         question.$loaded().then(function() {
-          var answer = contentMgmtService.getAnswerKey(qid);
+          var answer = contentMgmtService.getAnswerKey(qid)
           answer.$loaded().then(function(answerKey){
             if(answerKey && question.qnsType==='mcq') {
               angular.forEach(question.mcq, function(value, key) {
@@ -133,32 +102,52 @@
                 value.answer = ans;
               });
             }
-            question.qid = question.$id;
-            question.cid = $routeParams.cid;
-            $scope.qns = question;
-          
-            if (question.qnsType === "code") {
-                //answer key scope
-            
+            if(question.qnsType==='code') {
                 //Set code box display
-                var editor = ace.edit("editor");
+
                 editor.setTheme("ace/theme/chrome");
                 editor.getSession().setMode("ace/mode/javascript");
                 editor.setOption("maxLines", 30);
                 editor.setOption("minLines", 10);
+                editor.setValue(question.initialCode);
+                
+                //set back the answer
+                question.testcode = answerKey.testcode;
+                question.testcodeDeclare = answerKey.testcodeDeclare;
+                question.testcases = [];
+                angular.forEach(answerKey.testcases, function(value, key) {
+                    question.testcases.push({test: value});
+                });
             }
-           });
+            
+            if(question.qnsType==='excel') {
+                question.range = answerKey.range;
+                
+                question.valueAnswer = [];
+                angular.forEach(answerKey.valueAnswer, function(value, key) {
+                    question.valueAnswer.push({cell: value.cell, value: value.value});
+                });
+                
+                question.formulaAnswer = [];
+                angular.forEach(answerKey.formulaAnswer, function(value, key) {
+                    question.formulaAnswer.push({cell: value.cell, functionName: value.functionName});
+                });
+                
+                var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + question.sheetID;
+                $scope.srclink = $sce.trustAsResourceUrl(excelLink);
+            }
+            
+            question.qid = question.$id;
+            question.cid = $routeParams.cid;
+            $scope.qns = question;
+          });
         })
         .catch(function(error) {
           console.error("Error:", error);
         });
-        
-        
+
     }else {
       //"/educator/slides_create/C0"
-      var path = $location.$$path;
-      path = path.substr(path.indexOf('/educator/'),path.indexOf('_create'));
-      var qnsType= path.substr(path.lastIndexOf('/')+1);
       $scope.isNewQuestion = true;
       $scope.qns = {qnsTitle:" ",qnsType:qnsType,cid:$routeParams.cid}
       if(qnsType === "slides"){
@@ -171,28 +160,21 @@
         $scope.qns['mcq'] = [];
         $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = [];
-      } else if (qnsType === "excel") {
-          
+      }else if (qnsType === "excel") {
         $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['sheetID'] = "";
         //answer key scope
         $scope.qns['range'] = "";
-        $scope.qns['FormulaCell'] = "";
-        $scope.qns['FormulaUsed'] = "";
-        $scope.qns['answer'] = [];
+        $scope.qns['formulaAnswer'] = [];
+        $scope.qns['valueAnswer'] = [];
         
-      } else if (qnsType === "code") {
+      }else if (qnsType === "code") {
         $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['initialCode'] = "";
-        //answer key scope
-        $scope.qns['testcases'] = [];
-        $scope.qns['testcodeDeclare'] = "";
-        $scope.qns['testcode'] = "";
         
         //Set code box display
-        var editor = ace.edit("editor");
         editor.setTheme("ace/theme/chrome");
         editor.getSession().setMode("ace/mode/javascript");
         editor.setOption("maxLines", 30);
@@ -200,7 +182,6 @@
       }
     }
 
-    //video & Slides Save Qns
     $scope.saveQns = function(ev) {
       var confirm = $mdDialog.confirm()
             .title('Would you want to save all changes?')
@@ -239,7 +220,6 @@
       $("#text_"+id+"_"+index).toggle();
     }
 
-    // mcq
     $scope.addChoice = function(mcq_id) {
       var length = $scope.qns.mcq[mcq_id].options.length;
       $scope.qns.mcq[mcq_id].options.push("Choice "+ (length+1));
@@ -292,51 +272,65 @@
     }
 
     $scope.addMcq = function() {
-      var qnsID = "Q"+($scope.qns.mcq.length+1);
+      if($scope.qns.mcq) {
+        var qnsID = "Q"+($scope.qns.mcq.length+1);
+      } else {
+        $scope.qns.mcq = [];
+        var qnsID = "Q1";
+      }
+     
       $scope.qns.mcq.push({options:[],qns:"",qnsID:qnsID});
       $scope.qnsAdded = true;
     }
 
-    //Excel
-    if(qnsType = "excel") {
-        //load user spreadsheetId
-        var user = firebase.auth().currentUser;
-        var ref = firebase.database().ref();
-        var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
-        currentUser.$loaded().then(function(){
-            $scope.userExcelID = currentUser.driveExcel;
-            //$scope.userToken = currentUser.access_token;
-            var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit?usp=sharing"
-            $scope.srclink = $sce.trustAsResourceUrl(excelLink);
-            var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-            gapi.client.load(discoveryUrl).then(createSheet);
+    $scope.deleteQns = function(ev,cid,qid) {
+      var confirm = $mdDialog.confirm()
+            .title('Do you really want to DELETE this question?')
+            .textContent('This question will deleted, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Delete it now!')
+            .cancel('Cancel');
+
+      $mdDialog.show(confirm).then(function() {
+        contentMgmtService.deleteQuestion(cid,qid).then(function(){
+         window.location.href = "#/educator/courseMap"
+         //window.location.reload();
         });
+      }, function() {
+        // cancel function
+      });
     }
-    
-    function createSheet() {
-        gapi.client.sheets.spreadsheets.batchUpdate({
-            spreadsheetId: $scope.userExcelID,
-            requests: [
-              {
-                addSheet:{
-                  properties:{
-                    title: "New Question Create",
-                  }
-                }
-              }
-            ]
-        }).then(function(response) {
-            $scope.qns.sheetID = (response.result.replies[0].addSheet.properties.sheetId);
+
+    $scope.deleteChap = function(ev,cid) {
+      var confirm = $mdDialog.confirm()
+            .title('Do you really want to DELETE this question?')
+            .textContent('This question will deleted, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Delete it now!')
+            .cancel('Cancel');
+
+      $mdDialog.show(confirm).then(function() {
+        contentMgmtService.deleteChapter(cid).then(function(){
+          window.location.reload();
         });
+      }, function() {
+        // cancel function
+      });
     }
     
-    //Add more cell answer
-    $scope.addCellAnswer = function() {
-        $scope.qns.answer.push({col: "", row: "", value: ""});
+    // ADDITION PART for code and excel 
+    // Code box
+    //Add more test cases
+    $scope.addTestcase = function() {
+        if($scope.qns.testcases) {
+        } else {
+           $scope.qns.testcases = [];
+        }
+        $scope.qns.testcases.push({test: ""});
     }
     
-    //Create && Update
-    $scope.saveExcelChanges = function(ev) {
+    //Create && Update Code box
+    $scope.saveCodeBoxChanges = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
       var confirm = $mdDialog.confirm()
             .title('Would you want to save all changes?')
@@ -347,21 +341,95 @@
 
       $mdDialog.show(confirm).then(function() {
           
-        var formulaCell = String($scope.qns.FormulaCell);
-        var col = formulaCell.charAt(0).toUpperCase();
-        var row = parseInt(formulaCell.substring(1));
-        $scope.qns.FormulaCell = {col:col, row:row };
-        var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-        gapi.client.load(discoveryUrl).then(updateSheetTitle);
-            
-        contentMgmtService.updateExcel($scope.qns,$scope.isNewQuestion).then(function(result){
-              console.log(result);
+          $scope.qns.initialCode = editor.getValue();
+          
+          contentMgmtService.updateCodebox($scope.qns,$scope.isNewQuestion).then(function(result){
             window.location.reload();
           });
         }, function() {
           // cancel function
         });
+
     };
+    
+    //Excel
+    
+    //Excel
+    if(qnsType = "excel") {
+        //load user spreadsheetId
+        var user = firebase.auth().currentUser;
+        var ref = firebase.database().ref();
+        var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
+        currentUser.$loaded().then(function(){
+            $scope.userExcelID = currentUser.driveExcel;
+            $scope.userToken = currentUser.access_token;
+            gapi.auth.setToken({
+                access_token: $scope.userToken
+            });
+            var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+            if($scope.isNewQuestion === true) {
+                gapi.client.load(discoveryUrl).then(createSheet);
+            } 
+        });
+    }
+    
+    //Add more value answer
+    $scope.addValueAnswer = function() {
+        $scope.qns.valueAnswer.push({cell: "", value: ""});
+    }
+    
+    $scope.deleteValueAns = function(index){
+      $scope.qns.valueAnswer.splice(index,1);
+    }
+    
+    //Add more formula answer
+    $scope.addFormulaAnswer = function() {
+        $scope.qns.formulaAnswer.push({cell: "", functionName: ""});
+    }
+    
+    $scope.deleteFormulaAns = function(index){
+      $scope.qns.formulaAnswer.splice(index,1);
+    }
+    
+    //Create && Update
+    $scope.saveExcelChanges = function(ev) {
+    // Appending dialog to document.body to cover sidenav in docs app
+        var confirm = $mdDialog.confirm()
+            .title('Would you want to save all changes?')
+            .textContent('This question will be saved to what you configured, is it ok to proceed?')
+            .targetEvent(ev)
+            .ok('Please do it!')
+            .cancel('Cancel!');
+
+        $mdDialog.show(confirm).then(function() {
+            
+            contentMgmtService.updateExcel($scope.qns,$scope.isNewQuestion).then(function(result){
+                var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+                gapi.client.load(discoveryUrl).then(updateSheetTitle);
+            });
+        }, function() {
+          // cancel function
+        });
+    };
+    
+    function createSheet() {
+        gapi.client.sheets.spreadsheets.batchUpdate({
+            spreadsheetId: $scope.userExcelID,
+            requests: [
+              {
+                addSheet:{
+                  properties:{
+                    title: "New Question Created",
+                  }
+                }
+              }
+            ]
+        }).then(function(response) {
+            $scope.qns.sheetID = (response.result.replies[0].addSheet.properties.sheetId);
+            var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + $scope.qns.sheetID;
+            $scope.srclink = $sce.trustAsResourceUrl(excelLink);
+        });
+    }
     
     function updateSheetTitle() {
         gapi.client.sheets.spreadsheets.batchUpdate({
@@ -378,51 +446,18 @@
               }
             ]
         }).then(function(response) {
-            $scope.qns.sheetID = (response.result.replies[0].addSheet.properties.sheetId);
-        });
-    }
-    
-    // Code box
-    //Add more test cases
-    $scope.addTestcase = function() {
-        $scope.qns.testcases.push({testcase: ""});
-    }
-    
-    
-    //Create && Update
-    $scope.saveCodeBoxChanges = function(ev) {
-    // Appending dialog to document.body to cover sidenav in docs app
-      var confirm = $mdDialog.confirm()
-            .title('Would you want to save all changes?')
-            .textContent('This question will be saved to what you configured, is it ok to proceed?')
-            .targetEvent(ev)
-            .ok('Please do it!')
-            .cancel('Cancel!');
-
-      $mdDialog.show(confirm).then(function() {
-          
-          $scope.qns.initialCode = editor.getValue();
-          
-          contentMgmtService.updateCodebox($scope.qns,$scope.isNewQuestion).then(function(result){
-              console.log(result);
             window.location.reload();
-          });
-        }, function() {
-          // cancel function
         });
-
-    };
- }
+    }
+    
+  }
 
   function CourseMapController($http,$scope, $routeParams,$mdDialog, $location, $firebaseObject, contentMgmtService) {
-    
     $scope.chapTBD = [];
-    $scope.chapTBA = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
     $scope.qnsTypes = ["Video","Slides","MCQ","Excel","Code"];
     var courseMap = contentMgmtService.getCourseSeq();
-    
     courseMap.$loaded().then(function(){
       var seq = [];
       for(i=0;i<courseMap.length;i++) {
@@ -503,9 +538,7 @@
     }
 
     $scope.addChapter = function(){
-      var cid = guid();
-      $scope.courseMap.push({chapterTitle:"",cid: cid});
-      $scope.chapTBA.push({chapterTitle:"",cid: cid});
+      $scope.courseMap.push({chapterTitle:"",});
       $("#text_"+($scope.courseMap.length-1)).show();
       $scope.chapterAdded = true;
       //window.scrollTo(0,document.body.scrollHeight); 
@@ -529,7 +562,7 @@
         var qns ={};
         $( "div#chapter" ).each(function( index, value ) {
           var c = $(this).find('h2.cid');
-          //console.log(index + ":" + $(this).attr('id'));
+          console.log(index + ":" + $(this).attr('id'));
           var cid = c.attr('cid');
           var title = c.text().trim();
           chap['cid'] = cid;
@@ -556,12 +589,8 @@
         
         contentMgmtService.deleteQuestionFromCM($scope.qnsTBD);
         contentMgmtService.deleteChapter($scope.chapTBD).then(function(){
-          if($scope.chapterAdded) {
-              contentMgmtService.addChapter($scope.chapTBA);
-          }
           contentMgmtService.updateEntireSeq(courseSequence).then(function() {
-              $scope.chapterAdded = false;
-            //window.location.reload();
+            window.location.href = "#/educator/courseMap";
           });
         });
         
@@ -569,6 +598,7 @@
       });
     }
 
+    
     $scope.deleteChapter = function(index,cid){
       $scope.courseMap.splice(index,1);
       $scope.chapTBD.push(cid); 
@@ -585,10 +615,6 @@
 
   }
 
-   function guid() {
-      function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-      }
-      return s4() + s4() + s4();
-    }
+
+
 })();

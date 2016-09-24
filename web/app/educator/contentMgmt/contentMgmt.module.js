@@ -5,9 +5,9 @@
     .config(configFunction);
    
   function configFunction($routeProvider) {
-    $routeProvider
-    // for editing
-	.when('/educator/courseMap', {
+    $routeProvider.
+  // for editing
+	when('/educator/courseMap', {
       templateUrl: 'app/educator/contentMgmt/courseMap_edit.html',
 	     controller: 'CourseMapController'
     })
@@ -28,7 +28,7 @@
 	     controller: 'ContentMgmtController'
     })
     .when('/educator/code_edit/:cid/:qid', {
-      templateUrl: 'app/educator/contentMgmt/codebox_edit.html',
+      templateUrl: 'app/educator/contentMgmt/code_edit.html',
 	     controller: 'ContentMgmtController'
     })
     // for creation
@@ -48,8 +48,8 @@
       templateUrl: 'app/educator/contentMgmt/excel_edit.html',
 	     controller: 'ContentMgmtController'
     })
-    .when('/educator/code_create/:cid', { 
-      templateUrl: 'app/educator/contentMgmt/codebox_edit.html',
+    .when('/educator/code_create/:cid', {
+      templateUrl: 'app/educator/contentMgmt/code_edit.html',
 	     controller: 'ContentMgmtController'
     });
   }

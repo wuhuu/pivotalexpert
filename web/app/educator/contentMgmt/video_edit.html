@@ -3,10 +3,14 @@
 <div layout="row" flex>
   <div flex="15"></div>
   <div class="md-whiteframe-z2" layout="column" flex="70">
+    <style>
+      ng-messages {display: block;}
+    </style>
     <div style="padding: 0px 20px">
       <h2 class="pull-left">{{qns.qnsTitle}}</h2>
+      <form name="qnsForm">
       <div class="pull-right"style="padding:20px">
-        <md-button class="md-raised" ng-click='saveQns($event)'>Save all changes</md-button>
+        <md-button class="md-raised" type="submit" ng-click='saveQns($event)'>Save all changes</md-button>
         <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
       </div>
     </div>
@@ -14,35 +18,39 @@
     <div style="padding: 10px 100px">
       <div layout="column">
         <div layout="column" layout-align=" center">
-          <form>
+          
             <div flex style="padding:10px">
               <md-input-container class="md-block">
-                <label>Title</label>
-                <textarea ng-model="qns.qnsTitle" rows="1" md-select-on-focus></textarea>
+                <label>Question Title</label>
+                <input ng-model="qns.qnsTitle" name="qnsTitle" required>
+                <ng-messages for="qnsForm.qnsTitle.$error">
+                  <div ng-message-exp="required">This is required.</div>
+                </ng-messages>
               </md-input-container>
             </div>
             <div flex style="padding:10px">
               <md-input-container class="md-block">
                 <label>Description</label>
-                <textarea ng-model="qns.qnsDescription" rows="1" md-select-on-focus></textarea>
+                <input ng-model="qns.qnsDescription" rows="1" md-select-on-focus required>
               </md-input-container>
             </div>
             <div flex style="padding:10px">
               <md-input-container class="md-block">
                 <label>Instructions</label>
-                <textarea ng-model="qns.qnsInstruction" rows="1" md-select-on-focus></textarea>
+                <input ng-model="qns.qnsInstruction" rows="1" md-select-on-focus required>
               </md-input-container>
             </div>
             <div flex style="padding:10px">
               <input type="hidden" ng-model='qns.qid'>
               <md-input-container class="md-block">
                 <label>Youtube link</label>
-                <input ng-model="qns.link" >
+                <input ng-model="qns.link" required>
               </md-input-container>
             </div>
-          </form>
+          
         </div>
       </div>
     </div>
+  </form>
   </div>
 </div>

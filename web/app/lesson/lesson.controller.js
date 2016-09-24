@@ -154,23 +154,28 @@
                         access_token: $scope.token
                     });
                     $scope.range = answerKey.range;
-                    $scope.formulaCheck = answerKey.formulaCheck;
-                    $scope.valueCheck = answerKey.valueCheck;
+                    $scope.formulaAnswer = answerKey.formulaAnswer;
+                    $scope.valueAnswer = answerKey.valueAnswer;
                     
                     var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
                     gapi.client.load(discoveryUrl).then(function() {
-                        checkCellFormula().then(function(result) {
-                            if(result.indexOf(false) === -1 && result.indexOf('false') === -1) {
-                                checkCellValue().then(function(result){
-                                    if (result.indexOf(false) === -1 && result.indexOf('false') === -1) {
-                                        nextQns(chapter,qns);
-                                    } else {
-                                        $scope.incorrect = true;
-                                    }
-                                });
-                            } else {
-                                $scope.incorrect = true;
-                            }
+                        updateSheetTitle().then(function() {
+                            checkCellFormula().then(function(result) {
+                                if(result.indexOf(false) === -1 && result.indexOf('false') === -1) {
+                                    checkCellValue().then(function(result){
+                                        if (result.indexOf(false) === -1 && result.indexOf('false') === -1) {
+                                            deleteSheet().then(function() {
+                                                nextQns(chapter,qns);
+                                            });
+                                            
+                                        } else {
+                                            $scope.incorrect = true;
+                                        }
+                                    });
+                                } else {
+                                    $scope.incorrect = true;
+                                }
+                            });
                         });
                     });
                 }
@@ -211,36 +216,42 @@
                 }
             });
         }
+  
+        function loadQns() {
+            gapi.client.sheets.spreadsheets.sheets.copyTo({
+              spreadsheetId: $scope.eduExcelID,
+              sheetId: $scope.sheetID,
+              destinationSpreadsheetId: $scope.userExcelID,
+            }).then(function(response) {
+
+              $scope.sheetId1 = response.result.sheetId;
+              //update user sheetID
+              ref.child("/auth/users/" + user.uid).update({ sheetID: $scope.sheetId1 });
+             
+            });
+        }
     });
     
-    function loadQns() {
-        var sheetId1 ;
-        gapi.client.sheets.spreadsheets.sheets.copyTo({
-          spreadsheetId: $scope.eduExcelID,
-          sheetId: $scope.sheetID,
-          destinationSpreadsheetId: $scope.userExcelID,
-        }).then(function(response) {
-
-          sheetId1 = response.result.sheetId;
-          //update user sheetID
-          ref.child("/auth/users/" + user.uid).update({ sheetID: sheetId1 });
-         
-          gapi.client.sheets.spreadsheets.batchUpdate({
-              
+    function updateSheetTitle() {
+        var deferred = $q.defer();
+        gapi.client.sheets.spreadsheets.batchUpdate({
             spreadsheetId: $scope.userExcelID,
             requests: [
               {
                 updateSheetProperties:{
                   properties:{
                     title: $scope.qnsTitle,
-                    sheetId: sheetId1
+                    sheetId: $scope.sheetId1
                   },
                   fields: "title"
                 }
               }
             ]
-          });
+        }).then(function(response) {
+            deferred.resolve(true);
+          
         });
+      return deferred.promise;
     }
    
     function checkCellFormula() {
@@ -252,19 +263,20 @@
       }).then(function(response) {
           
         $scope.formulaResult = []
-        var totalTestNum =  $scope.formulaCheck.length;
-        for (i = 0; i < totalTestNum; i++) { 
-            var cell = $scope.formulaCheck[i].cell;
-            var functionName = $scope.formulaCheck[i].functionName;
-            
-            var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
-            var row = parseInt(cell.substring(1)) - 1;
-            
-            var formula = String(response.result.values[parseInt(row)][parseInt(col)]);
-            
-            $scope.formulaResult.push(formula.indexOf(functionName) !== -1);
+        if($scope.formulaAnswer) {
+            var totalTestNum =  $scope.formulaAnswer.length;
+            for (i = 0; i < totalTestNum; i++) { 
+                var cell = $scope.formulaAnswer[i].cell;
+                var functionName = $scope.formulaAnswer[i].functionName;
+                
+                var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
+                var row = parseInt(cell.substring(1)) - 1;
+
+                var formula = String(response.result.values[parseInt(row)][parseInt(col)]);
+                
+                $scope.formulaResult.push(formula.indexOf(functionName) !== -1);
+            }
         }
-        
         deferred.resolve($scope.formulaResult);
       
       });
@@ -279,31 +291,45 @@
       }).then(function(response) {
           
         $scope.valueResult = []
-        var totalTestNum =  $scope.valueCheck.length;
-        for (i = 0; i < totalTestNum; i++) { 
-            var cell = $scope.valueCheck[i].cell;
-            var answer = $scope.valueCheck[i].value;
-            
-            var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
-            var row = parseInt(cell.substring(1)) - 1;
-            console.log("TESTING");
-            console.log(col);
-            console.log(row);
-            console.log(response.result.values);
-            
-            
-            var valueRow = response.result.values[parseInt(row)];
-            if(valueRow) {
-                value = valueRow[parseInt(col)];
-                $scope.valueResult.push(value === answer);
-            } else {
-                $scope.valueResult.push(false);
+        if($scope.formulaAnswer) {
+            var totalTestNum =  $scope.valueAnswer.length;
+            for (i = 0; i < totalTestNum; i++) { 
+                var cell = $scope.valueAnswer[i].cell;
+                var answer = $scope.valueAnswer[i].value;
+                
+                var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
+                var row = parseInt(cell.substring(1)) - 1;            
+                var valueRow = response.result.values[parseInt(row)];
+                if(valueRow) {
+                    value = valueRow[parseInt(col)];
+                    $scope.valueResult.push(value === answer);
+                } else {
+                    $scope.valueResult.push(false);
+                }
+                
             }
-            
         }
         deferred.resolve($scope.valueResult);
       });
       
+      return deferred.promise;
+    }
+    
+    function deleteSheet() {
+        var deferred = $q.defer();
+        gapi.client.sheets.spreadsheets.batchUpdate({
+            spreadsheetId: $scope.userExcelID,
+            requests: [
+              {
+                deleteSheet:{
+                    sheetId: $scope.sheetId1
+                }
+              }
+            ]
+        }).then(function(response) {
+            deferred.resolve(true);
+          
+        });
       return deferred.promise;
     }
     
@@ -346,7 +372,7 @@
 			} else {
 				//Complete current chapter, go to next chapter
 				nextQns = courseSeq[chapter+1];
-				if(nextQns) {
+				if(nextQns && courseSeq[chapter+1].qns) {
                     nextQns = courseSeq[chapter+1].qns[0];
 					$location.path('/lesson/' + nextQns.qnsType + '/' + (chapter + 2) + '/1/'+ nextQns.qid );
 				} else {

@@ -47,35 +47,46 @@
         </div>
     </div>
     <md-divider></md-divider>
-        <iframe style="height: 350px; width: 100%" ng-src="{{srclink}}"></iframe>
+        <iframe style="height: 350px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
         <div style="padding: 10px 0px">
-            <md-input-container class="md-block">
-            <label>Cells Range</label>
+          <md-input-container class="md-block">
+            <label>Cells Range of the Question. Eg. A1:E8</label>
             <input ng-model="qns.range">
           </md-input-container>
-          <md-input-container class="md-block">
-            <label>Formula Required</label>
-            <input ng-model="qns.FormulaUsed">
-          </md-input-container>
-           <md-input-container class="md-block">
-            <label>Formula Cell</label>
-            <input ng-model="qns.FormulaCell">
-          </md-input-container>
-          <div ng-repeat="ans in qns.answer">
+          
+          <div ng-repeat="ans in qns.formulaAnswer">
+            <label>Formula Answers</label>
+              <md-button ng-click='deleteFormulaAns($index)' class="md-icon-button" aria-label="Settings">
+                  <i class="fa fa-times"></i>
+                </md-button>
               <md-input-container class="md-block">
-                <label>Answer Cell's Row</label>
-                <input ng-model="ans.row">
+                <label>Cell [Eg. C1]</label>
+                <input ng-model="ans.cell">
               </md-input-container>
               <md-input-container class="md-block">
-                <label>Answer Cell's Col</label>
-                <input ng-model="ans.col">
+                <label>Function Name [Eg. SUM]</label>
+                <input ng-model="ans.functionName">
+              </md-input-container>
+          </div>
+          
+          <div ng-repeat="ans in qns.valueAnswer">
+            <label>Value Answers</label>
+            <md-button ng-click='deleteValueAns($index)' class="md-icon-button" aria-label="Settings">
+              <i class="fa fa-times"></i>
+            </md-button>
+              <md-input-container class="md-block">
+                <label>Cell [Eg. C1]</label>
+                <input ng-model="ans.cell">
               </md-input-container>
               <md-input-container class="md-block">
-                <label>Answer Cell's Value  </label>
+                <label>Value [Eg. 25]</label>
                 <input ng-model="ans.value">
               </md-input-container>
           </div>
-          <md-button class="md-raised pull-right" ng-click="addCellAnswer()">Add Answer Cell</md-button>
+          
+          <md-button class="md-raised pull-right" ng-click="addValueAnswer()">Add Value Answer Cell</md-button>
+          <md-button class="md-raised pull-right" ng-click="addFormulaAnswer()">Add Formula Answer Cell</md-button>
+
         </div>
       </div>
     </div>

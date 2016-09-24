@@ -31,7 +31,8 @@
 				deleteQuestion:deleteQuestion,
 				updateEntireSeq:updateEntireSeq,
 				getAnswerKey:getAnswerKey,
-				updateMCQ:updateMCQ
+				updateMCQ:updateMCQ,
+				deleteQuestionFromCM:deleteQuestionFromCM
 			};
 		
 		return service;    
@@ -53,23 +54,26 @@
 						}
 					}
 
-					if(chapter.cid) {
+					if(!chapter.cid) {
 						//generate new cid
-						cid = 000;
+						cid = commonService.guid();
+						chapter.cid= cid;
 					}
 					// create new chapter node & fill it up
-					var chapterNode = {helpRoomCode:"",chapterTitle:""};
+					var chapterNode = {helpRoomCode:"",chapterTitle:chapter.chapterTitle};
 					// create courseSeq node & fill it up
-					var courseSeqNode = {cid:cid,chapterTitle:""};
+					//var courseSeqNode = {cid:cid,chapterTitle:chapterTitle};
 					// update database
-					chapterNodeRef.update({cid:chapterNode});
-					courseSeqNodeRef.update(courseSeqNode,function onComplete(){
-						if(isNewChapter) {
-							return "Chapter created!"
-						}else {
-							return "Chapter updated!"
-						}
-					});
+					var chapObj ={};
+					chapObj[cid]=chapterNode;
+					chapterNodeRef.update(chapObj);
+					// courseSeqNodeRef.update(courseSeqNode,function onComplete(){
+					// 	if(isNewChapter) {
+					// 		return "Chapter created!"
+					// 	}else {
+					// 		return "Chapter updated!"
+					// 	}
+					// });
 				});
 			}
 
@@ -114,9 +118,20 @@
 
 		function updateEntireSeq(courseSequence) {
 			var q = $q.defer();
-			courseSeqNodeRef.set(courseSequence,function(error){
-				q.resolve(true);
+			chapterNodeRef.once("value", function(snapshot) {
+				angular.forEach(courseSequence, function(value, key) {
+					if(!value.cid){
+						var cid = commonService.guid();
+						value.cid = cid;
+						updateChapter(value,true);
+					}
+				});
+
+				courseSeqNodeRef.set(courseSequence,function(error){
+					q.resolve(true);
+				});
 			});
+			
 			return q.promise;
 		}
 		
@@ -148,8 +163,8 @@
 
 				if(!qid) {
 					//generate new qid
-					qid =000;
-					question.qid = 000;
+					qid = commonService.guid();
+					question.qid = qid;
 				}
 				// create new question node & fill it up
 
@@ -227,8 +242,8 @@
 
 				if(!qid) {
 					//generate new qid
-					qid =000;
-					question.qid = 000;
+					qid = commonService.guid();
+					question.qid = qid;
 				}
 				// create new question node & fill it up
 				var tempSlides = question.slides;
@@ -331,6 +346,8 @@
 						return false;
 					}
 				});
+				q.resolve(qnsArr.length);
+				return false;
 			});
 			return q.promise;
 		}
@@ -398,7 +415,7 @@
 			var q = $q.defer();
 			if(cidList.length==0){
 				q.resolve(false);
-			}
+			}else {
 			var userProfileNodeRef = commonService.firebaseRef().child('userProfiles');
 			var courseArray = $firebaseObject(courseSeqNodeRef);
 			
@@ -431,7 +448,7 @@
 						});
 					});
 				});
-			
+			}
 			return q.promise;	
 		}
 
@@ -461,7 +478,8 @@
 
 				if(!qid) {
 					//generate new qid
-					qid = 000;
+					qid = commonService.guid();
+					question.qid = qid;
 				}
 				// create new question node & fill it up
 				var answer = [];
@@ -475,10 +493,12 @@
 				delete question.$priority;
 				delete question.cid;
 				delete question.$id;
-
+				question.qnsType ="mcq";
+				
 				var questionNode = question;
+				
 				// create courseSeq node & fill it up
-				var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle};
+				var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle,qnsType:question.qnsType};
 				
 				// update database
 				questionNodeRef.child(qid).update(questionNode);

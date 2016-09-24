@@ -394,7 +394,7 @@
         contentMgmtService.deleteQuestionFromCM($scope.qnsTBD);
         contentMgmtService.deleteChapter($scope.chapTBD).then(function(){
           contentMgmtService.updateEntireSeq(courseSequence).then(function() {
-            window.location.reload();
+            window.location.href = "#/educator/courseMap"
           });
         });
         

@@ -5,7 +5,7 @@
     .factory('navBarService', navBarService);
 
 
-  function navBarService($rootScope, $firebaseObject, $firebaseAuth, $firebaseArray, authService, commonService) {
+  function navBarService($rootScope, $firebaseObject, $firebaseAuth, $firebaseArray, authService) {
     var ref = firebase.database().ref();
     
 
@@ -19,24 +19,19 @@
 
     function updateNavBar($scope,displayName) {
       $scope.displayName = displayName;
-      getUserAchievements($scope);
+      var user = firebase.auth().currentUser;
+      getUserAchievements($scope, user.uid);
     }
     
-    function getUserAchievements($scope) {
+    function getUserAchievements($scope, uid) {
+                  
         var achievedlist = [];
         var achievements = 0;
-        var user = firebase.auth().currentUser;
-        
-        //Check whether login user email belong to admin account email
-        var adminEmail = commonService.getAdminEmail().toUpperCase();
-        //update admin role
-        if(adminEmail.toUpperCase() === user.providerData[0].email) {
-            $rootScope.isAdmin = true;
-        }
+        var currentUser = firebase.auth().currentUser;
         
         var courseList = $firebaseArray(ref.child('/courseSequence'));
         courseList.$loaded().then(function (){
-            var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
+            var courseProgressRef = ref.child('/userProfiles/' + uid + '/courseProgress/');
             courseProgressRef.once('value', function(snapshot) {
               snapshot.forEach(function(childSnapshot) {
                 var key = childSnapshot.key;
@@ -56,7 +51,7 @@
                 }
               }
               $scope.$apply(function(){
-                $rootScope.numAchievement = achievements;
+                $rootScope.ownNumAchievement = achievements;
               });
             })
         });

@@ -198,7 +198,7 @@
           $scope.qns.mcq = listToUpdate;
 
           contentMgmtService.updateMCQ($scope.qns,$scope.isNewQuestion).then(function(){
-            window.location.reload();
+            window.location.href = "#/educator/courseMap"
           });
         }, function() {
           // cancel function

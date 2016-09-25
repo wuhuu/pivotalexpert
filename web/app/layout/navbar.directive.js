@@ -14,7 +14,6 @@
     };
   }
  
- 
   function NavbarController($firebaseObject, $scope, $location, authService, navBarService) {
       
       var usersRef = firebase.database().ref().child('auth/users');
@@ -27,9 +26,10 @@
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           // User is signed in.
-          navBarService.getUserAchievements($scope);
+          navBarService.getUserAchievements($scope, user.uid);
           $scope.displayPic = user.photoURL;
           $scope.logined = true;
+      
            var userData = $firebaseObject(usersRef.child(user.uid));
           //navBarService.updateNavBar(user.displayName);
           userData.$loaded().then(function(){
@@ -38,10 +38,12 @@
         } 
       });
       
+      /*
 	  var courseTitle = $firebaseObject(navBarService.getCourseTitle());
 		courseTitle.$loaded().then(function(){
 			$scope.courseTitle = courseTitle.$value;
 	  });
+      */
       
 	  $scope.logout = function () {
 		  $scope.logined = false;

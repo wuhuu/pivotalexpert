@@ -1,7 +1,7 @@
 <div layout="row" flex>
   <div style="position: relative"class="md-whiteframe-z2" layout-padding flex="30">
     <!--questions and submmit-->
-
+        
     <md-input-container class="md-block">
         <label>Question</label>
         <textarea ng-model="qns.qnsInstruction" rows="4" md-select-on-focus>
@@ -42,51 +42,35 @@
         </md-input-container>
       </h2>
         <div class="pull-right"style="padding:20px">
-            <md-button class="md-raised " ng-click='saveExcelChanges($event)'>Save all changes</md-button>
+            <md-button class="md-raised " ng-click='saveCodeBoxChanges($event)'>Save all changes</md-button>
             <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
         </div>
     </div>
     <md-divider></md-divider>
-        <iframe style="height: 350px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
+        <div id="editor" style="padding: 20px" flex > 
+    
+        </div>
+        
         <div style="padding: 10px 0px">
+        <label ng-show="qns.testcodeDeclare"> Example of test : {{qns.testcodeDeclare}} input {{qns.testcode}} </label>
           <md-input-container class="md-block">
-            <label>Cells Range of the Question. Eg. A1:E8</label>
-            <input ng-model="qns.range">
+            <label>Test code Declaration</label>
+            <input ng-model="qns.testcodeDeclare">
           </md-input-container>
-          
-          <div ng-repeat="ans in qns.formulaAnswer">
-            <label>Formula Answers</label>
-              <md-button ng-click='deleteFormulaAns($index)' class="md-icon-button" aria-label="Settings">
-                  <i class="fa fa-times"></i>
-                </md-button>
+          <md-input-container class="md-block">
+            <label>Test code Continue</label>
+            <input ng-model="qns.testcode">
+          </md-input-container>
+          <div ng-repeat="test in qns.testcases">
               <md-input-container class="md-block">
-                <label>Cell [Eg. C1]</label>
-                <input ng-model="ans.cell">
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>Function Name [Eg. SUM]</label>
-                <input ng-model="ans.functionName">
+                <label>Test case</label>
+                <input type="hidden" ng-model="case.id" ng-value="{{$index}}" />
+                <input ng-model="test.test">
               </md-input-container>
           </div>
-          
-          <div ng-repeat="ans in qns.valueAnswer">
-            <label>Value Answers</label>
-            <md-button ng-click='deleteValueAns($index)' class="md-icon-button" aria-label="Settings">
-              <i class="fa fa-times"></i>
-            </md-button>
-              <md-input-container class="md-block">
-                <label>Cell [Eg. C1]</label>
-                <input ng-model="ans.cell">
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>Value [Eg. 25]</label>
-                <input ng-model="ans.value">
-              </md-input-container>
-          </div>
-          
-          <md-button class="md-raised pull-right" ng-click="addValueAnswer()">Add Value Answer Cell</md-button>
-          <md-button class="md-raised pull-right" ng-click="addFormulaAnswer()">Add Formula Answer Cell</md-button>
-
+          <div style="width: 50%">
+            <md-button style="width: 100%; margin: 40px 0px" ng-click="addTestcase()" class="md-primary md-raised">add test case</md-button>
+           </div>
         </div>
       </div>
     </div>

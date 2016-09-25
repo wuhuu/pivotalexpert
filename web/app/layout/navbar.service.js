@@ -5,7 +5,7 @@
     .factory('navBarService', navBarService);
 
 
-  function navBarService($rootScope, $firebaseObject, $firebaseAuth, authService) {
+  function navBarService($rootScope, $firebaseObject, $firebaseAuth, $firebaseArray, authService) {
     var ref = firebase.database().ref();
     
 
@@ -19,26 +19,45 @@
 
     function updateNavBar($scope,displayName) {
       $scope.displayName = displayName;
-      getUserAchievements($scope);
-    }
-
-    function getUserAchievements($scope) {
-        var courseTitle = $firebaseObject(getCourseTitle());
-        courseTitle.$loaded().then(function(){
-            courseTitle = courseTitle.$value;
-            var user = firebase.auth().currentUser;
-            var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
-
-            courseProgressRef.once('value', function(snapshot) {
-              // The callback function will get called twice, once for "fred" and once for "barney"
-              
-              $scope.$apply(function(){
-                $rootScope.numAchievement = snapshot.numChildren();
-              });
-            });
-        });
+      var user = firebase.auth().currentUser;
+      getUserAchievements($scope, user.uid);
     }
     
+    function getUserAchievements($scope, uid) {
+                  
+        var achievedlist = [];
+        var achievements = 0;
+        var currentUser = firebase.auth().currentUser;
+        
+        var courseList = $firebaseArray(ref.child('/courseSequence'));
+        courseList.$loaded().then(function (){
+            var courseProgressRef = ref.child('/userProfiles/' + uid + '/courseProgress/');
+            courseProgressRef.once('value', function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+                var key = childSnapshot.key;
+                achievedlist.push(key);
+              });
+            
+              var totalCourse = courseList.length;
+              for (i = 0; i < totalCourse; i++) { 
+                var course = courseList[i];
+                if(course.qns) {
+                    var qnsCount = course.qns.length;
+                    for (j = 0; j < qnsCount; j++) { 
+                        if(achievedlist.indexOf(course.qns[j].qid) != -1){
+                            achievements++;
+                        }
+                    }
+                }
+              }
+              $scope.$apply(function(){
+                $rootScope.ownNumAchievement = achievements;
+              });
+            })
+        });
+
+    }
+
     function getCourseTitle() {
 
         var courseTitleRef = ref.child('/courseSetting/courseName');

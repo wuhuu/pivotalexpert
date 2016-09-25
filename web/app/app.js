@@ -22,14 +22,6 @@
     ])
     .config(configFunction);
     
-  // Initialize Firebase
-  var config = {      
-    apiKey: "AIzaSyDt22-VriobDs7cNfkmY8yxHur9IQBewWo",
-    authDomain: "pivotal-expert.firebaseapp.com",
-    databaseURL: "https://pivotal-expert.firebaseio.com",
-    storageBucket: "",
-  };
-  firebase.initializeApp(config);
     
   function configFunction($locationProvider, $routeProvider) {
     $locationProvider.hashPrefix('');

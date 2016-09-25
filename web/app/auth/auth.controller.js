@@ -7,7 +7,7 @@
   function AuthController($scope, $location, $firebaseObject, authService) {
     var ref = firebase.database().ref();
     var userRef = ref.child("auth/users");
-	var user = authService.fetchAuthData();
+	var user = firebase.auth().currentUser;
 
 	$scope.login = function () {
 	  console.log("Logging in");
@@ -36,15 +36,14 @@
         newLink = newLink.replace(/ /g, "");
 
         usedLinks.$loaded().then(function(links) {
-            var uid = user.uid;
             var b = links[newLink];
             if(!b){
                 //update usedLinks object
                 var updateObject = {};
-                updateObject[newLink] = uid; 					
+                updateObject[newLink] = user.uid; 					
                 usedLinksRef.update(updateObject);
                 
-                userRef.child(uid).update({profileLink: newLink});	
+                userRef.child(user.uid).update({profileLink: newLink});	
 
                 $location.path('/profile/'+newLink);
 
@@ -53,7 +52,7 @@
             }
         });
 
-        ref.child('/userProfiles/' + user.$id).update({lastAttempt:"C0Q0"});
+        ref.child('/userProfiles/' + user.uid).update({lastAttempt:""});
         
     }
 

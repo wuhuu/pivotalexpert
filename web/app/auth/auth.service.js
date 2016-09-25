@@ -4,7 +4,7 @@
     .module('app.auth')
     .factory('authService', authService);
 
-  function authService($firebaseObject, $firebaseAuth, $location, $rootScope) {
+  function authService($firebaseObject, $firebaseAuth, $location, $rootScope, commonService) {
 	  
 	// create an instance of the authentication service
 	var ref = firebase.database().ref();
@@ -15,15 +15,11 @@
       login: login,
       logout: logout,
       fetchAuthData: fetchAuthData,
-      //fetchAuthPic: fetchAuthPic,
-      //fetchAuthEmail: fetchAuthEmail,
-      //fetchAuthDisplayName:fetchAuthDisplayName
     };
 	
 	return service;
 	
 	//Different function of the auth service
-	
 	function login() {
       
       var provider = new firebase.auth.GoogleAuthProvider();
@@ -37,32 +33,43 @@
         // The signed-in user info.
         var user = result.user;
         $rootScope.userID = user.uid;
-
+        var loginEmail = user.providerData[0].email;
+        var token = result.credential.accessToken;
+        
         usersRef.child(user.uid).update({
           pic: user.photoURL,
-          email: user.email,
-          displayName: user.displayName
+          email: loginEmail,
+          displayName: user.displayName,
+          access_token: token
         });
         
-         var token = result.credential.accessToken;
+        
         // set the authentication token
 
         gapi.auth.setToken({
             access_token: token
         });
-             
         
-
         ref.child('/signinLogs/' + user.uid).set(new Date().toLocaleString("en-US"));
         
         var userData = $firebaseObject(usersRef.child(user.uid));
         //navBarService.updateNavBar(user.displayName);
         userData.$loaded().then(function(){
             //load drive API to create if have not created before
-            //if(!userData.driveExcel) {
+            if(!userData.driveExcel) {
+                //Create Google Folder upon login
                 loadDriveApi();   
-            //}
-            //Create Google Folder upon login
+            }
+            
+            //Check whether login user email belong to admin account email
+            var adminEmail = commonService.getAdminEmail().toUpperCase();
+            
+            //update admin role
+            if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
+                $rootScope.isAdmin = true;
+                ref.child('auth/admin/admin').set(user.uid);
+            }
+
             $rootScope.logined = true;
             if(userData.profileLink == null) {
               $location.path('/createProfileLink');
@@ -128,6 +135,7 @@
                   name: sheetName,
                   parents: [folderId]
                 });
+                
                 //Update Firebase with folderID
                 usersRef.child($rootScope.userID).update({ driveFolder: folderId });
 
@@ -136,6 +144,8 @@
                     //Update Firebase with folderID
                     usersRef.child($rootScope.userID).update({ driveExcel: spreadsheetID });
                     
+                    //Update Firebase with sheetID
+                    usersRef.child($rootScope.userID).update({ sheetID: 0 });
                     gapi.client.sheets.spreadsheets.batchUpdate({
                       spreadsheetId: spreadsheetID,
                       requests:[{
@@ -143,8 +153,8 @@
                           {
                             properties:
                             {
-                              sheetId:0,
-                              title: "Instructions"
+                              title: "Instructions",
+                              sheetId: 0
                             },
                             fields: "title"
                           }
@@ -155,32 +165,6 @@
             });
         });
       }
-      
-    /* Not in use
-    function fetchAuthPic() {
-      var audData = auth.$getAuth();
-      if (audData) {
-		console.log("Fetching fetchAuthPic " + audData.uid);
-		return $firebaseObject(usersRef.child(audData.uid+'/pic'));
-      }
-    }
-    function fetchAuthEmail() {
-      var audData = auth.$getAuth();
-      if (audData) {
-		console.log("Fetching fetchAuthEmail " + audData.uid);
-		return $firebaseObject(usersRef.child(audData.uid+'/email'));
-      }
-    }
-
-    function fetchAuthDisplayName() {
-      var audData = auth.$getAuth();
-      var audref = ref.child("/auth/users");
-      if (audData) {
-    		console.log("Fetching fetchAuthDisplayName " + audData.uid);
-    		return $firebaseObject(audref.child(audData.uid).child('displayName'));
-      }
-    }
-    */
   }
 
 })();

@@ -104,7 +104,7 @@
             }
             if(question.qnsType==='code') {
                 //Set code box display
-
+                var editor = ace.edit("editor");
                 editor.setTheme("ace/theme/chrome");
                 editor.getSession().setMode("ace/mode/javascript");
                 editor.setOption("maxLines", 30);

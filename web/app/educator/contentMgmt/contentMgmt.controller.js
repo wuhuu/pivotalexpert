@@ -81,14 +81,32 @@
 
   function ContentMgmtController($http,$scope, $sce, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,contentMgmtService) {
 	  console.log("ContentMgmtController");
-      
+    
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'),path.indexOf('_create'));
     var qnsType= path.substr(path.lastIndexOf('/')+1);
     if(qnsType ==='code') { 
         var editor = ace.edit("editor");
     }
- if($routeParams.qid!=null) {
+    var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+     
+    //Excel
+    //if(qnsType == "excel") {
+        //load user Details
+        var user = firebase.auth().currentUser;
+        var ref = firebase.database().ref();
+        var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
+        currentUser.$loaded().then(function(){
+            $scope.userExcelID = currentUser.driveExcel;
+            $scope.userToken = currentUser.access_token;
+            gapi.auth.setToken({
+                access_token: $scope.userToken
+            });
+            console.log("TESTING HERE, GET EXCEL ID");
+        });
+    //}
+    
+    if($routeParams.qid!=null) {
         var qid = $routeParams.qid;
         $scope.qid = qid;
         $scope.isNewQuestion = false;
@@ -133,6 +151,7 @@
                     question.formulaAnswer.push({cell: value.cell, functionName: value.functionName});
                 });
                 
+                console.log("TESTING HERE, LOAD URL");
                 var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + question.sheetID;
                 $scope.srclink = $sce.trustAsResourceUrl(excelLink);
             }
@@ -168,6 +187,7 @@
         $scope.qns['range'] = "";
         $scope.qns['formulaAnswer'] = [];
         $scope.qns['valueAnswer'] = [];
+        gapi.client.load(discoveryUrl).then(createSheet);
         
       }else if (qnsType === "code") {
         $scope.qns['hint'] = "";
@@ -353,26 +373,6 @@
     };
     
     //Excel
-    
-    //Excel
-    if(qnsType == "excel") {
-        //load user spreadsheetId
-        var user = firebase.auth().currentUser;
-        var ref = firebase.database().ref();
-        var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
-        currentUser.$loaded().then(function(){
-            $scope.userExcelID = currentUser.driveExcel;
-            $scope.userToken = currentUser.access_token;
-            gapi.auth.setToken({
-                access_token: $scope.userToken
-            });
-            var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-            if($scope.isNewQuestion === true) {
-                gapi.client.load(discoveryUrl).then(createSheet);
-            } 
-        });
-    }
-    
     //Add more value answer
     $scope.addValueAnswer = function() {
         $scope.qns.valueAnswer.push({cell: "", value: ""});
@@ -404,7 +404,6 @@
         $mdDialog.show(confirm).then(function() {
             
             contentMgmtService.updateExcel($scope.qns,$scope.isNewQuestion).then(function(result){
-                var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
                 gapi.client.load(discoveryUrl).then(updateSheetTitle);
             });
         }, function() {

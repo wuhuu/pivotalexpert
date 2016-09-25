@@ -355,7 +355,7 @@
     //Excel
     
     //Excel
-    if(qnsType = "excel") {
+    if(qnsType == "excel") {
         //load user spreadsheetId
         var user = firebase.auth().currentUser;
         var ref = firebase.database().ref();

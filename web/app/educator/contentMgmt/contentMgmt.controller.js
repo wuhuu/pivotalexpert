@@ -104,7 +104,7 @@
             }
             if(question.qnsType==='code') {
                 //Set code box display
-
+                var editor = ace.edit("editor");
                 editor.setTheme("ace/theme/chrome");
                 editor.getSession().setMode("ace/mode/javascript");
                 editor.setOption("maxLines", 30);
@@ -255,7 +255,7 @@
           $scope.qns.mcq = listToUpdate;
 
           contentMgmtService.updateMCQ($scope.qns,$scope.isNewQuestion).then(function(){
-            window.location.reload();
+            window.location.href = "#/educator/courseMap"
           });
         }, function() {
           // cancel function
@@ -311,7 +311,7 @@
 
       $mdDialog.show(confirm).then(function() {
         contentMgmtService.deleteChapter(cid).then(function(){
-          window.location.reload();
+          window.location.href = "#/educator/courseMap"
         });
       }, function() {
         // cancel function
@@ -344,7 +344,7 @@
           $scope.qns.initialCode = editor.getValue();
           
           contentMgmtService.updateCodebox($scope.qns,$scope.isNewQuestion).then(function(result){
-            window.location.reload();
+            window.location.href = "#/educator/courseMap"
           });
         }, function() {
           // cancel function
@@ -355,7 +355,7 @@
     //Excel
     
     //Excel
-    if(qnsType = "excel") {
+    if(qnsType == "excel") {
         //load user spreadsheetId
         var user = firebase.auth().currentUser;
         var ref = firebase.database().ref();
@@ -446,7 +446,7 @@
               }
             ]
         }).then(function(response) {
-            window.location.reload();
+            window.location.href = "#/educator/courseMap"
         });
     }
     
@@ -590,7 +590,7 @@
         contentMgmtService.deleteQuestionFromCM($scope.qnsTBD);
         contentMgmtService.deleteChapter($scope.chapTBD).then(function(){
           contentMgmtService.updateEntireSeq(courseSequence).then(function() {
-            window.location.href = "#/educator/courseMap";
+            window.location.href = "#/educator/courseMap"
           });
         });
         

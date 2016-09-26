@@ -3,38 +3,51 @@
 <div layout="row" flex>
   <div flex="15"></div>
   <div class="md-whiteframe-z2" layout="column" flex="70">
+  <form name="qnsForm"> 
+    <style>
+      ng-messages {display: block;}
+    </style>
     <div style="padding: 0px 20px">
       <h2 class="pull-left">{{qns.qnsTitle}}</h2>
       <div class="pull-right"style="padding:20px">
-        <md-button class="md-raised" ng-click='saveQns($event)'>Save all changes</md-button>
+        <md-button class="md-raised" type='submit' ng-click='qnsForm.$valid && saveQns($event)'>Save all changes</md-button>
         <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
       </div>
     </div>
     <md-divider></md-divider>
-    <div style="padding: 10px 100px">
+    <div style="padding: 100px 20px">
       <div layout="column">
         <div layout="row" layout-align="center center">
           <div flex="45" style="padding:10px">
             <md-input-container class="md-block">
               <label>Question Title</label>
-              <input ng-model="qns.qnsTitle" required>
+              <input ng-model="qns.qnsTitle" name='qnsTitle' required>
+              <ng-messages for="qnsForm.qnsTitle.$error" md-auto-hide="true">
+                  <div ng-message="required">This is required.</div>
+              </ng-messages>
             </md-input-container>
           </div>
         </div>
         <form>
-          <div ng-repeat="slide in qns.slides">
+          <div ng-repeat="slide in qns.slides track by $index">
             <md-divider></md-divider>
             <div layout="row" layout-align="center center">
               <div flex="45" style="padding:10px">
                 <md-input-container class="md-block">
                   <label>Slide Image Link</label>
-                  <input ng-model="slide.imageLink" required>
+                  <input ng-model="slide.imageLink" name='slide.imageLink.{{$index}}' required>
+                  <ng-messages for="qnsForm.slide.imageLink.$index.$error" md-auto-hide="true">
+                    <div ng-message="required">This is required.</div>
+                  </ng-messages>
                 </md-input-container>
               </div>
               <div flex="45" style="padding:10px">
                 <md-input-container class="md-block">
                   <label>Explanation</label>
-                  <input ng-model="slide.explanation" rows="1" md-select-on-focus required>
+                  <input ng-model="slide.explanation" name='slide.explanation.{{$index}}' rows="1" md-select-on-focus required>
+                  <ng-messages for="qnsForm.slide.explanation.$index.$error" md-auto-hide="true">
+                    <div ng-message="required">This is required.</div>
+                  </ng-messages>
                 </md-input-container>
               </div>
               <div felx="10">
@@ -52,5 +65,6 @@
         </div>
       </div>
     </div>
+  </form>
   </div>
 </div>

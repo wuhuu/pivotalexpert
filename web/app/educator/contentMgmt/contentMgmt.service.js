@@ -31,7 +31,8 @@
             updateMCQ:updateMCQ,
             deleteQuestionFromCM:deleteQuestionFromCM,
             updateCodebox:updateCodebox,
-            updateExcel:updateExcel
+            updateExcel:updateExcel,
+            getCourseJson:getCourseJson
         };
 		
 		return service;    
@@ -87,6 +88,10 @@
 
         function getCourseSeq(){
             return $firebaseArray(courseSeqNodeRef);
+        }
+
+        function getCourseJson(){
+            return $q.resolve($firebaseObject(ref));
         }
 
         function getChapter(cid) {

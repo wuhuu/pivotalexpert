@@ -6,6 +6,9 @@
 
   } );
   </script>
+  <style>
+    ng-messages {display: block;}
+  </style>
       <div layout="row" flex>
         <div flex="auto"></div>
         <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 30px;height:auto;">
@@ -13,6 +16,7 @@
               <md-button class="md-raised" ng-click="saveAllChanges($event)">Save all changes</md-button>
               <md-button class="md-raised" ng-click="addChapter()">Add Chapter</md-button>
               <md-button class="md-raised" ng-click="showPrompt($event)">Add Question</md-button>
+              <md-button class="md-raised" ng-click="exportCourse()">Export Course</md-button>
         </div>
         <div flex="auto"></div>
       </div>

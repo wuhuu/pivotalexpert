@@ -4,91 +4,121 @@
     
   });
   </script>
-    <div layout="row" flex>
-      <div flex="15"></div>
-      <div class="md-whiteframe-z2" layout="column" flex="70">
-        <div style="padding: 0px 20px">
+<div layout="row" flex>
+  <div flex="15"></div>
+    <div class="md-whiteframe-z2" layout="column" flex="70">
+      <form name='qnsForm'>
+        <style>
+          ng-messages {display: block;}
+        </style>
+        <div style="padding:20px">
           <h2 class="pull-left" ng-model="qns.qnsTitle">{{qns.qnsTitle}}</h2>
-          <div class="pull-right"style="padding:20px">
-            <md-button class="md-raised " ng-click='saveMCQChanges($event)'>Save all changes</md-button>
+          <div class="pull-right" style="padding:20px">
+            <md-button class="md-raised " type="submit" ng-click='qnsForm.$valid && saveMCQChanges($event)'>Save all changes</md-button>
             <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
           </div>
         </div>
         <md-divider></md-divider>
-        <div style="padding: 0px 20px">
-          <md-input-container class="md-block">
-            <label>Question Title</label>
-            <input ng-model="qns.qnsTitle" required>
-          </md-input-container>
-        </div>
+        <div style="padding: 100px 20px">
+          <div layout="column">
+            <div layout="column" layout-align=" center">
 
-        <div style="padding: 0px 20px">
-          <md-input-container class="md-block">
-            <label>Hints</label>
-            <input ng-model="qns.hint" required>
-          </md-input-container>
-        </div>
+              <div flex style="padding:0 20px">
+                <md-input-container class="md-block">
+                  <label>Question Title</label>
+                  <input ng-model="qns.qnsTitle" name="qnsTitle" required>
+                  <ng-messages for="qnsForm.qnsTitle.$error" md-auto-hide="true">
+                    <div ng-message="required">This is required.</div>
+                  </ng-messages>
+                </md-input-container>
+              </div>
+              <div flex style="padding:0 20px">
+                <md-input-container class="md-block">
+                  <label>Hints</label>
+                  <input ng-model="qns.hint" name="hint" required>
+                  <ng-messages for="qnsForm.hint.$error" md-auto-hide="true">
+                    <div ng-message="required">This is required.</div>
+                  </ng-messages>
+                </md-input-container>
+              </div>
 
-        <div style="padding: 0px 20px">
-          <md-input-container class="md-block">
-            <label>Instructions</label>
-            <input ng-model="qns.qnsInstruction" required>
-          </md-input-container>
-        </div>
-        <div style="padding: 0px 20px" layout="column" id='mcq'>
-          <!-- Question 1 -->
-          
-          <div layout="row" ng-repeat="mcqObj in qns.mcq track by $index"  toggle-button="done" >
-            <div flex>
-              <p >
-                <strong>Q{{$index+1}}.</strong> {{mcqObj.qns}}
-                <md-button ng-click="toggleQns(mcqObj.qnsID)" class="md-icon-button" aria-label="Settings" >
-                  <i class="fa fa-pencil" ></i>
-                </md-button>
-                <md-button ng-click='deleteMcq($index)' class="md-icon-button" aria-label="Settings">
-                  <i class="fa fa-times"></i>
-                </md-button>
-               
-              </p>
-              <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}'>
+              <div flex style="padding:0 20px">
+                <md-input-container class="md-block">
+                  <label>Instructions</label>
+                  <input ng-model="qns.qnsInstruction" name="qnsInstruction" required>
+                  <ng-messages for="qnsForm.qnsInstruction.$error" md-auto-hide="true">
+                    <div ng-message="required">This is required.</div>
+                  </ng-messages>
+                </md-input-container>
+              </div>
+
+              <div flex style="padding:0 20px" layout="column" id='mcq'>
+                <!-- Question 1 -->
+                
+                <div layout="row" ng-repeat="mcqObj in qns.mcq track by $index"  toggle-button="done" >
+                  <div flex>
+                    <p >
+                      <strong>Q{{$index+1}}.</strong> {{mcqObj.qns}}
+                      <md-button ng-click="toggleQns(mcqObj.qnsID)" class="md-icon-button" aria-label="Settings" >
+                        <i class="fa fa-pencil" ></i>
+                      </md-button>
+                      <md-button ng-click='deleteMcq($index)' class="md-icon-button" aria-label="Settings">
+                        <i class="fa fa-times"></i>
+                      </md-button>
+                    
+                    </p>
+                    <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}'>
                       <label>Question:</label>
-              <input ng-model="mcqObj.qns" required>
+                      <input ng-model="mcqObj.qns" name='text_{{mcqObj.qnsID}}' required>
+                      <ng-messages for="qnsForm.text_mcqObj.qnsID.$error" md-auto-hide="true">
+                        <div ng-message="required">This is required.</div>
+                      </ng-messages>
+                    </md-input-container>
 
-              </md-input-container>
-              <md-radio-group ng-model="mcqObj.answer" id='choice_{{mcqObj.qnsID}}' style="border: none" ng-change='change()'>
-                <div layout="row"  style="margin: -15px 0" ng-repeat="option in mcqObj.options track by $index">
-                  <div layout="row" layout-align="center center">
-                    <md-button ng-click="toggleChoice(mcqObj.qnsID,$index)"class="md-icon-button" aria-label="Settings">
-                      <i class="fa fa-pencil"></i>
-                    </md-button>
-                    <md-button class="md-icon-button" ng-click='deleteChoice($parent.$index,$index)' aria-label="Settings">
-                      <i class="fa fa-times"></i>
-                    </md-button>
+                    
+                      <md-radio-group name='answer_{{mcqObj.qnsID}}' ng-model='mcqObj.answer' id='answer_{{mcqObj.qnsID}}'>
+                        <div layout="row"  style="margin: -15px 0" ng-repeat="option in mcqObj.options track by $index">
+                          <div layout="row" layout-align="center center">
+                            <md-button ng-click="toggleChoice(mcqObj.qnsID,$index)"class="md-icon-button" aria-label="Settings">
+                              <i class="fa fa-pencil"></i>
+                            </md-button>
+                            <md-button class="md-icon-button" ng-click='deleteChoice($parent.$index,$index)' aria-label="Settings">
+                              <i class="fa fa-times"></i>
+                            </md-button>
+                          </div>
+                          <md-radio-button ng-if="$index==0" ng-model="mcqObj.options[$index]" value="true"> {{mcqObj.options[$index]}} </md-radio-button>
+                          <md-radio-button ng-if="$index!=0" ng-model="mcqObj.options[$index]" value="{{mcqObj.options[$index]}}"> {{mcqObj.options[$index]}} </md-radio-button>
+                          <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}_{{$index}}' style="margin-left:15px">
+                            <label>Choice:</label>
+                            <input ng-model="mcqObj.options[$index]" name="text_{{mcqObj.qnsID}}_{{$index}}" required>
+                            <ng-messages for="qnsForm.mcqObj.options[$index].$error" md-auto-hide="true">
+                              <div ng-message="required">This is required.</div>
+                            </ng-messages>
+                          </md-input-container>
+                        </div>
+                      </md-radio-group>
+                      <ng-messages for="qnsForm.choice_mcqObj.qnsID.$error" md-auto-hide="true">
+                              <div ng-message="required">This is required.</div>
+                      </ng-messages>
+
+                    <div style="padding: 10px">
+                      <md-button class="md-raised" ng-click="addChoice($index)">add option</md-button>
+                    </div>
                   </div>
-                  <md-radio-button ng-model="mcqObj.options[$index]" value="{{mcqObj.options[$index]}}"> {{mcqObj.options[$index]}} </md-radio-button>
-                  <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}_{{$index}}' style="margin-left:15px">
-                      <label>Choice:</label>
-                  <input ng-model="mcqObj.options[$index]" required>
-                  </md-input-container>
                 </div>
-              </md-radio-group>
-
-              <div style="padding: 10px">
-                <md-button class="md-raised" ng-click="addChoice($index)">add option</md-button>
+                <!-- end of Question 1 -->
+                <br>
+                <!-- Question 2 -->
+              </div>
+              <div layout="row" layout-align="center center">
+                <div style="width: 50%">
+                  <md-button style="width: 100%; margin: 40px 0px" ng-click="addMcq()" class="md-primary md-raised">add MCQ</md-button>
+                </div>
               </div>
             </div>
           </div>
-           <!-- end of Question 1 -->
-          <br>
-          <!-- Question 2 -->
         </div>
-        <div layout="row" layout-align="center center">
-        <div style="width: 50%">
-          <md-button style="width: 100%; margin: 40px 0px" ng-click="addMcq()" class="md-primary md-raised">add question</md-button>
-        </div>
-
-
-      </div>
+      </form>
     </div>
    </div>
 

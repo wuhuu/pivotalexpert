@@ -79,7 +79,7 @@
       }
     });
 
-  function ContentMgmtController($http,$scope, $sce, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,contentMgmtService) {
+  function ContentMgmtController($http,$scope, $sce, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,commonService, contentMgmtService) {
 	  console.log("ContentMgmtController");
     
     var path = $location.$$path;
@@ -168,7 +168,7 @@
     }else {
       //"/educator/slides_create/C0"
       $scope.isNewQuestion = true;
-      $scope.qns = {qnsTitle:" ",qnsType:qnsType,cid:$routeParams.cid}
+      $scope.qns = {qnsTitle:"",qnsType:qnsType,cid:$routeParams.cid}
       if(qnsType === "slides"){
         $scope.qns['slides'] = [];
       }else if (qnsType === "video"){
@@ -213,11 +213,16 @@
       $mdDialog.show(confirm).then(function() {
         if($scope.qns.qnsType == "video"){
           contentMgmtService.updateVideoQuestion($scope.qns,$scope.isNewQuestion).then(function(){
+            
             window.location.href = "#/educator/courseMap"
+            commonService.showSimpleToast("Video Challenge Added/Updated.");
           });
         }else if ($scope.qns.qnsType == "slides") {
           contentMgmtService.updateSlideQuestion($scope.qns,$scope.isNewQuestion).then(function(){
-            window.location.href = "#/educator/courseMap"
+            
+            window.location.href = "#/educator/courseMap";
+            commonService.showSimpleToast("Slides Challenge Added/Updated.");
+            //$scope.$emit("SuccessPrompt",);
           });
         }
       });
@@ -229,7 +234,7 @@
     }
 
     $scope.addSlide = function(){
-      $scope.qns.slides.push({explanation:" ",imageLink:" "});
+      $scope.qns.slides.push({explanation:"",imageLink:""});
     }
 
     $scope.toggleQns = function(id) {
@@ -277,6 +282,7 @@
 
           contentMgmtService.updateMCQ($scope.qns,$scope.isNewQuestion).then(function(){
             window.location.href = "#/educator/courseMap"
+             commonService.showSimpleToast("MCQ Challenge Added/Updated.");
           });
         }, function() {
           // cancel function
@@ -366,6 +372,7 @@
           
           contentMgmtService.updateCodebox($scope.qns,$scope.isNewQuestion).then(function(result){
             window.location.href = "#/educator/courseMap"
+             commonService.showSimpleToast("Code Challenge Added/Updated.");
           });
         }, function() {
           // cancel function
@@ -406,6 +413,7 @@
             
             contentMgmtService.updateExcel($scope.qns,$scope.isNewQuestion).then(function(result){
                 gapi.client.load(discoveryUrl).then(updateSheetTitle);
+                commonService.showSimpleToast("Excel Challenge Added/Updated.");
             });
         }, function() {
           // cancel function
@@ -467,6 +475,50 @@
 
       $scope.courseMap = seq;
     });
+    $scope.exportCourse = function(){
+      //from string to object = angular.fromJson(json);
+      contentMgmtService.getCourseJson().then(function(dbjson){
+        dbjson.$loaded().then(function(){
+          delete dbjson.$$conf;
+          delete dbjson.$id;
+          delete dbjson.$priority;
+
+          var json = JSON.stringify(dbjson);
+
+          var url = URL.createObjectURL(new Blob([json]));
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = 'course_json.json';
+          a.target = '_blank';
+          a.click();
+        });
+      });
+      
+    }
+
+    // $scope.importCourse = function ($http){
+
+    //       this.uploadFileToUrl = function(file, uploadUrl){
+    //       var fd = new FormData();
+    //       fd.append('file', file);
+      
+    //       $http.post(uploadUrl, fd, {
+    //         transformRequest: angular.identity,
+    //         headers: {'Content-Type': undefined}
+    //       })
+      
+    //       .success(function(){
+    //       })
+      
+    //       .error(function(){
+    //       });
+    //   }
+    // }
+    // $scope.$on('SuccessPrompt',function(event,args){
+    //   $scope.showSimpleToast(args);
+    // });
+
+     
 
     $scope.showPrompt = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
@@ -476,33 +528,42 @@
          targetEvent: ev,
          template:
          
-          '<md-dialog style="padding:20px">' +
-          '<h3>Options to create question:</h3><br>'+
+           '<md-dialog style="padding:20px">' +
+           '<form name="qnsForm">'+
+           ' <h3>Options to create question:</h3><br>'+
            '  <md-dialog-content>'+
            '  <md-input-container style="width:500px;height:auto;">'+
-           '    <label>Select Chapter to put question in.</label> '+
-           '    <md-select ng-model="selectedChapter" required>'+
+           '    <label>Please select Chapter to put question in.</label> '+
+           '    <md-select ng-model="selectedChapter" name="chapter" required>'+
            '      <md-option ng-repeat="item in chapters" value="{{item.cid}}">'+
            '       {{item.chapterTitle}}' +
            '      '+
-           '    </md-option></md-select></md-input-container><br>'+
+           '    </md-option></md-select>' +
+           '    <ng-messages for="qnsForm.chapter.$error" md-auto-hide="true">'+
+           '      <div ng-message="required">This is required.</div>'+
+           '    </ng-messages>'+
+           '  </md-input-container><br>'+
            '  <md-input-container style="width:500px;height:auto;">'+    
            '    <label>Select question Type.</label> '+
-           '    <md-select ng-model="selectedQnsType" required>'+
+           '    <md-select ng-model="selectedQnsType" name="type" required>'+
            '      <md-option ng-repeat="item in qnsTypes" value="{{item}}">'+
            '       {{item}}' +
            '      '+
            '    </md-option></md-select>'+
+           '    <ng-messages for="qnsForm.type.$error" md-auto-hide="true">'+
+           '      <div ng-message="required">This is required.</div>'+
+           '    </ng-messages>'+
            '  </md-input-container>'+
            '  </md-dialog-content>' +
            '  <md-dialog-actions>' +
            '    <md-button ng-click="closeDialog()" class="md-primary">' +
            '      Close' +
            '    </md-button>' +
-           '    <md-button ng-click="nextStep()" class="md-primary">' +
+           '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
            '      Proceed' +
            '    </md-button>' +
            '  </md-dialog-actions>' +
+           '</form>'+
            '</md-dialog>',
          locals: {
            chapters: $scope.chapters,

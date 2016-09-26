@@ -590,7 +590,7 @@
         contentMgmtService.deleteQuestionFromCM($scope.qnsTBD);
         contentMgmtService.deleteChapter($scope.chapTBD).then(function(){
           contentMgmtService.updateEntireSeq(courseSequence).then(function() {
-            window.location.href = "#/educator/courseMap"
+            window.location.reload();
           });
         });
         

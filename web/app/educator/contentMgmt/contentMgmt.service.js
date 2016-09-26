@@ -948,34 +948,36 @@
             var courseArray = $firebaseObject(courseSeqNodeRef);
             
                 $.each(cidList,function(key,value){
-
-                    getChapterIndex(value).then(function(chapIndex){
-                        courseArray.$loaded().then(function(){
-                            if(courseArray[chapIndex]!=null) {
-                                var chapToDelete = courseArray[chapIndex];
-                                // deleting each question in this chapter from question and answerKey node 
-                                angular.forEach(chapToDelete.qns, function(value, key) {
-                                    ref.child('course/questions/'+value.qid).remove();
-                                    ref.child('answerKey/'+value.qid).remove();
-                                });
-
-                                // deleting the chapter from course node
-                                ref.child('course/chapters/'+value).remove();
-
-                                userProfileNodeRef.once("value", function(snapshot){
-                                    // for each user, remove from their courseProgress the current qns
-                                    snapshot.forEach(function(user) {
-                                        var key = user.key;
-                                        angular.forEach(chapToDelete.qns, function(value, key) {
-                                            userProfileNodeRef.child(key+'/courseProgress/'+value.qid).remove();
-                                        });
+                    if(value!=null) {
+                        getChapterIndex(value).then(function(chapIndex){
+                            courseArray.$loaded().then(function(){
+                                if(courseArray[chapIndex]!=null) {
+                                    var chapToDelete = courseArray[chapIndex];
+                                    // deleting each question in this chapter from question and answerKey node 
+                                    angular.forEach(chapToDelete.qns, function(value, key) {
+                                        ref.child('course/questions/'+value.qid).remove();
+                                        ref.child('answerKey/'+value.qid).remove();
                                     });
-                                    q.resolve(true);
-                                });
-                            }
+
+                                    // deleting the chapter from course node
+                                    ref.child('course/chapters/'+value).remove();
+
+                                    userProfileNodeRef.once("value", function(snapshot){
+                                        // for each user, remove from their courseProgress the current qns
+                                        snapshot.forEach(function(user) {
+                                            var key = user.key;
+                                            angular.forEach(chapToDelete.qns, function(value, key) {
+                                                userProfileNodeRef.child(key+'/courseProgress/'+value.qid).remove();
+                                            });
+                                        });
+                                        q.resolve(true);
+                                    });
+                                }
+                            });
                         });
-                    });
+                    }
                 });
+                q.resolve(true);
             }
             return q.promise;	
         }

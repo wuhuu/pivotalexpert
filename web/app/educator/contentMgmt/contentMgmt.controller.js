@@ -228,6 +228,10 @@
     }
 
     $scope.saveMCQChanges = function(ev) {
+      var qns = $scope.qns;
+      var mcqList = qns.mcq;
+      if(qns)
+
     // Appending dialog to document.body to cover sidenav in docs app
       var confirm = $mdDialog.confirm()
             .title('Would you want to save all changes?')
@@ -237,10 +241,7 @@
             .cancel('Cancel!');
 
       $mdDialog.show(confirm).then(function() {
-        
         var listToUpdate = [];
-        var qns = $scope.qns;
-        var mcqList = qns.mcq;
         var qids = $("#mcq").find('strong');
         // updating the question sequence
           for(i=0;i<qids.length;i++) {

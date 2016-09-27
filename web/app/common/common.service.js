@@ -13,18 +13,24 @@
     storageBucket: "",
   };
   
+  //Replace with your login google account email
+  var adminEmail = "Jianhua.Wu.2014@smu.edu.sg";
+  
+  //Replace with the name of your course
+  var courseName = "Pivotal Expert";
+  
   firebase.initializeApp(config);
   
   function commonService($mdToast) {
-	  
-    //Replace with your login google account email
-    var adminEmail = "Jianhua.Wu.2014@smu.edu.sg";
 
 	var service = {
       getAdminEmail: getAdminEmail,
+      getCouseName:getCouseName,
       guid: guid,
       showSimpleToast:showSimpleToast
     };
+    
+    
 	var last = {
         bottom: false,
         top: true,
@@ -32,7 +38,7 @@
         right: false
       };
 
-  var toastPosition = angular.extend({},last);
+    var toastPosition = angular.extend({},last);
 
 	return service;
 
@@ -40,6 +46,9 @@
       return adminEmail;
     }
     
+    function getCouseName() {
+      return courseName;
+    }
     
     function guid() {
       function s4() {

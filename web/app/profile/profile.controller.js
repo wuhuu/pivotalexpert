@@ -35,25 +35,20 @@
         var achievedlist = [];
         var achievements = [];
         var achievementsNum = 0;
-        var courseList = [];
-        var courseSequence = $firebaseObject(ref.child('/courseSequence/'));
-        courseSequence.$loaded().then(function (){
-            courseSequence.forEach(function(childSnapshot) {
-                courseList.push(childSnapshot);
-            });
+        var courseList = $firebaseArray(ref.child('/courseSequence'));
+        courseList.$loaded().then(function (sequence){
             var courseProgressRef = ref.child('/userProfiles/' + uid + '/courseProgress/');
             courseProgressRef.once('value', function(snapshot) {
               snapshot.forEach(function(childSnapshot) {
                 var key = childSnapshot.key;
                 achievedlist.push(key);
               });   
-               console.log("TESTING");
-                console.log(courseSequence);
+
+              
               var totalCourse = courseList.length;
               for (i = 0; i < totalCourse; i++) { 
                 var chapter = courseList[i];
-                  console.log("TESTING");
-                console.log(chapter.qns);
+
                 if(chapter.qns) {
                     var qnsCount = chapter.qns.length;
                     var currentPos = 0;

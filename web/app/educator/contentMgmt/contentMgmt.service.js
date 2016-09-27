@@ -684,7 +684,6 @@
                     delete question.$priority;
                     delete question.$id;
 
-                    console.log(question);
                     //Update to firebase question node
                     questionNodeRef.child(qid).update(question);
 

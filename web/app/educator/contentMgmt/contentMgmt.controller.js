@@ -79,33 +79,21 @@
       }
     });
 
-  function ContentMgmtController($http,$scope, $sce, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,commonService, contentMgmtService) {
+  function ContentMgmtController($http,$scope, $sce, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,commonService, contentMgmtService, $timeout, $q) {
 	  console.log("ContentMgmtController");
-    
+
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'),path.indexOf('_create'));
     var qnsType= path.substr(path.lastIndexOf('/')+1);
     if(qnsType ==='code') { 
         var editor = ace.edit("editor");
     }
-    var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-     
-    //Excel
-    //if(qnsType == "excel") {
-        //load user Details
-        var user = firebase.auth().currentUser;
-        var ref = firebase.database().ref();
-        var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
-        currentUser.$loaded().then(function(){
-            $scope.userExcelID = currentUser.driveExcel;
-            $scope.userToken = currentUser.access_token;
-            gapi.auth.setToken({
-                access_token: $scope.userToken
-            });
-            console.log("TESTING HERE, GET EXCEL ID");
-        });
-    //}
     
+    var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+    //load user Details
+    var ref = firebase.database().ref();
+    $timeout(loadUserDetails, 3000);
+  
     if($routeParams.qid!=null) {
         var qid = $routeParams.qid;
         $scope.qid = qid;
@@ -139,7 +127,10 @@
             }
             
             if(question.qnsType==='excel') {
-                question.range = answerKey.range;
+                $timeout(loadDetails, 3000);
+            }
+            function loadDetails() {
+                 question.range = answerKey.range;
                 
                 question.valueAnswer = [];
                 angular.forEach(answerKey.valueAnswer, function(value, key) {
@@ -151,10 +142,10 @@
                     question.formulaAnswer.push({cell: value.cell, functionName: value.functionName});
                 });
                 
-                console.log("TESTING HERE, LOAD URL");
                 var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + question.sheetID;
                 $scope.srclink = $sce.trustAsResourceUrl(excelLink);
             }
+
             
             question.qid = question.$id;
             question.cid = $routeParams.cid;
@@ -187,7 +178,17 @@
         $scope.qns['range'] = "";
         $scope.qns['formulaAnswer'] = [];
         $scope.qns['valueAnswer'] = [];
-        gapi.client.load(discoveryUrl).then(createSheet);
+        $timeout(delayedTime, 3000);
+        function delayedTime() {
+            gapi.client.load(discoveryUrl).then(function() {
+                getAllSheets().then(function(result) {
+                    deleteSheet(result).then(function(){
+                        createSheet();
+                    });
+                });
+            });
+        }
+        
         
       }else if (qnsType === "code") {
         $scope.qns['hint'] = "";
@@ -202,6 +203,9 @@
       }
     }
 
+    $scope.backToCourseMap = function() {
+        window.location.href = "#/educator/courseMap";
+    }
     $scope.saveQns = function(ev) {
       var confirm = $mdDialog.confirm()
             .title('Would you want to save all changes?')
@@ -380,7 +384,18 @@
 
     };
     
-    //Excel
+    function loadUserDetails() {
+        var user = firebase.auth().currentUser;
+        var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
+        currentUser.$loaded().then(function(){
+            $scope.userExcelID = currentUser.eduSheet;
+            $scope.userToken = currentUser.access_token;
+            gapi.auth.setToken({
+                access_token: $scope.userToken
+            });
+        });
+    }
+        
     //Add more value answer
     $scope.addValueAnswer = function() {
         $scope.qns.valueAnswer.push({cell: "", value: ""});
@@ -419,6 +434,41 @@
           // cancel function
         });
     };
+    
+    function getAllSheets() {
+        var deferred = $q.defer();
+        gapi.client.sheets.spreadsheets.get({
+          spreadsheetId: $scope.userExcelID
+        }).then(function(response) {
+          var sheets = response.result.sheets;
+          
+          for (i = 0; i < sheets.length; i++) {  
+            var sheetTitle = sheets[i].properties.title;
+            if ( sheetTitle === "New Question Created") {
+                deferred.resolve(sheets[i].properties.sheetId);
+            }
+          }
+        });
+        return deferred.promise;
+    }
+    
+    function deleteSheet(sheetId1) {
+        var deferred = $q.defer();
+        gapi.client.sheets.spreadsheets.batchUpdate({
+            spreadsheetId: $scope.userExcelID,
+            requests: [
+              {
+                deleteSheet:{
+                    sheetId: sheetId1
+                }
+              }
+            ]
+        }).then(function(response) {
+            deferred.resolve(true);
+          
+        });
+      return deferred.promise;
+    }
     
     function createSheet() {
         gapi.client.sheets.spreadsheets.batchUpdate({

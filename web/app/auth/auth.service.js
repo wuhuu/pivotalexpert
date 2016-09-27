@@ -43,7 +43,6 @@
           access_token: token
         });
         
-        
         // set the authentication token
 
         gapi.auth.setToken({

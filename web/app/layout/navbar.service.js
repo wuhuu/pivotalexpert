@@ -40,11 +40,11 @@
             
               var totalCourse = courseList.length;
               for (i = 0; i < totalCourse; i++) { 
-                var course = courseList[i];
-                if(course.qns) {
-                    var qnsCount = course.qns.length;
+                var chapter = courseList[i];
+                if(chapter.qns) {
+                    var qnsCount = chapter.qns.length;
                     for (j = 0; j < qnsCount; j++) { 
-                        if(achievedlist.indexOf(course.qns[j].qid) != -1){
+                        if(achievedlist.indexOf(chapter.qns[j].qid) != -1){
                             achievements++;
                         }
                     }

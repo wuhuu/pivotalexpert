@@ -180,9 +180,13 @@
         $scope.qns['valueAnswer'] = [];
         $timeout(delayedTime, 3000);
         function delayedTime() {
+            console.log("TESTING 1");
             gapi.client.load(discoveryUrl).then(function() {
+                console.log("TESTING 2");
                 getAllSheets().then(function(result) {
+                    console.log("TESTING 3");
                     deleteSheet(result).then(function(){
+                        console.log("TESTING 4");
                         createSheet();
                     });
                 });
@@ -441,19 +445,28 @@
           spreadsheetId: $scope.userExcelID
         }).then(function(response) {
           var sheets = response.result.sheets;
-          
+          var sheetID = null;
           for (i = 0; i < sheets.length; i++) {  
             var sheetTitle = sheets[i].properties.title;
             if ( sheetTitle === "New Question Created") {
-                deferred.resolve(sheets[i].properties.sheetId);
+                sheetID = sheets[i].properties.sheetId;
+                deferred.resolve(sheetID);
             }
           }
+          if(sheetID == null) {
+              deferred.resolve(true);
+          }
+          
+          
         });
         return deferred.promise;
     }
     
     function deleteSheet(sheetId1) {
         var deferred = $q.defer();
+        if(sheetId1 == true) {
+         deferred.resolve(true);   
+        }
         gapi.client.sheets.spreadsheets.batchUpdate({
             spreadsheetId: $scope.userExcelID,
             requests: [

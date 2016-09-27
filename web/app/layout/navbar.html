@@ -2,7 +2,7 @@
 <md-toolbar ng-hide="logined">
 <div class="md-toolbar-tools">
   <h2>
-    <span>Pivotal experts</span>
+    <span>{{courseTitle}}</span>
   </h2>
   <span flex></span>
   <md-button style="margin-right:10px" ng-click="login()" >Sign In</md-button>
@@ -16,7 +16,7 @@
       <md-icon md-svg-icon="menu.svg"></md-icon>
     </md-button>
     <h2>
-      <span>Pivotal Expert</span>
+      <span>{{courseTitle}}</span>
     </h2>
     <span flex></span>
     <md-button style="margin-right:10px" href="#/educator/courseMap" ng-show="isAdmin" >Educator course</md-button>

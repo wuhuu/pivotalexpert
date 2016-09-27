@@ -16,9 +16,7 @@
         var profile = $firebaseObject(ref.child('/auth/users/'+profileRef.$value));
         profile.$loaded().then(function (){
             $scope.displayName = profile.displayName;
-            getUserAchievements(profile.$id).then(function(results) {
-                $scope.achievelist = results;
-            });
+            getUserAchievements(profile.$id);
             if(user && profile.$id == user.uid) {
                 $scope.displayPencil = true;
             }else {
@@ -31,29 +29,22 @@
     
 
     function getUserAchievements(uid) {
-        var deferred = $q.defer();
         var achievedlist = [];
         var achievements = [];
         var achievementsNum = 0;
-        var courseList = [];
-        var courseSequence = $firebaseObject(ref.child('/courseSequence/'));
-        courseSequence.$loaded().then(function (){
-            courseSequence.forEach(function(childSnapshot) {
-                courseList.push(childSnapshot);
-            });
+          
+        var courseList = $firebaseArray(ref.child('/courseSequence'));
+        courseList.$loaded().then(function (){
             var courseProgressRef = ref.child('/userProfiles/' + uid + '/courseProgress/');
             courseProgressRef.once('value', function(snapshot) {
               snapshot.forEach(function(childSnapshot) {
                 var key = childSnapshot.key;
                 achievedlist.push(key);
               });   
-               console.log("TESTING");
-                console.log(courseSequence);
               var totalCourse = courseList.length;
               for (i = 0; i < totalCourse; i++) { 
                 var chapter = courseList[i];
-                  console.log("TESTING");
-                console.log(chapter.qns);
+
                 if(chapter.qns) {
                     var qnsCount = chapter.qns.length;
                     var currentPos = 0;
@@ -76,10 +67,9 @@
                 }
               }
               $scope.numAchievement = achievementsNum;
-              deferred.resolve(achievements);
+              $scope.achievelist = achievements;
             })
         });
-        return deferred.promise;
     }
   }
 

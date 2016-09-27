@@ -46,12 +46,8 @@
         } 
       });
       
-      /*
-	  var courseTitle = $firebaseObject(navBarService.getCourseTitle());
-		courseTitle.$loaded().then(function(){
-			$scope.courseTitle = courseTitle.$value;
-	  });
-      */
+      
+    $rootScope.courseTitle = commonService.getCouseName();
       
     $scope.logout = function () {
         $scope.logined = false;

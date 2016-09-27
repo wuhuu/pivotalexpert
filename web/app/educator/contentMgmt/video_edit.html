@@ -7,10 +7,9 @@
     <style>
       ng-messages {display: block;}
     </style>
-    <div style="padding: 0px 20px">
-      <h2 class="pull-left">{{qns.qnsTitle}}</h2>
-    
-      <div class="pull-right"style="padding:20px">
+    <h2 class="pull-left" style="padding:0px 10px">{{qns.qnsTitle}}</h2>
+    <div style="padding:30px">
+      <div class="pull-right" style="padding:30px">
         <md-button class="md-raised" type="submit" ng-click='qnsForm.$valid && saveQns($event)'>Save all changes</md-button>
         <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
       </div>

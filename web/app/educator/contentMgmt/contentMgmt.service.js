@@ -530,6 +530,9 @@
                         courseArray.$loaded().then(function(){
                             if(courseArray[chapIndex]!=null) {
                                 qnsIndex = ""+qnsIndex;
+                                if(!courseArray[chapIndex].qns) {
+                                    courseArray[chapIndex].qns=[];
+                                }
                                 courseArray[chapIndex].qns[qnsIndex] = questionSeqNode;
                                     courseArray.$save(chapIndex).then(function(){
                                         q.resolve(true);

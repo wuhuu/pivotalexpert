@@ -19,11 +19,11 @@
       <span>Pivotal Expert</span>
     </h2>
     <span flex></span>
-    <md-button style="margin-right:10px" href="#/educator/courseMap" ng-if="isAdmin" >Educator course</md-button>
+    <md-button style="margin-right:10px" href="#/educator/courseMap" ng-show="isAdmin" >Educator course</md-button>
     <md-button style="margin-right:10px" href="#/course" >course</md-button>
-    <md-button style="margin-right:10px">chat</md-button>
-    <md-button style="margin-right:10px"  href="#/profile/{{displayName}}" >[ {{ownNumAchievement}} ]</md-button>
-    <md-button style="margin-right:10px" class="md-fab md-primary md-hue-2" aria-label="Profile" href="#/profile/{{displayName}}">
+    <!-- <md-button style="margin-right:10px">chat</md-button> -->
+    <md-button style="margin-right:10px"  href="#/profile/{{profileLink}}" >[ {{ownNumAchievement}} ]</md-button>
+    <md-button style="margin-right:10px" class="md-fab md-primary md-hue-2" aria-label="Profile" href="#/profile/{{profileLink}}">
       <img ng-src="{{displayPic}}" alt="Profile Photo" width="40px" height="40px">
     </md-button>
     <md-button style="margin-right:10px" ng-click="logout()">Logout</md-button>

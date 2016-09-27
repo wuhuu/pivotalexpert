@@ -10,6 +10,7 @@
     
     <div style="padding: 20px">
       <md-button class="md-raised md-primary" ng-disabled="true" style="width: 100%">Submit</md-button>
+      
     </div>
     <!--if ans is incorrect display this-->
     <div style="padding: 20px">
@@ -44,6 +45,7 @@
         <div class="pull-right"style="padding:20px">
             <md-button class="md-raised " ng-click='saveCodeBoxChanges($event)'>Save all changes</md-button>
             <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
+            <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
         </div>
     </div>
     <md-divider></md-divider>

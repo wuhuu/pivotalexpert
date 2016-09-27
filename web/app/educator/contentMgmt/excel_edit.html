@@ -44,9 +44,11 @@
         <div class="pull-right"style="padding:20px">
             <md-button class="md-raised " ng-click='saveExcelChanges($event)'>Save all changes</md-button>
             <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
+            <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
         </div>
     </div>
     <md-divider></md-divider>
+        <label ng-if="!srclink"> Please wait while we prepare the excel sheet. </label>
         <iframe style="height: 350px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
         <div style="padding: 10px 0px">
           <md-input-container class="md-block">

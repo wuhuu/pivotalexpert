@@ -14,7 +14,7 @@
     };
   }
  
-  function NavbarController($firebaseObject, $scope, $location, authService, navBarService) {
+  function NavbarController($firebaseObject, $scope, $rootScope, $location, authService, navBarService, commonService) {
       
       var usersRef = firebase.database().ref().child('auth/users');
       
@@ -26,14 +26,22 @@
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           // User is signed in.
-          navBarService.getUserAchievements($scope, user.uid);
+          navBarService.updateNavBar();
           $scope.displayPic = user.photoURL;
-          $scope.logined = true;
-      
+          $rootScope.logined = true;
+          
+          //Check whether login user email belong to admin account email
+          var adminEmail = commonService.getAdminEmail().toUpperCase();
+
            var userData = $firebaseObject(usersRef.child(user.uid));
           //navBarService.updateNavBar(user.displayName);
           userData.$loaded().then(function(){
-            $scope.displayName = userData.profileLink;
+            $scope.profileLink = userData.profileLink;
+            //check if admin role
+            if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
+                $rootScope.isAdmin = true;
+            }
+            
           });
         } 
       });
@@ -45,11 +53,11 @@
 	  });
       */
       
-	  $scope.logout = function () {
-		  $scope.logined = false;
-		  authService.logout();
-		  $location.path('/login');
-		  window.location.reload();
+    $scope.logout = function () {
+        $scope.logined = false;
+        authService.logout();
+        $location.path('/login');
+        window.location.reload();
 	}
 	
   }

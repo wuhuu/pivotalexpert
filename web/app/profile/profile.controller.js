@@ -46,13 +46,18 @@
               snapshot.forEach(function(childSnapshot) {
                 var key = childSnapshot.key;
                 achievedlist.push(key);
-              });
+              });   
+               console.log("TESTING");
+                console.log(courseSequence);
               var totalCourse = courseList.length;
               for (i = 0; i < totalCourse; i++) { 
                 var chapter = courseList[i];
+                  console.log("TESTING");
+                console.log(chapter.qns);
                 if(chapter.qns) {
                     var qnsCount = chapter.qns.length;
                     var currentPos = 0;
+
                     for (j = 0; j < qnsCount; j++) { 
                         if(chapter.qns[j]) {
                             if(achievedlist.indexOf(chapter.qns[j].qid) == -1){

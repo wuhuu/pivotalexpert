@@ -54,13 +54,7 @@
         
         var userData = $firebaseObject(usersRef.child(user.uid));
         //navBarService.updateNavBar(user.displayName);
-        userData.$loaded().then(function(){
-            //load drive API to create if have not created before
-            if(!userData.driveExcel) {
-                //Create Google Folder upon login
-                loadDriveApi();   
-            }
-            
+        userData.$loaded().then(function(){            
             //Check whether login user email belong to admin account email
             var adminEmail = commonService.getAdminEmail().toUpperCase();
             
@@ -70,6 +64,16 @@
                 ref.child('auth/admin/admin').set(user.uid);
             }
 
+            //load drive API to create if have not created before. Excute once only
+            if(!userData.driveExcel) {
+                //Create Google Folder upon login
+                loadDriveApi();   
+            } else if (!userData.eduSheet) {
+                //create edu sheet
+                $rootScope.folderID = userData.driveFolder;
+                createEduSheetAPI();
+            }
+            
             $rootScope.logined = true;
             if(userData.profileLink == null) {
               $location.path('/createProfileLink');
@@ -108,12 +112,18 @@
     function loadDriveApi() {
         var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
         gapi.client.load(discoveryUrl);
-        gapi.client.load('drive', 'v3', createSpread);
+        gapi.client.load('drive', 'v3', createDriveFolder);
     }
     
-    function createSpread() {
+    function createEduSheetAPI() {
+        var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+        gapi.client.load(discoveryUrl);
+        gapi.client.load('drive', 'v3', createEduSheet);
+    }
+
+    
+    function createDriveFolder() {
         var spreadsheetID ;
-        var folderId;
         
         var courseSetting = $firebaseObject(ref.child('/courseSetting'));
         
@@ -121,7 +131,8 @@
             
             var courseName = courseSetting.courseName;
             var folderName = courseName + " Folder";
-            var sheetName = courseName + " Sheet";
+            var studSheetName = courseName + " Sheet";
+            var eduSheetName = courseName + "_Educator_Sheet";
             
             var folderRequest = gapi.client.drive.files.create({
               mimeType: "application/vnd.google-apps.folder",
@@ -129,23 +140,24 @@
             });
 
             folderRequest.execute(function(response){
-              folderId = response.id;
-              var spreadsheetRequest = gapi.client.drive.files.create({
+              $rootScope.folderID = response.id;
+              //Update Firebase with folderID
+              usersRef.child($rootScope.userID).update({ driveFolder: $rootScope.folderID });
+              
+              //Create Sheet for student
+              var studSheetRequest = gapi.client.drive.files.create({
                   mimeType: "application/vnd.google-apps.spreadsheet",
-                  name: sheetName,
-                  parents: [folderId]
+                  name: studSheetName,
+                  parents: [$rootScope.folderID]
                 });
-                
-                //Update Firebase with folderID
-                usersRef.child($rootScope.userID).update({ driveFolder: folderId });
-
-                spreadsheetRequest.execute(function(response){
+                studSheetRequest.execute(function(response){
                     spreadsheetID = response.id;
                     //Update Firebase with folderID
                     usersRef.child($rootScope.userID).update({ driveExcel: spreadsheetID });
                     
                     //Update Firebase with sheetID
                     usersRef.child($rootScope.userID).update({ sheetID: 0 });
+                    
                     gapi.client.sheets.spreadsheets.batchUpdate({
                       spreadsheetId: spreadsheetID,
                       requests:[{
@@ -160,10 +172,69 @@
                           }
                         }
                       ]
-                    })
+                }).then(function(response){
+                        gapi.client.sheets.spreadsheets.batchUpdate({
+                        spreadsheetId: $scope.userExcelID,
+                        requests: [
+                          {
+                            updateSheetProperties:{
+                              properties:{
+                                title: $scope.qnsTitle,
+                                sheetId: $scope.sheetId1
+                              },
+                              fields: "title"
+                            }
+                          }
+                        ]
+                      }).then(function(response) {
+                        deferred.resolve($scope.sheetId1);
+                      });
+                  });
                 });
+                
+                //if educator, create educator sheet
+                if($rootScope.isAdmin) {
+                    createEduSheet();
+                }
+
             });
         });
+      }
+      
+      function createEduSheet() {
+          
+        var eduSheetName = "Educator_Question_Sheet";
+
+        var eduSheetRequest = gapi.client.drive.files.create({
+          mimeType: "application/vnd.google-apps.spreadsheet",
+          name: eduSheetName,
+          parents: [$rootScope.folderID ]
+        });
+        eduSheetRequest.execute(function(response){
+            spreadsheetID = response.id;
+            //Update Firebase with folderID
+            usersRef.child($rootScope.userID).update({ eduSheet: spreadsheetID });
+            
+            //Update Firebase with sheetID
+            usersRef.child($rootScope.userID).update({ sheetID: 0 });
+            
+            gapi.client.sheets.spreadsheets.batchUpdate({
+              spreadsheetId: spreadsheetID,
+              requests:[{
+                  updateSheetProperties:
+                  {
+                    properties:
+                    {
+                      title: "Instructions",
+                      sheetId: 0
+                    },
+                    fields: "title"
+                  }
+                }
+              ]
+            });
+        });
+                
       }
   }
 

@@ -95,13 +95,15 @@
         }
 
         function getChapter(cid) {
+            var q = $q.defer();
             chapterNodeRef.once("value", function(snapshot) {
                 snapshot.forEach(function(element) {
                     if(cid === element.key) {
-                        return $firebaseObject(chapterNodeRef.child(cid));
+                        q.resolve($firebaseObject(chapterNodeRef.child(cid)));
                     }
                 });
             });
+            return q.promise;
         }
 
         function updateCourseSeq(courseSeq) {
@@ -528,6 +530,9 @@
                         courseArray.$loaded().then(function(){
                             if(courseArray[chapIndex]!=null) {
                                 qnsIndex = ""+qnsIndex;
+                                if(!courseArray[chapIndex].qns) {
+                                    courseArray[chapIndex].qns=[];
+                                }
                                 courseArray[chapIndex].qns[qnsIndex] = questionSeqNode;
                                     courseArray.$save(chapIndex).then(function(){
                                         q.resolve(true);

@@ -538,27 +538,106 @@
 
       $scope.courseMap = seq;
     });
-    $scope.exportCourse = function(){
-      //from string to object = angular.fromJson(json);
-      contentMgmtService.getCourseJson().then(function(dbjson){
-        dbjson.$loaded().then(function(){
-          delete dbjson.$$conf;
-          delete dbjson.$id;
-          delete dbjson.$priority;
 
-          var json = JSON.stringify(dbjson);
+    
 
-          var url = URL.createObjectURL(new Blob([json]));
-          var a = document.createElement('a');
-          a.href = url;
-          a.download = 'course_json.json';
-          a.target = '_blank';
-          a.click();
-        });
+    $scope.showExportPrompt = function(ev) {
+    // Appending dialog to document.body to cover sidenav in docs app
+      var parentEl = angular.element(document.body);
+       $mdDialog.show({
+         parent: parentEl,
+         targetEvent: ev,
+         template:
+         
+           '<md-dialog style="padding:20px">' +
+           '<form name="qnsForm">'+
+           ' <h3>Export options:</h3><br>'+
+           '  <md-dialog-content>'+
+           '  <md-input-container style="width:500px;height:auto;">'+
+           '    <label>Please select Chapter to put question in.</label> '+
+           '    <md-select ng-model="selectedChapter" name="chapter" required>'+
+           '      <md-option ng-repeat="item in chapters" value="{{item.cid}}">'+
+           '       {{item.chapterTitle}}' +
+           '      '+
+           '    </md-option></md-select>' +
+           '    <ng-messages for="qnsForm.chapter.$error" md-auto-hide="true">'+
+           '      <div ng-message="required">This is required.</div>'+
+           '    </ng-messages>'+
+           '  </md-input-container><br>'+
+           '  </md-dialog-content>' +
+           '  <md-dialog-actions>' +
+           '    <md-button ng-click="closeDialog()" class="md-primary">' +
+           '      Close' +
+           '    </md-button>' +
+           ' <md-button ng-click="exportCourse()" class="md-primary">' +
+           '      Export whole Course' +
+           '    </md-button>' +
+           '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
+           '      Proceed' +
+           '    </md-button>' +
+           '  </md-dialog-actions>' +
+           '</form>'+
+           '</md-dialog>',
+         locals: {
+           chapters: $scope.chapters
+         },
+         controller: DialogController
       });
       
-    }
+      function DialogController($scope, $mdDialog,chapters) {
+        $scope.chapters = chapters;
+        $scope.selectedChapter = '';
+        $scope.closeDialog = function() {
+          $mdDialog.hide();
+        }
 
+        $scope.nextStep = function() {
+          var courseSeq = contentMgmtService.getCourseSeq();
+          courseSeq.$loaded().then(function(courseSeq){
+               angular.forEach(courseSeq,function(value,key){
+                 if(value.cid===$scope.selectedChapter) {
+                  contentMgmtService.getChapter(value.cid).then(function(course){
+                    course.$loaded().then(function(){
+                      delete course.$$conf;
+                      delete course.$id;
+                      delete course.$priority;
+                      var coursejson = JSON.stringify(course);
+
+                    });
+                  });
+
+                  // loop through questions
+                  angular.forEach(value.qns,function(value,key){
+                    
+                  });
+                 }
+               });
+          });
+        }
+
+        $scope.exportCourse = function(){
+          //from string to object = angular.fromJson(json);
+          contentMgmtService.getCourseJson().then(function(dbjson){
+            dbjson.$loaded().then(function(){
+              delete dbjson.$$conf;
+              delete dbjson.$id;
+              delete dbjson.$priority;
+
+              var json = JSON.stringify(dbjson);
+
+              var url = URL.createObjectURL(new Blob([json]));
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = 'course_json.json';
+              a.target = '_blank';
+              a.click();
+
+              $mdDialog.hide();
+            });
+          });   
+        }
+      }
+    };
     // $scope.importCourse = function ($http){
 
     //       this.uploadFileToUrl = function(file, uploadUrl){
@@ -634,6 +713,7 @@
          },
          controller: DialogController
       });
+
       function DialogController($scope, $mdDialog,chapters,qnsTypes) {
         $scope.chapters = chapters;
         $scope.selectedChapter = '';

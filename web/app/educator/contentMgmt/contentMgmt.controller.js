@@ -801,7 +801,7 @@
                     
                     window.location.reload();
                 }catch(err) {
-                    $scope.fileError = "Please upload JSON file.";
+                    $scope.fileError = "Please upload file in correct JSON format.";
                 }
               };
             })(file);

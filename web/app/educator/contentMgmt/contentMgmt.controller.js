@@ -507,7 +507,7 @@
            '      Close' +
            '    </md-button>' +
            ' <md-button ng-click="exportCourse()" class="md-primary">' +
-           '      Export whole Course' +
+           '      Export All Chapters' +
            '    </md-button>' +
            '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
            '      Proceed' +
@@ -586,6 +586,10 @@
               delete dbjson.$$conf;
               delete dbjson.$id;
               delete dbjson.$priority;
+              delete dbjson.auth;
+              delete dbjson.courseSetting;
+              delete dbjson.signinLogs;
+              delete dbjson.userProfiles;
 
               var json = JSON.stringify(dbjson);
 

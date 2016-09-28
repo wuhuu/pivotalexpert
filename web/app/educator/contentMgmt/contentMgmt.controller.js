@@ -559,8 +559,38 @@
 
       $scope.courseMap = seq;
     });
-    
-    
+
+    $scope.openMenu = function($mdOpenMenu, ev) {
+      originatorEv = ev;
+      $mdOpenMenu(ev);
+    };
+
+    $scope.exportCourse = function(){
+        //from string to object = angular.fromJson(json);
+        contentMgmtService.getCourseJson().then(function(dbjson){
+          dbjson.$loaded().then(function(){
+            delete dbjson.$$conf;
+            delete dbjson.$id;
+            delete dbjson.$priority;
+            delete dbjson.auth;
+            delete dbjson.courseSetting;
+            delete dbjson.signinLogs;
+            delete dbjson.userProfiles;
+
+            var json = JSON.stringify(dbjson);
+
+            var url = URL.createObjectURL(new Blob([json]));
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'course_json.json';
+            a.target = '_blank';
+            a.click();
+
+            $mdDialog.hide();
+          });
+        });
+    }
+
     $scope.showExportPrompt = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
       var parentEl = angular.element(document.body);
@@ -589,9 +619,6 @@
            '    <md-button ng-click="closeDialog()" class="md-primary">' +
            '      Close' +
            '    </md-button>' +
-           ' <md-button ng-click="exportCourse()" class="md-primary">' +
-           '      Export All Chapters' +
-           '    </md-button>' +
            '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
            '      Proceed' +
            '    </md-button>' +
@@ -614,78 +641,64 @@
         $scope.nextStep = function() {
           var ref = firebase.database().ref();
           var exportObj ={};
+          var course={};
           var courseSeq = contentMgmtService.getCourseSeq();
           courseSeq.$loaded().then(function(courseSeq){
-               angular.forEach(courseSeq,function(value,key){
+               angular.forEach(courseSeq,function(courseSeqValue,key){
                  
-                 if(value.cid===$scope.selectedChapter) {
-                  contentMgmtService.getChapter(value.cid).then(function(chapter){
-                    chapter.$loaded().then(function(){
-                      delete chapter.$$conf;
-                      delete chapter.$id;
-                      delete chapter.$priority;
-                      
-                      exportObj["chapter"] = chapter;
-
-                      var jsonString = JSON.stringify(exportObj);
-                      var url = URL.createObjectURL(new Blob([jsonString]));
-                      var a = document.createElement('a');
-                      a.href = url;
-                      a.download = 'chapter_json.json';
-                      a.target = '_blank';
-                      a.click();
-
-                      $mdDialog.hide();
-                    });
-                  });
+                 if(courseSeqValue.cid===$scope.selectedChapter) {
                   
-                  var questionNodeRef = ref.child('course/questions');
-                  questionNodeRef.once("value", function(snapshot) {
-                    // loop through questions
-                    var questions={};
-                    angular.forEach(value.qns,function(value,key){
-                         if(snapshot.child(value.qid).exists()) {
-                          var qns = snapshot.child(value.qid).val();
-                          questions[value.qid] = qns;
-                         }               
-                    });
-                    exportObj["questions"] = questions;
-                    delete value.$id;
-                    delete value.$priority;
-                    exportObj["courseSequence"] = value;
+                  var answerKeyNodeRef = ref.child('answerKey');
+                  answerKeyNodeRef.once("value", function(answerSnapshot) {
+                    var questionNodeRef = ref.child('course/questions');
+                    questionNodeRef.once("value", function(snapshot) {
+                      // loop through questions
+                      var questions={};
+                      var answerKey={};
+                      angular.forEach(courseSeqValue.qns,function(qnsValue,key){
+                          if(snapshot.child(qnsValue.qid).exists()) {
+                            var qns = snapshot.child(qnsValue.qid).val();
+                            questions[qnsValue.qid] = qns;
+                          }  
 
+                          if(answerSnapshot.child(qnsValue.qid).exists()) {
+                            var ans = answerSnapshot.child(qnsValue.qid).val();
+                            answerKey[qnsValue.qid] = ans;
+                          }              
+                      });
+
+                      exportObj["answerKey"] = answerKey;
+                      exportObj["course"] = {questions:questions}
+                      delete courseSeqValue.$id;
+                      delete courseSeqValue.$priority;
+                      exportObj["courseSequence"] = courseSeqValue;
+
+                      contentMgmtService.getChapter(courseSeqValue.cid).then(function(chapter){
+                          chapter.$loaded().then(function(){
+                            delete chapter.$$conf;
+                            delete chapter.$id;
+                            delete chapter.$priority;
+                            
+                            exportObj["course"]["chapters"] = chapter;
+
+                            var jsonString = JSON.stringify(exportObj);
+                            var url = URL.createObjectURL(new Blob([jsonString]));
+                            var a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'chapter_json.json';
+                            a.target = '_blank';
+                            a.click();
+
+                            $mdDialog.hide();
+                          });
+                        });
+                    });
                   });
 
                   return false;
 
                  }
                });              
-          });
-        }
-
-        $scope.exportCourse = function(){
-          //from string to object = angular.fromJson(json);
-          contentMgmtService.getCourseJson().then(function(dbjson){
-            dbjson.$loaded().then(function(){
-              delete dbjson.$$conf;
-              delete dbjson.$id;
-              delete dbjson.$priority;
-              delete dbjson.auth;
-              delete dbjson.courseSetting;
-              delete dbjson.signinLogs;
-              delete dbjson.userProfiles;
-
-              var json = JSON.stringify(dbjson);
-
-              var url = URL.createObjectURL(new Blob([json]));
-              var a = document.createElement('a');
-              a.href = url;
-              a.download = 'course_json.json';
-              a.target = '_blank';
-              a.click();
-
-              $mdDialog.hide();
-            });
           });
         }
       }

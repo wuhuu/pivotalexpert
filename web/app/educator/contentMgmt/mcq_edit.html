@@ -88,7 +88,7 @@
                               <i class="fa fa-times"></i>
                             </md-button>
                           </div>
-                          <md-radio-button ng-if="$index==0" ng-model="mcqObj.options[$index]" value="true"> {{mcqObj.options[$index]}} </md-radio-button>
+                          <md-radio-button ng-if="$index==0" ng-model="mcqObj.options[$index]" value="{{mcqObj.options[$index]}}"> {{mcqObj.options[$index]}} </md-radio-button>
                           <md-radio-button ng-if="$index!=0" ng-model="mcqObj.options[$index]" value="{{mcqObj.options[$index]}}"> {{mcqObj.options[$index]}} </md-radio-button>
                           <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}_{{$index}}' style="margin-left:15px">
                             <label>Choice:</label>

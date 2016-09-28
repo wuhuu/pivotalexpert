@@ -35,13 +35,8 @@
         var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
         courseProgressRef.once('value', function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
-                var key = childSnapshot.key;
-
-                        var modID = key.charAt(1);
-                        var qnsID = key.charAt(3);
-                        var qid = 'q' + ((modID * 5 + 1) + (qnsID * 1));
-                        
-                list.push(qid);
+                var key = childSnapshot.key;                        
+                list.push(key);
             });
 
             // Retrieve from sequence

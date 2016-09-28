@@ -4,7 +4,10 @@
     <h2>Question:</h2>
     <p>{{qnsInstruction}}</p>
     <div style="padding: 20px">
-      <md-button class="md-raised md-primary" style="width: 100%" ng-click="submit()">Submit</md-button>
+      <md-button class="md-raised md-primary" style="width: 100%" ng-click="submit()" ng-if="srclink">Submit</md-button>
+      <br/>
+      <br/>
+      <label ng-if="checkingAns"> Please wait while we check your answer. </label>
     </div>
     <!--if ans is incorrect display this-->
     <div style="padding: 20px" ng-show="incorrect">
@@ -31,7 +34,8 @@
     </div>
     <md-divider></md-divider>
     <div style="padding: 20px" flex>
-      <iframe style="height: 400px; width: 100%" ng-src="{{srclink}}"></iframe>
+      <label ng-if="!srclink"> Please wait while we prepare the excel sheet for you. </label>
+      <iframe style="height: 400px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
     </div>
   </div>
 </div>

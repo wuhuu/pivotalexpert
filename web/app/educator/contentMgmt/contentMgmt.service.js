@@ -5,7 +5,7 @@
     .factory('contentMgmtService', contentMgmtService);
 
 
-  
+
     function contentMgmtService($q,$firebaseObject,$firebaseArray, $firebaseAuth,$location, commonService) {
 
         var ref = firebase.database().ref();
@@ -34,9 +34,9 @@
             updateExcel:updateExcel,
             getCourseJson:getCourseJson
         };
-		
-		return service;    
-		
+
+		return service;
+
         //chapter functions
         function updateChapter (chapter,isNewChapter) {
             // retrieve courseSeq node
@@ -137,7 +137,7 @@
                     q.resolve(true);
                 });
             });
-            
+
             return q.promise;
         }
 
@@ -347,7 +347,7 @@
                     }
                 });
             });
-            return q.promise;	
+            return q.promise;
         }
 
         function getQnsIndex(chapIndex,qid) {
@@ -426,8 +426,8 @@
                         });
                     });
                 });
-            
-        }  
+
+        }
 
         function deleteChapter (cidList) {
             // get chapter qns and delete them
@@ -437,14 +437,14 @@
             }else {
             var userProfileNodeRef = ref.child('userProfiles');
             var courseArray = $firebaseObject(courseSeqNodeRef);
-            
+
                 $.each(cidList,function(key,value){
                     if(value!=null) {
                         getChapterIndex(value).then(function(chapIndex){
                             courseArray.$loaded().then(function(){
                                 if(courseArray[chapIndex]!=null) {
                                     var chapToDelete = courseArray[chapIndex];
-                                    // deleting each question in this chapter from question and answerKey node 
+                                    // deleting each question in this chapter from question and answerKey node
                                     angular.forEach(chapToDelete.qns, function(value, key) {
                                         ref.child('course/questions/'+value.qid).remove();
                                         ref.child('answerKey/'+value.qid).remove();
@@ -470,7 +470,7 @@
                 });
                 q.resolve(true);
             }
-            return q.promise;	
+            return q.promise;
         }
 
         function getAnswerKey(qid){
@@ -515,12 +515,12 @@
                 delete question.cid;
                 delete question.$id;
                 question.qnsType ="mcq";
-                
+
                 var questionNode = question;
-                
+
                 // create courseSeq node & fill it up
                 var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle,qnsType:question.qnsType};
-                
+
                 // update database
                 questionNodeRef.child(qid).update(questionNode);
                 answerKeyNodeRef.child(qid).update({answer});
@@ -541,7 +541,7 @@
                                         }else {
                                             return "Question updated!"
                                         }
-                                        
+
                                     });
                             }
 
@@ -554,28 +554,28 @@
             });
             return q.promise;
         }
-        
-        
+
+
         //ADDIION PART FOR excel and code
-        
+
         function updateCodebox(question, isNewQuestion) {
-        
+
             var q = $q.defer();
-            
+
             // retrieve question node
             var questionNode = $firebaseObject(questionNodeRef);
-            
+
             var validQnsTitle = true;
             var cid = question.cid;
-            
+
             questionNode.$loaded().then(function(){
-                               
+
                 //Create new
                 if(isNewQuestion) {
                     var qid = commonService.guid();
 
 
-                    // checking if chapterTitle already exist                
+                    // checking if chapterTitle already exist
                     questionNode.forEach(function(qns) {
                         if(qns.qnsTitle === question.qnsTitle) {
                             //Chapter Title Been used
@@ -589,16 +589,13 @@
                 //Valid Question Title
                 if(validQnsTitle || !isNewQuestion) {
                     // create new answer nodes & fill it up
-                    var testcode = question.testcode;
-                    var testcodeDeclare = question.testcodeDeclare;
+
                     var testcases = [];
-                    for (i = 0; i < question.testcases.length; i++) { 
+                    for (i = 0; i < question.testcases.length; i++) {
                         testcases.push(question.testcases[i].test);
                     }
-                    
+
                     delete question.cid;
-                    delete question.testcode;
-                    delete question.testcodeDeclare;
                     delete question.testcases;
                     delete question.$$conf;
                     delete question.$priority;
@@ -608,14 +605,14 @@
                     questionNodeRef.child(qid).update(question);
 
                     //Update to firebase answer node
-                    answerKeyNodeRef.child(qid).update({testcode:testcode, testcodeDeclare:testcodeDeclare, testcases:testcases});
-                   
+                    answerKeyNodeRef.child(qid).update({testcases:testcases});
+
                     //Update course sequence
                     var questionSeqNode = {qid:qid, qnsTitle:question.qnsTitle, qnsType: "code"};
-                    
+
                     //find the chapter cidIndex
                     getChapterIndex(cid).then(function(chapIndex){
-                        
+
                         var courseArray = $firebaseObject(courseSeqNodeRef);
                         getQnsIndex(chapIndex,qid).then(function(qnsIndex){
                             courseArray.$loaded().then(function(){
@@ -636,24 +633,24 @@
             });
             return q.promise;
         }
-        
+
         function updateExcel(question, isNewQuestion) {
-        
+
             var q = $q.defer();
-            
+
             // retrieve question node
             var questionNode = $firebaseObject(questionNodeRef);
-            
+
             var validQnsTitle = true;
             var cid = question.cid;
-            
+
             questionNode.$loaded().then(function(){
-                               
+
                 //Create new
                 if(isNewQuestion) {
                     var qid = commonService.guid();
 
-                    // checking if chapterTitle already exist                
+                    // checking if chapterTitle already exist
                     questionNode.forEach(function(qns) {
                         if(qns.qnsTitle === question.qnsTitle) {
                             //Chapter Title Been used
@@ -661,26 +658,26 @@
                             return;
                         }
                     });
-                    
+
                 } else {
                     var qid = question.qid;
                 }
-                
+
                 //Valid Question Title
                 if(validQnsTitle || !isNewQuestion) {
-                    
+
                     var formulaAnswer = [];
-                    for (i = 0; i < question.formulaAnswer.length; i++) { 
+                    for (i = 0; i < question.formulaAnswer.length; i++) {
                         formulaAnswer.push({cell:question.formulaAnswer[i].cell, functionName:question.formulaAnswer[i].functionName});
                     }
-                    
+
                     var valueAnswer = [];
-                    for (i = 0; i < question.valueAnswer.length; i++) { 
+                    for (i = 0; i < question.valueAnswer.length; i++) {
                         valueAnswer.push({cell:question.valueAnswer[i].cell, value:question.valueAnswer[i].value});
                     }
                     // create new answer nodes & fill it up
                     var answerNode = {formulaAnswer:formulaAnswer , valueAnswer:valueAnswer, range : question.range};
-                    
+
                     delete question.cid;
                     delete question.formulaAnswer;
                     delete question.valueAnswer;
@@ -689,16 +686,15 @@
                     delete question.$priority;
                     delete question.$id;
 
-                    console.log(question);
                     //Update to firebase question node
                     questionNodeRef.child(qid).update(question);
 
                     //Update to firebase answer node
                     answerKeyNodeRef.child(qid).update(answerNode);
-                    
+
                     //Update course sequence
                     var questionSeqNode = {qid:qid, qnsTitle:question.qnsTitle, qnsType: "excel"};
-                    
+
                     //find the chapter cidIndex
                     getChapterIndex(cid).then(function(chapIndex){
                         var courseArray = $firebaseObject(courseSeqNodeRef);
@@ -721,7 +717,7 @@
             });
             return q.promise;
         }
-    
+
     }
 
 })();

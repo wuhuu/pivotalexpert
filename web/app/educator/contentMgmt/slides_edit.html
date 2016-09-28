@@ -13,6 +13,7 @@
       <div class="pull-right" style="padding:30px">
         <md-button class="md-raised" type='submit' ng-click='qnsForm.$valid && saveQns($event)'>Save all changes</md-button>
         <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
+        <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
       </div>
     </div>
     <md-divider></md-divider>

@@ -13,12 +13,20 @@ Subsequent Run
 - Open browser and type "http://localhost:8080/#/home" as the url to view it locally.
 
 # How to Deploy it to your firebase. 
+Required Software to be installed :
 
-1. Download the zip file. 
-2. Have firebase command line tools installed and login to your firebase account.
-3. Run 'firebase init' to initialise the firebase project
+1. Git
+2. Have Firebase Command Tools Install and login
+
+Step to deploy:
+
+1. Clone down the copy using the following git command : git clone https://github.com/wuhuu/pivotalexpert.git
+2. Create a new project from firebase
+3. Go to the auth tab in firebase, enable Google Login under "Sign-In Method"
+4. Open web/app/common/common.service.js and edit your firebase api into the javascript file
+5. Direct back to \pivotalexpert\ folder
+6. Run the following firebase command to add the project to your firebsae and  deploy
+
+ i) firebase use --add
  
-    Run 'firebase list' to list the project link with the account and which point it refering to.
-    If it is not pointed the firebase you intend to deploy to, run 'firebase use --add' to link the current project to your firebase project
-
-4. Run 'firebase deploy' to deploy the project. 
+ ii) firebase deploy 

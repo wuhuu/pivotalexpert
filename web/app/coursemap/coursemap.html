@@ -15,25 +15,26 @@
       <md-content flex md-scroll-y>
       <md-card-content>
         <div id="accordion1">
-          <div ng-repeat="chapter in courseMaterial" ng-init="courseIndex = $index" on-finish-render="ngRepeatFinished">
+          <div ng-repeat="chapter in courseMaterial" ng-init="courseIndex = $index" on-finish-render="ngRepeatFinished" >
               <h2>{{chapter.chapterTitle}}</h2>
               <div>
                 <md-list>
                   <md-item ng-repeat="qns in chapter.qns" ng-init="qnsIndex = $index">
-                    <md-item-content>
+                    <md-item-conten>
                       <div class="md-tile-content">
                         <a ng-href="#/lesson/{{qns.qnsType}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}"><font class="font-size-course-title">{{qns.qnsTitle}}</font></a>
                         <p>
                           <font class="font-size-normal"> Type: {{qns.qnsType}}</font>
                         </p>
-                      </div>
-                      <div class="md-tile-right inset" hide-sm ng-show="complete(qns.qnsId)">
-                        <!--
-                        <md-checkbox ng-disabled="true" aria-label="Disabled checked checkbox" ng-model="data.cb" ng-init="data.cb=true">
-                        -->
-                        <img class="coursemap-check" ng-src="content/images/check-circle-outline-128.png">
+                     
+                          <div class="md-tile-right" hide-sm ng-show="qns.complete">
+                            <!--
+                            <md-checkbox ng-disabled="true" aria-label="Disabled checked checkbox" ng-model="data.cb" ng-init="data.cb=true">
+                            -->
+                            <img class="coursemap-check" ng-src="content/images/check-circle-outline-128.png">
 
-                      </div>
+                          </div>
+                       </div>
                     </md-item-content>
                     <md-divider ng-if="!$last"></md-divider>
                   </md-item>

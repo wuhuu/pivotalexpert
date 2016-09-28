@@ -31,5 +31,5 @@ Step to deploy:
 6. Run the following firebase command to add the project to your firebase and  deploy
 
  i) firebase use --add
- 
+    choose the firebase project when prompted
  ii) firebase deploy 

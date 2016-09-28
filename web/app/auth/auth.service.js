@@ -208,6 +208,7 @@
           mimeType: "application/vnd.google-apps.spreadsheet",
           name: eduSheetName,
           parents: [$rootScope.folderID ]
+
         });
         eduSheetRequest.execute(function(response){
             spreadsheetID = response.id;
@@ -232,8 +233,15 @@
                 }
               ]
             });
+            
+            gapi.client.drive.permissions.create({
+                fileId: spreadsheetID,
+                role: "reader",
+                type: "anyone"
+            }).then(function(response) {
+            });
+            
         });
-                
       }
   }
 

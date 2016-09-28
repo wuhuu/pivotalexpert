@@ -538,7 +538,36 @@
       $scope.courseMap = seq;
     });
 
+    $scope.openMenu = function($mdOpenMenu, ev) {
+      originatorEv = ev;
+      $mdOpenMenu(ev);
+    };
 
+    $scope.exportCourse = function(){
+        //from string to object = angular.fromJson(json);
+        contentMgmtService.getCourseJson().then(function(dbjson){
+          dbjson.$loaded().then(function(){
+            delete dbjson.$$conf;
+            delete dbjson.$id;
+            delete dbjson.$priority;
+            delete dbjson.auth;
+            delete dbjson.courseSetting;
+            delete dbjson.signinLogs;
+            delete dbjson.userProfiles;
+
+            var json = JSON.stringify(dbjson);
+
+            var url = URL.createObjectURL(new Blob([json]));
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'course_json.json';
+            a.target = '_blank';
+            a.click();
+
+            $mdDialog.hide();
+          });
+        });
+    }
 
     $scope.showExportPrompt = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
@@ -567,9 +596,6 @@
            '  <md-dialog-actions>' +
            '    <md-button ng-click="closeDialog()" class="md-primary">' +
            '      Close' +
-           '    </md-button>' +
-           ' <md-button ng-click="exportCourse()" class="md-primary">' +
-           '      Export All Chapters' +
            '    </md-button>' +
            '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
            '      Proceed' +
@@ -651,32 +677,6 @@
 
                  }
                });              
-          });
-        }
-
-        $scope.exportCourse = function(){
-          //from string to object = angular.fromJson(json);
-          contentMgmtService.getCourseJson().then(function(dbjson){
-            dbjson.$loaded().then(function(){
-              delete dbjson.$$conf;
-              delete dbjson.$id;
-              delete dbjson.$priority;
-              delete dbjson.auth;
-              delete dbjson.courseSetting;
-              delete dbjson.signinLogs;
-              delete dbjson.userProfiles;
-
-              var json = JSON.stringify(dbjson);
-
-              var url = URL.createObjectURL(new Blob([json]));
-              var a = document.createElement('a');
-              a.href = url;
-              a.download = 'course_json.json';
-              a.target = '_blank';
-              a.click();
-
-              $mdDialog.hide();
-            });
           });
         }
       }

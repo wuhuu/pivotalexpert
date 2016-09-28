@@ -346,7 +346,7 @@
 
                 var formula = String(response.result.values[parseInt(row)][parseInt(col)]);
 
-                $scope.formulaResult.push(formula.indexOf(functionName) !== -1);
+                $scope.formulaResult.push(formula.toUpperCase().indexOf(functionName.toUpperCase()) !== -1);
             }
         }
         deferred.resolve($scope.formulaResult);

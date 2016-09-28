@@ -522,7 +522,7 @@
 
   }
 
-  function CourseMapController($http,$scope, $routeParams,$mdDialog, $location, $firebaseObject, contentMgmtService) {
+  function CourseMapController($timeout,$http,$scope, $routeParams,$mdDialog, $location, $firebaseObject, contentMgmtService) {
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
@@ -569,7 +569,7 @@
            '      Close' +
            '    </md-button>' +
            ' <md-button ng-click="exportCourse()" class="md-primary">' +
-           '      Export whole Course' +
+           '      Export All Chapters' +
            '    </md-button>' +
            '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
            '      Proceed' +
@@ -591,26 +591,54 @@
         }
 
         $scope.nextStep = function() {
+          var ref = firebase.database().ref();
+          var exportObj ={};
           var courseSeq = contentMgmtService.getCourseSeq();
           courseSeq.$loaded().then(function(courseSeq){
                angular.forEach(courseSeq,function(value,key){
+                 
                  if(value.cid===$scope.selectedChapter) {
-                  contentMgmtService.getChapter(value.cid).then(function(course){
-                    course.$loaded().then(function(){
-                      delete course.$$conf;
-                      delete course.$id;
-                      delete course.$priority;
-                      var coursejson = JSON.stringify(course);
+                  contentMgmtService.getChapter(value.cid).then(function(chapter){
+                    chapter.$loaded().then(function(){
+                      delete chapter.$$conf;
+                      delete chapter.$id;
+                      delete chapter.$priority;
+                      
+                      exportObj["chapter"] = chapter;
 
+                      var jsonString = JSON.stringify(exportObj);
+                      var url = URL.createObjectURL(new Blob([jsonString]));
+                      var a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'chapter_json.json';
+                      a.target = '_blank';
+                      a.click();
+
+                      $mdDialog.hide();
                     });
                   });
-
-                  // loop through questions
-                  angular.forEach(value.qns,function(value,key){
+                  
+                  var questionNodeRef = ref.child('course/questions');
+                  questionNodeRef.once("value", function(snapshot) {
+                    // loop through questions
+                    var questions={};
+                    angular.forEach(value.qns,function(value,key){
+                         if(snapshot.child(value.qid).exists()) {
+                          var qns = snapshot.child(value.qid).val();
+                          questions[value.qid] = qns;
+                         }               
+                    });
+                    exportObj["questions"] = questions;
+                    delete value.$id;
+                    delete value.$priority;
+                    exportObj["courseSequence"] = value;
 
                   });
+
+                  return false;
+
                  }
-               });
+               });              
           });
         }
 
@@ -621,6 +649,10 @@
               delete dbjson.$$conf;
               delete dbjson.$id;
               delete dbjson.$priority;
+              delete dbjson.auth;
+              delete dbjson.courseSetting;
+              delete dbjson.signinLogs;
+              delete dbjson.userProfiles;
 
               var json = JSON.stringify(dbjson);
 

@@ -21,7 +21,7 @@ Required Software to be pre-installed :
 1. Git
 2. Have Firebase Command Tools Install and login
 
-Step to deploy:
+Steps to deploy:
 
 1. Clone down the copy using the following git command : 'git clone https://github.com/wuhuu/pivotalexpert.git'
 2. Create a new project from firebase
@@ -33,3 +33,10 @@ Step to deploy:
  i) firebase use --add
     choose the firebase project when prompted
  ii) firebase deploy 
+ 
+#How to enable Excel type Questions
+Steps:
+1. Sign in to google with your Administrator Account
+2. Visit the two links bellow and click "enable"
+       https://console.developers.google.com/apis/api/drive/overview?project=view-d2ba0&duration=PT1H
+       https://console.developers.google.com/apis/api/sheets.googleapis.com/overview?project=view-d2ba0&duration=PT1H

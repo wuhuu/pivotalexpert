@@ -593,46 +593,58 @@
         $scope.nextStep = function() {
           var ref = firebase.database().ref();
           var exportObj ={};
+          var course={};
           var courseSeq = contentMgmtService.getCourseSeq();
           courseSeq.$loaded().then(function(courseSeq){
-               angular.forEach(courseSeq,function(value,key){
+               angular.forEach(courseSeq,function(courseSeqValue,key){
                  
-                 if(value.cid===$scope.selectedChapter) {
-                  contentMgmtService.getChapter(value.cid).then(function(chapter){
-                    chapter.$loaded().then(function(){
-                      delete chapter.$$conf;
-                      delete chapter.$id;
-                      delete chapter.$priority;
-                      
-                      exportObj["chapter"] = chapter;
-
-                      var jsonString = JSON.stringify(exportObj);
-                      var url = URL.createObjectURL(new Blob([jsonString]));
-                      var a = document.createElement('a');
-                      a.href = url;
-                      a.download = 'chapter_json.json';
-                      a.target = '_blank';
-                      a.click();
-
-                      $mdDialog.hide();
-                    });
-                  });
+                 if(courseSeqValue.cid===$scope.selectedChapter) {
                   
-                  var questionNodeRef = ref.child('course/questions');
-                  questionNodeRef.once("value", function(snapshot) {
-                    // loop through questions
-                    var questions={};
-                    angular.forEach(value.qns,function(value,key){
-                         if(snapshot.child(value.qid).exists()) {
-                          var qns = snapshot.child(value.qid).val();
-                          questions[value.qid] = qns;
-                         }               
-                    });
-                    exportObj["questions"] = questions;
-                    delete value.$id;
-                    delete value.$priority;
-                    exportObj["courseSequence"] = value;
+                  var answerKeyNodeRef = ref.child('answerKey');
+                  answerKeyNodeRef.once("value", function(answerSnapshot) {
+                    var questionNodeRef = ref.child('course/questions');
+                    questionNodeRef.once("value", function(snapshot) {
+                      // loop through questions
+                      var questions={};
+                      var answerKey={};
+                      angular.forEach(courseSeqValue.qns,function(qnsValue,key){
+                          if(snapshot.child(qnsValue.qid).exists()) {
+                            var qns = snapshot.child(qnsValue.qid).val();
+                            questions[qnsValue.qid] = qns;
+                          }  
 
+                          if(answerSnapshot.child(qnsValue.qid).exists()) {
+                            var ans = answerSnapshot.child(qnsValue.qid).val();
+                            answerKey[qnsValue.qid] = ans;
+                          }              
+                      });
+
+                      exportObj["answerKey"] = answerKey;
+                      exportObj["course"] = {questions:questions}
+                      delete courseSeqValue.$id;
+                      delete courseSeqValue.$priority;
+                      exportObj["courseSequence"] = courseSeqValue;
+
+                      contentMgmtService.getChapter(courseSeqValue.cid).then(function(chapter){
+                          chapter.$loaded().then(function(){
+                            delete chapter.$$conf;
+                            delete chapter.$id;
+                            delete chapter.$priority;
+                            
+                            exportObj["course"]["chapters"] = chapter;
+
+                            var jsonString = JSON.stringify(exportObj);
+                            var url = URL.createObjectURL(new Blob([jsonString]));
+                            var a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'chapter_json.json';
+                            a.target = '_blank';
+                            a.click();
+
+                            $mdDialog.hide();
+                          });
+                        });
+                    });
                   });
 
                   return false;

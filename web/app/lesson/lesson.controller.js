@@ -3,44 +3,44 @@
   angular
     .module('app.lesson')
     .controller('LessonController', LessonController);
-	
+
   function LessonController($q, $scope, $routeParams, $location, $firebaseObject, $sce, navBarService, commonService) {
-	
+
     console.log("LessonController");
-    
+
 	var ref = firebase.database().ref();
     var user = firebase.auth().currentUser;
 	var chapter = $routeParams.chapter;
 	var qns = $routeParams.qns;
     var qid = $routeParams.qid;
-	
+
 	navBarService.updateNavBar();
-    
+
 	$scope.answer = "";
-    
+
     //Load Question
     var question = $firebaseObject(ref.child('course/questions/' + qid));
     question.$loaded().then(function(){
         //update user last attempt
         user = firebase.auth().currentUser;
         ref.child('userProfiles').child(user.uid).child('lastAttempt').set(qid);
-        
+
         //retrieve qns details
         $scope.qnsTitle = question.qnsTitle;
 		$scope.qnsInstruction = question.qnsInstruction;
 		$scope.qnsDescription = question.qnsDescription;
         $scope.qnsHint = question.hint;
         var qnsType = question.qnsType;
-        
+
         //Video type question
         if(qnsType == 'video'){
             $scope.srclink = $sce.trustAsResourceUrl(question.link);
         }
-        
+
         //Slides type question
         if(qnsType == 'slides'){
            var slides = question.slides;
-            
+
             $scope.currentSlide = 1;
             $scope.totalSlide = slides.length
 
@@ -53,19 +53,19 @@
             //initial run
             $scope.changeSlide(0);
         }
-        
+
         //MCQ type question
         if(qnsType == 'mcq') {
             $scope.questions = question.mcq;
             $scope.currentScore = 0;
             $scope.totalScore = $scope.questions.length;
         }
-        
+
         //Excel type question
         if (qnsType == 'excel') {
             //load qns sheet ID
             $scope.sheetID = question.sheetID;
-            
+
             //load admin
             var adminID = $firebaseObject(ref.child('auth/admin/admin'));
             adminID.$loaded().then(function(){
@@ -73,22 +73,22 @@
                 var adminUser = $firebaseObject(ref.child('auth/users/' + adminID.$value));
                 adminUser.$loaded().then(function(){
                     $scope.eduExcelID = adminUser.eduSheet;
-                    
+
                     //load user spreadsheetId
                     var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
                     currentUser.$loaded().then(function(){
-                        
-                        $scope.userExcelID = currentUser.driveExcel; 
+
+                        $scope.userExcelID = currentUser.driveExcel;
                         //$scope.userSheetID = currentUser.sheetID; //Currently not in use
                         $scope.token = currentUser.access_token;
-                        
-                        gapi.auth.setToken({ 
+
+                        gapi.auth.setToken({
                             access_token: $scope.token
                         });
-                        
+
                         var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
                         //Delete all sheet except for instruction
-                        
+
                         gapi.client.load(discoveryUrl).then(function() {
                             getAllSheets().then(function(result) {
                                 removeAllSheets(result).then(function(){
@@ -105,7 +105,7 @@
                 });
             });
         }
-        
+
         //Codebox type question
         if(qnsType == 'code') {
             var editor = ace.edit("editor");
@@ -114,10 +114,10 @@
             editor.getSession().setMode("ace/mode/javascript");
             editor.setOption("maxLines", 30);
             editor.setOption("minLines", 10);
-            
+
             //insert code to codebox from firebase
             editor.insert(question.initialCode);
-            
+
             /* Bind to commands
             editor.commands.addCommand({
                 name: 'myCommand',
@@ -129,25 +129,25 @@
             });
             */
         }
-    
+
         //Submit answer and go next qns if correct
         $scope.submit = function() {
             $scope.checkingAns = true;
             //Load answer key of the question
             var answerKey = $firebaseObject(ref.child('answerKey/' + qid));
             answerKey.$loaded().then(function(){
-                
+
                 //video and slides question type
                 if (qnsType == 'video' || qnsType == 'slides'){
                     commonService.showSimpleToast("Time to applied what you have learnt!");
                     nextQns(chapter,qns);
                 }
-            
+
                 //mcq question type
                 if (qnsType == 'mcq'){
                     $scope.checked = true;
                     $scope.currentScore = 0;
-                    for (i = 0; i < $scope.totalScore; i++) { 
+                    for (i = 0; i < $scope.totalScore; i++) {
                         var result = $scope.questions[i].qnsID == answerKey.answer[i];
                         $scope.questions[i].qnsID = result;
                         //increase score if correct
@@ -161,17 +161,17 @@
                         commonService.showSimpleToast("Excellent!! You have completed the MCQ");
                     }
                 }
-                
+
                 //excel question type
                 if (qnsType == 'excel') {
-                    
+
                     gapi.auth.setToken({
                         access_token: $scope.token
                     });
                     $scope.range = answerKey.range;
                     $scope.formulaAnswer = answerKey.formulaAnswer;
                     $scope.valueAnswer = answerKey.valueAnswer;
-                    
+
                     var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
                     gapi.client.load(discoveryUrl).then(function() {
                         checkCellFormula().then(function(result) {
@@ -182,7 +182,7 @@
                                             nextQns(chapter,qns);
                                             commonService.showSimpleToast("AWESOME!! You have completed the EXCEL Question");
                                         });
-                                        
+
                                     } else {
                                         $scope.incorrect = true;
                                         $scope.checkingAns = false;
@@ -195,25 +195,24 @@
                         });
                     });
                 }
-                
+
                 //code question type
                 if (qnsType == 'code') {
                     // Check for syntax error
+                    var editor = ace.edit("editor");
                     var annot = editor.getSession().getAnnotations();
                     if (annot.length == 0) {
-                        var input = editor.getValue().replace(/\s+/g, " ");
-                        var code = answerKey.testcodeDeclare + input + answerKey.testcode;
-                        $scope.testCase = answerKey.testcases;
-                        
+                        var code = editor.getValue();
+                        console.log(code);
                         $scope.codeResult = [];
                         var promises = []
-                        var totalTestNum = $scope.testCase.length;
-                        for (i = 0; i < totalTestNum; i++) { 
-                            var test =  $scope.testCase[i];
+                        var totalTestNum = answerKey.testcases.length;
+                        //var totalTestNum = $scope.testCase.length;
+                        for (i = 0; i < totalTestNum; i++) {
+                            var test =  answerKey.testcases[i];//var test =  $scope.testCase[i];
                             //Run Test case
                             runTestcase(test, code).then(function(result) {
                                 $scope.codeResult.push(result);
-                                
                                 //When end of test case
                                 if($scope.codeResult.length === totalTestNum){
                                     if ($scope.codeResult.indexOf(false) === -1) {
@@ -225,7 +224,7 @@
                                 }
                             });
                         }
-                        
+
                     } else {
                         $scope.incorrect = true;
                         $scope.errMsg = "Error with the syntax. Please check your answer again."
@@ -234,7 +233,7 @@
             });
         }
     });
-    
+
     function getAllSheets() {
         var deferred = $q.defer();
         gapi.client.sheets.spreadsheets.get({
@@ -242,13 +241,13 @@
         }).then(function(response) {
           var sheets = response.result.sheets;
           var sheetsToBeDelete = [];
-          
-          for (i = 0; i < sheets.length; i++) {  
+
+          for (i = 0; i < sheets.length; i++) {
             var sheetId = sheets[i].properties.sheetId;
             if ( sheetId != 0) {
                 sheetsToBeDelete.push(sheetId);
             }
-            
+
             if(i == (sheets.length - 1)) {
                 deferred.resolve(sheetsToBeDelete);
             }
@@ -256,12 +255,12 @@
         });
         return deferred.promise;
     }
-    
+
     function removeAllSheets(sheetsToBeDelete) {
         var deferred = $q.defer();
         var sheets = sheetsToBeDelete;
 
-        for (i = 0; i < sheets.length; i++) {  
+        for (i = 0; i < sheets.length; i++) {
           var sheetId = sheets[i];
           if ( sheetId != 0) {
             gapi.client.sheets.spreadsheets.batchUpdate({
@@ -287,7 +286,7 @@
 
         return deferred.promise;
     }
-    
+
     function copyQnsFromEdu() {
         var deferred = $q.defer();
         gapi.client.sheets.spreadsheets.sheets.copyTo({
@@ -300,11 +299,11 @@
           //update user sheetID - Currently not in use
           //ref.child("/auth/users/" + user.uid).update({ sheetID: $scope.sheetId1 });
           deferred.resolve(true);
-          
+
         });
         return deferred.promise;
     }
-    
+
     function updateSheetTitle() {
         var deferred = $q.defer();
         gapi.client.sheets.spreadsheets.batchUpdate({
@@ -326,7 +325,7 @@
         return deferred.promise;
     }
 
-   
+
     function checkCellFormula() {
       var deferred = $q.defer();
       gapi.client.sheets.spreadsheets.values.get({
@@ -334,44 +333,44 @@
         range: $scope.qnsTitle + "!" + $scope.range,
         valueRenderOption:"FORMULA"
       }).then(function(response) {
-          
+
         $scope.formulaResult = []
         if($scope.formulaAnswer) {
             var totalTestNum =  $scope.formulaAnswer.length;
-            for (i = 0; i < totalTestNum; i++) { 
+            for (i = 0; i < totalTestNum; i++) {
                 var cell = $scope.formulaAnswer[i].cell;
                 var functionName = $scope.formulaAnswer[i].functionName;
-                
+
                 var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
                 var row = parseInt(cell.substring(1)) - 1;
 
                 var formula = String(response.result.values[parseInt(row)][parseInt(col)]);
-                
+
                 $scope.formulaResult.push(formula.indexOf(functionName) !== -1);
             }
         }
         deferred.resolve($scope.formulaResult);
-      
+
       });
       return deferred.promise;
     }
-    
+
     function checkCellValue() {
       var deferred = $q.defer();
       gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: $scope.userExcelID,
         range: $scope.qnsTitle + "!" + $scope.range
       }).then(function(response) {
-          
+
         $scope.valueResult = []
         if($scope.formulaAnswer) {
             var totalTestNum =  $scope.valueAnswer.length;
-            for (i = 0; i < totalTestNum; i++) { 
+            for (i = 0; i < totalTestNum; i++) {
                 var cell = $scope.valueAnswer[i].cell;
                 var answer = $scope.valueAnswer[i].value;
-                
+
                 var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
-                var row = parseInt(cell.substring(1)) - 1;            
+                var row = parseInt(cell.substring(1)) - 1;
                 var valueRow = response.result.values[parseInt(row)];
                 if(valueRow) {
                     value = valueRow[parseInt(col)];
@@ -379,15 +378,15 @@
                 } else {
                     $scope.valueResult.push(false);
                 }
-                
+
             }
         }
         deferred.resolve($scope.valueResult);
       });
-      
+
       return deferred.promise;
     }
-    
+
     function deleteCurrentSheet() {
         var deferred = $q.defer();
         gapi.client.sheets.spreadsheets.batchUpdate({
@@ -401,13 +400,13 @@
             ]
         }).then(function(response) {
             deferred.resolve(true);
-          
+
         });
       return deferred.promise;
     }
-    
+
     function runTestcase(test, code) {
-        
+
         var deferred = $q.defer();
         var ww = new Worker(getInlineJSandTest(test, code));
         //Send any message to worker
@@ -419,22 +418,23 @@
         };
         return deferred.promise;
     }
-    
+
     function getInlineJSandTest (test, code) {
 		var top = 'onmessage = function(msg){';
 		var bottom = 'postMessage(result);};';
 
-		var all = test +"\n\n"+top+"\n"+code+"\n"+bottom+"\n"
+		var all = code +"\n\n"+top+"\n"+test+"\n"+bottom+"\n"
+    console.log(all);
 		var blob = new Blob([all], {"type": "text\/plain"});
 		return URL.createObjectURL(blob);
 	}
 
     function nextQns(chapter, question){
-        
+
         //update course progress in firebase db
         var currentDateTime = new Date().toLocaleString("en-US");
-        ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid).set(currentDateTime);    
-            
+        ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid).set(currentDateTime);
+
         chapter = parseInt(chapter) - 1;
         question = parseInt(question);
 
@@ -459,10 +459,10 @@
 					});
 				}
 			}
-            
+
         });
     }
-    
+
     //map the col alphabet to number
     function sheetColMapping(col) {
         mapping = {

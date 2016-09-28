@@ -32,7 +32,7 @@
 
                    $( ".accordion2" ).sortable();
 
-                     
+
                 });
             }
             $timeout(function(){
@@ -59,7 +59,7 @@
                   $(this).hide();
             });
 
-            if(! scope.qnsAdded) {               
+            if(! scope.qnsAdded) {
               $("#text_"+id).hide();
             }
             angular.forEach(scope.mcqObj.options,function(value,key){
@@ -68,10 +68,10 @@
                   $(this).hide();
               });
             });
-            
+
           });
           if (scope.$last === true) {
-            $timeout(function () { 
+            $timeout(function () {
               $("#mcq").sortable();
             });
           }
@@ -85,15 +85,15 @@
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'),path.indexOf('_create'));
     var qnsType= path.substr(path.lastIndexOf('/')+1);
-    if(qnsType ==='code') { 
+    if(qnsType ==='code') {
         var editor = ace.edit("editor");
     }
-    
+
     var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
     //load user Details
     var ref = firebase.database().ref();
     $timeout(loadUserDetails, 3000);
-  
+
     if($routeParams.qid!=null) {
         var qid = $routeParams.qid;
         $scope.qid = qid;
@@ -116,37 +116,35 @@
                 editor.setOption("maxLines", 30);
                 editor.setOption("minLines", 10);
                 editor.setValue(question.initialCode);
-                
+
                 //set back the answer
-                question.testcode = answerKey.testcode;
-                question.testcodeDeclare = answerKey.testcodeDeclare;
                 question.testcases = [];
                 angular.forEach(answerKey.testcases, function(value, key) {
                     question.testcases.push({test: value});
                 });
             }
-            
+
             if(question.qnsType==='excel') {
                 $timeout(loadDetails, 3000);
             }
             function loadDetails() {
                  question.range = answerKey.range;
-                
+
                 question.valueAnswer = [];
                 angular.forEach(answerKey.valueAnswer, function(value, key) {
                     question.valueAnswer.push({cell: value.cell, value: value.value});
                 });
-                
+
                 question.formulaAnswer = [];
                 angular.forEach(answerKey.formulaAnswer, function(value, key) {
                     question.formulaAnswer.push({cell: value.cell, functionName: value.functionName});
                 });
-                
+
                 var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + question.sheetID;
                 $scope.srclink = $sce.trustAsResourceUrl(excelLink);
             }
 
-            
+
             question.qid = question.$id;
             question.cid = $routeParams.cid;
             $scope.qns = question;
@@ -192,13 +190,13 @@
                 });
             });
         }
-        
-        
+
+
       }else if (qnsType === "code") {
         $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['initialCode'] = "";
-        
+
         //Set code box display
         editor.setTheme("ace/theme/chrome");
         editor.getSession().setMode("ace/mode/javascript");
@@ -221,13 +219,13 @@
       $mdDialog.show(confirm).then(function() {
         if($scope.qns.qnsType == "video"){
           contentMgmtService.updateVideoQuestion($scope.qns,$scope.isNewQuestion).then(function(){
-            
+
             window.location.href = "#/educator/courseMap"
             commonService.showSimpleToast("Video Challenge Added/Updated.");
           });
         }else if ($scope.qns.qnsType == "slides") {
           contentMgmtService.updateSlideQuestion($scope.qns,$scope.isNewQuestion).then(function(){
-            
+
             window.location.href = "#/educator/courseMap";
             commonService.showSimpleToast("Slides Challenge Added/Updated.");
             //$scope.$emit("SuccessPrompt",);
@@ -256,7 +254,7 @@
     $scope.addChoice = function(mcq_id) {
       var length = $scope.qns.mcq[mcq_id].options.length;
       $scope.qns.mcq[mcq_id].options.push("Choice "+ (length+1));
-      
+
       $("#text_"+mcq_id+"_"+length).hide();
     }
 
@@ -296,7 +294,7 @@
           // cancel function
         });
 
-    };    
+    };
 
     $scope.deleteChoice = function(mcq_id,index){
       $scope.qns.mcq[mcq_id].options.splice(index,1);
@@ -313,7 +311,7 @@
         $scope.qns.mcq = [];
         var qnsID = "Q1";
       }
-     
+
       $scope.qns.mcq.push({options:[],qns:"",qnsID:qnsID});
       $scope.qnsAdded = true;
     }
@@ -352,8 +350,8 @@
         // cancel function
       });
     }
-    
-    // ADDITION PART for code and excel 
+
+    // ADDITION PART for code and excel
     // Code box
     //Add more test cases
     $scope.addTestcase = function() {
@@ -363,9 +361,9 @@
         }
         $scope.qns.testcases.push({test: ""});
     }
-    
     //Create && Update Code box
     $scope.saveCodeBoxChanges = function(ev) {
+      console.log(editor);
     // Appending dialog to document.body to cover sidenav in docs app
       var confirm = $mdDialog.confirm()
             .title('Would you want to save all changes?')
@@ -375,9 +373,9 @@
             .cancel('Cancel!');
 
       $mdDialog.show(confirm).then(function() {
-          
+          var editor = ace.edit("editor")
           $scope.qns.initialCode = editor.getValue();
-          
+
           contentMgmtService.updateCodebox($scope.qns,$scope.isNewQuestion).then(function(result){
             window.location.href = "#/educator/courseMap"
              commonService.showSimpleToast("Code Challenge Added/Updated.");
@@ -387,7 +385,7 @@
         });
 
     };
-    
+
     function loadUserDetails() {
         var user = firebase.auth().currentUser;
         var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
@@ -399,25 +397,25 @@
             });
         });
     }
-        
+
     //Add more value answer
     $scope.addValueAnswer = function() {
         $scope.qns.valueAnswer.push({cell: "", value: ""});
     }
-    
+
     $scope.deleteValueAns = function(index){
       $scope.qns.valueAnswer.splice(index,1);
     }
-    
+
     //Add more formula answer
     $scope.addFormulaAnswer = function() {
         $scope.qns.formulaAnswer.push({cell: "", functionName: ""});
     }
-    
+
     $scope.deleteFormulaAns = function(index){
       $scope.qns.formulaAnswer.splice(index,1);
     }
-    
+
     //Create && Update
     $scope.saveExcelChanges = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
@@ -429,7 +427,7 @@
             .cancel('Cancel!');
 
         $mdDialog.show(confirm).then(function() {
-            
+
             contentMgmtService.updateExcel($scope.qns,$scope.isNewQuestion).then(function(result){
                 gapi.client.load(discoveryUrl).then(updateSheetTitle);
                 commonService.showSimpleToast("Excel Challenge Added/Updated.");
@@ -438,7 +436,7 @@
           // cancel function
         });
     };
-    
+
     function getAllSheets() {
         var deferred = $q.defer();
         gapi.client.sheets.spreadsheets.get({
@@ -446,7 +444,7 @@
         }).then(function(response) {
           var sheets = response.result.sheets;
           var sheetID = null;
-          for (i = 0; i < sheets.length; i++) {  
+          for (i = 0; i < sheets.length; i++) {
             var sheetTitle = sheets[i].properties.title;
             if ( sheetTitle === "New Question Created") {
                 sheetID = sheets[i].properties.sheetId;
@@ -456,16 +454,16 @@
           if(sheetID == null) {
               deferred.resolve(true);
           }
-          
-          
+
+
         });
         return deferred.promise;
     }
-    
+
     function deleteSheet(sheetId1) {
         var deferred = $q.defer();
         if(sheetId1 == true) {
-         deferred.resolve(true);   
+         deferred.resolve(true);
         }
         gapi.client.sheets.spreadsheets.batchUpdate({
             spreadsheetId: $scope.userExcelID,
@@ -478,11 +476,11 @@
             ]
         }).then(function(response) {
             deferred.resolve(true);
-          
+
         });
       return deferred.promise;
     }
-    
+
     function createSheet() {
         gapi.client.sheets.spreadsheets.batchUpdate({
             spreadsheetId: $scope.userExcelID,
@@ -501,7 +499,7 @@
             $scope.srclink = $sce.trustAsResourceUrl(excelLink);
         });
     }
-    
+
     function updateSheetTitle() {
         gapi.client.sheets.spreadsheets.batchUpdate({
             spreadsheetId: $scope.userExcelID,
@@ -520,7 +518,7 @@
             window.location.href = "#/educator/courseMap"
         });
     }
-    
+
   }
 
   function CourseMapController($http,$scope, $routeParams,$mdDialog, $location, $firebaseObject, contentMgmtService) {
@@ -539,7 +537,7 @@
       $scope.courseMap = seq;
     });
 
-    
+
 
     $scope.showExportPrompt = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
@@ -548,7 +546,7 @@
          parent: parentEl,
          targetEvent: ev,
          template:
-         
+
            '<md-dialog style="padding:20px">' +
            '<form name="qnsForm">'+
            ' <h3>Export options:</h3><br>'+
@@ -583,7 +581,7 @@
          },
          controller: DialogController
       });
-      
+
       function DialogController($scope, $mdDialog,chapters) {
         $scope.chapters = chapters;
         $scope.selectedChapter = '';
@@ -608,7 +606,7 @@
 
                   // loop through questions
                   angular.forEach(value.qns,function(value,key){
-                    
+
                   });
                  }
                });
@@ -634,7 +632,7 @@
 
               $mdDialog.hide();
             });
-          });   
+          });
         }
       }
     };
@@ -643,15 +641,15 @@
     //       this.uploadFileToUrl = function(file, uploadUrl){
     //       var fd = new FormData();
     //       fd.append('file', file);
-      
+
     //       $http.post(uploadUrl, fd, {
     //         transformRequest: angular.identity,
     //         headers: {'Content-Type': undefined}
     //       })
-      
+
     //       .success(function(){
     //       })
-      
+
     //       .error(function(){
     //       });
     //   }
@@ -660,7 +658,7 @@
     //   $scope.showSimpleToast(args);
     // });
 
-     
+
 
     $scope.showPrompt = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
@@ -669,7 +667,7 @@
          parent: parentEl,
          targetEvent: ev,
          template:
-         
+
            '<md-dialog style="padding:20px">' +
            '<form name="qnsForm">'+
            ' <h3>Options to create question:</h3><br>'+
@@ -685,7 +683,7 @@
            '      <div ng-message="required">This is required.</div>'+
            '    </ng-messages>'+
            '  </md-input-container><br>'+
-           '  <md-input-container style="width:500px;height:auto;">'+    
+           '  <md-input-container style="width:500px;height:auto;">'+
            '    <label>Select question Type.</label> '+
            '    <md-select ng-model="selectedQnsType" name="type" required>'+
            '      <md-option ng-repeat="item in qnsTypes" value="{{item}}">'+
@@ -724,7 +722,7 @@
         }
         $scope.nextStep = function() {
           $scope.selectedQnsType = $scope.selectedQnsType.toLowerCase();
-          
+
           $location.path('educator/'+$scope.selectedQnsType+'_create/'+$scope.selectedChapter);
           $mdDialog.hide();
         }
@@ -745,7 +743,7 @@
       $scope.courseMap.push({chapterTitle:"",});
       $("#text_"+($scope.courseMap.length-1)).show();
       $scope.chapterAdded = true;
-      //window.scrollTo(0,document.body.scrollHeight); 
+      //window.scrollTo(0,document.body.scrollHeight);
       $('html, body').animate({scrollTop:$(document).height()}, 'slow');
     }
 
@@ -759,7 +757,7 @@
             .cancel('Cancel!');
 
       $mdDialog.show(confirm).then(function() {
-        
+
         var courseSequence = [];
         var chap ={};
         var qlist =[];
@@ -790,22 +788,22 @@
           qlist=[];
 
         });
-        
+
         contentMgmtService.deleteQuestionFromCM($scope.qnsTBD);
         contentMgmtService.deleteChapter($scope.chapTBD).then(function(){
           contentMgmtService.updateEntireSeq(courseSequence).then(function() {
             window.location.reload();
           });
         });
-        
+
         //$location.path('/educator/courseMap');
       });
     }
 
-    
+
     $scope.deleteChapter = function(index,cid){
       $scope.courseMap.splice(index,1);
-      $scope.chapTBD.push(cid); 
+      $scope.chapTBD.push(cid);
     }
 
     $scope.deleteQuestion = function(chapterIndex,index,qid){
@@ -815,7 +813,7 @@
 
     $scope.toggleChapterTextbox = function(id) {
       $("#text_"+id).toggle();
-    } 
+    }
 
   }
 

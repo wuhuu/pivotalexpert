@@ -77,8 +77,30 @@
           }
         }
       }
-    });
-
+    })
+    .directive('chooseFile', function() {
+        return {
+          link: function (scope, elem, attrs) {
+            var button = elem.find('button');
+            var input = angular.element(elem[0].querySelector('input#fileInput'));
+            button.bind('click', function() {
+              input[0].click();
+            });
+            input.bind('change', function(e) {
+              scope.$apply(function() {
+                scope.files = e.target.files;
+                if (scope.files[0]) {
+                  scope.fileName = scope.files[0].name;
+                } else {
+                  scope.fileName = null;
+                }
+              });
+            });
+          }
+        };
+      });
+    
+    
   function ContentMgmtController($http,$scope, $sce, $routeParams, $location,$firebaseArray,$mdDialog, $firebaseObject,commonService, contentMgmtService, $timeout, $q) {
 	  console.log("ContentMgmtController");
 
@@ -537,9 +559,8 @@
 
       $scope.courseMap = seq;
     });
-
-
-
+    
+    
     $scope.showExportPrompt = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
       var parentEl = angular.element(document.body);
@@ -667,6 +688,115 @@
             });
           });
         }
+      }
+    };
+    
+    $scope.showImportPrompt = function(ev) {
+    // Appending dialog to document.body to cover sidenav in docs app
+      var parentEl = angular.element(document.body);
+       $mdDialog.show({
+         parent: parentEl,
+         targetEvent: ev,
+         template:
+
+           '<form name="qnsForm">'+
+           '<md-dialog style="padding:20px; width:500px">' +
+           ' <h3>Import options:</h3><br>'+
+           '  <md-dialog-content>'+
+           '    </br> ' +
+           '    <label>Select your file</label> </br>'+
+           '   <choose-file layout="row"> '+
+           '     <input id="fileInput" type="file" class="ng-hide"> '+
+           '     <md-input-container flex class="md-block" > '+
+           '       <input type="text" ng-model="fileName"> '+
+           '     </md-input-container> '+
+           '     <div> '+
+           '       <md-button id="uploadButton" class="md-fab md-mini"> '+
+           '         <md-icon class="material-icons">attach_file</md-icon> '+
+           '       </md-button> '+
+           '     </div> '+
+           '   </choose-file> '+
+           '    <label style="color: red">{{fileError}}</label>'+
+           '  </md-dialog-content>' +
+           '  <md-dialog-actions>' +
+           '    <md-button ng-click="closeDialog()" class="md-primary">' +
+           '      Close' +
+           '    </md-button>' +
+           '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
+           '      Proceed' +
+           '    </md-button>' +
+           '  </md-dialog-actions>' +
+           '</form>'+
+           '</md-dialog>',
+         locals: {
+           chapters: $scope.chapters
+         },
+         controller: DialogController
+      });
+
+      function DialogController($scope, $mdDialog,chapters) {
+        $scope.chapters = chapters;
+        $scope.selectedChapter = '';
+        $scope.closeDialog = function() {
+          $mdDialog.hide();
+        }
+
+        $scope.nextStep = function() {
+          $scope.fileError = "";
+          if($scope.files) {
+            var file = $scope.files[0];
+            var reader = new FileReader();
+            var ref = firebase.database().ref();
+            var sequenceRef = ref.child('/courseSequence/');
+            var questionRef = ref.child('/course/questions');
+            var chapterRef = ref.child('/course/chapters');
+                
+            // Closure to capture the file information.
+            reader.onload = (function(theFile) {
+              return function(e) {
+                try {
+                    JsonObj = JSON.parse(e.target.result);
+                    console.log(JsonObj);
+                    var answer = JsonObj.answer;
+                    var sequence = JsonObj.courseSequence;
+                    var question = JsonObj.questions;
+                    var chapter = JsonObj.chapter;
+
+                    var chapters = $.map(chapter, function(el) { return el });
+                    
+                    var cid = "";
+                    var qnsList = [];
+                    
+                    angular.forEach(chapters, function(chap, key) {
+                        cid = chapterRef.push(chap);
+                    });
+                    
+                    angular.forEach(question, function(qns, key) {
+                        var qnsRef = questionRef.push(qns);
+                        var qid = qnsRef.key;
+                        if (answer[key]) {
+                            ref.child('/answerKey/' + qid).set(answer[key]);
+                        }
+                    qnsList.push({qid : qid, qnsTitle : qns.qnsTitle, qnsType : qns.qnsType});
+                    });
+
+                    sequence.cid = cid.key;
+                    sequence.qns = qnsList;
+                    sequenceRef.push(sequence);
+                    window.location.reload();
+                }catch(err) {
+                    $scope.fileError = "Please upload JSON file.";
+                }
+              };
+            })(file);
+
+              // Read in the image file as a data URL.
+            reader.readAsText(file);
+          } else {
+              $scope.fileError = "Failed to load file";
+          }
+        }
+
       }
     };
     // $scope.importCourse = function ($http){
@@ -832,7 +962,6 @@
         //$location.path('/educator/courseMap');
       });
     }
-
 
     $scope.deleteChapter = function(index,cid){
       $scope.courseMap.splice(index,1);

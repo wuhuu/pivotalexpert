@@ -35,7 +35,9 @@
         $rootScope.userID = user.uid;
         var loginEmail = user.providerData[0].email;
         var token = result.credential.accessToken;
-        
+        console.log("TESTING");
+        console.log(user);
+                    console.log(loginEmail);
         usersRef.child(user.uid).update({
           pic: user.photoURL,
           email: loginEmail,
@@ -56,7 +58,9 @@
         userData.$loaded().then(function(){            
             //Check whether login user email belong to admin account email
             var adminEmail = commonService.getAdminEmail().toUpperCase();
-            
+            console.log("TESTING LOGIN");
+            console.log(userData.email.toUpperCase());
+
             //update admin role
             if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
                 $rootScope.isAdmin = true;

@@ -13,7 +13,7 @@
                       .accordion({
                         header: "> div > h2",
                         collapsible: true,
-												heightStyle: "content"
+                        heightStyle: "content"
                       });                     
                 });
             }
@@ -21,41 +21,46 @@
       }
     });
 
-  function CoursemapController($scope, $firebaseArray,$timeout) {
+  function CoursemapController($scope, $firebaseArray,$timeout, $q) {
+      
     console.log("Coursemap Page");
-	var user = firebase.auth().currentUser;
-	var ref = firebase.database().ref();
-	var list = [];
-	firebase.auth().onAuthStateChanged((user) => {
-      if (user == null) {
-          // TODO: start sign-in flow
-      }
-      else {
-          // TODO: start actual work
-        var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
-        courseProgressRef.once('value', function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
+    $timeout(loadCourseSequence, 1000);
+    
+    function loadCourseSequence() {
+        var ref = firebase.database().ref();
+        var user = firebase.auth().currentUser;
+        var achievedlist = [];
+        // Retrieve from sequence
+        var courseList = $firebaseArray(ref.child('/courseSequence'));
+        courseList.$loaded().then(function (){
+            var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
+            courseProgressRef.once('value', function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
                 var key = childSnapshot.key;
+                achievedlist.push(key);
+              });   
+              var totalCourse = courseList.length;
+              for (i = 0; i < totalCourse; i++) { 
+                var chapter = courseList[i];
 
-                        var modID = key.charAt(1);
-                        var qnsID = key.charAt(3);
-                        var qid = 'q' + ((modID * 5 + 1) + (qnsID * 1));
-                        
-                list.push(qid);
-            });
+                if(chapter.qns) {
+                    var qnsCount = chapter.qns.length;
 
-            // Retrieve from sequence
-            var courseSequence =  $firebaseArray(ref.child('courseSequence'));
-            courseSequence.$loaded().then(function(){
-                $scope.courseMaterial = courseSequence;
-            });
+                    for (j = 0; j < qnsCount; j++) { 
+                        if(chapter.qns[j]) {
+                            if(achievedlist.indexOf(chapter.qns[j].qid) != -1){
+                                chapter.qns[j].complete = true;
+                            }
+                        }
+                    }
+                }
+              }
+            })
         });
-      }
-    });	
-
-		$scope.complete = function (qnsId) {
-			return list.indexOf(qnsId) > -1;    
-		};
+        $scope.courseMaterial = courseList;
+    }
   }
+  
+
 
 })();

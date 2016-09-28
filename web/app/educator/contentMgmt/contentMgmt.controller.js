@@ -717,7 +717,7 @@
            ' <h3>Import options:</h3><br>'+
            '  <md-dialog-content>'+
            '    </br> ' +
-           '    <label>Select your file</label> </br>'+
+           '    <label>Select the chapter content to import</label> </br>'+
            '   <choose-file layout="row"> '+
            '     <input id="fileInput" type="file" class="ng-hide"> '+
            '     <md-input-container flex class="md-block" > '+
@@ -770,10 +770,10 @@
                 try {
                     JsonObj = JSON.parse(e.target.result);
                     console.log(JsonObj);
-                    var answer = JsonObj.answer;
+                    var answer = JsonObj.answerKey;
                     var sequence = JsonObj.courseSequence;
-                    var question = JsonObj.questions;
-                    var chapter = JsonObj.chapter;
+                    var question = JsonObj.course.questions;
+                    var chapter = JsonObj.course.chapters;
 
                     var chapters = $.map(chapter, function(el) { return el });
                     
@@ -781,7 +781,9 @@
                     var qnsList = [];
                     
                     angular.forEach(chapters, function(chap, key) {
-                        cid = chapterRef.push(chap);
+                        var chapterRef = chapterRef.push(chap);
+                        cid = chapterRef.key;
+                        ref.child('/course/chapters/' + cid + '/helpRoomCode/').set(cid);
                     });
                     
                     angular.forEach(question, function(qns, key) {
@@ -793,9 +795,10 @@
                     qnsList.push({qid : qid, qnsTitle : qns.qnsTitle, qnsType : qns.qnsType});
                     });
 
-                    sequence.cid = cid.key;
+                    sequence.cid = cid;
                     sequence.qns = qnsList;
                     sequenceRef.push(sequence);
+                    
                     window.location.reload();
                 }catch(err) {
                     $scope.fileError = "Please upload JSON file.";
@@ -812,28 +815,118 @@
 
       }
     };
-    // $scope.importCourse = function ($http){
 
-    //       this.uploadFileToUrl = function(file, uploadUrl){
-    //       var fd = new FormData();
-    //       fd.append('file', file);
+    $scope.importCourse = function(ev) {
+    // Appending dialog to document.body to cover sidenav in docs app
+      var parentEl = angular.element(document.body);
+       $mdDialog.show({
+         parent: parentEl,
+         targetEvent: ev,
+         template:
 
-    //       $http.post(uploadUrl, fd, {
-    //         transformRequest: angular.identity,
-    //         headers: {'Content-Type': undefined}
-    //       })
+           '<form name="qnsForm">'+
+           '<md-dialog style="padding:20px; width:500px">' +
+           ' <h3>Import options:</h3><br>'+
+           '  <md-dialog-content>'+
+           '    </br> ' +
+           '    <label>Select the course content to import</label> </br>'+
+           '   <choose-file layout="row"> '+
+           '     <input id="fileInput" type="file" class="ng-hide"> '+
+           '     <md-input-container flex class="md-block" > '+
+           '       <input type="text" ng-model="fileName"> '+
+           '     </md-input-container> '+
+           '     <div> '+
+           '       <md-button id="uploadButton" class="md-fab md-mini"> '+
+           '         <md-icon class="material-icons">attach_file</md-icon> '+
+           '       </md-button> '+
+           '     </div> '+
+           '   </choose-file> '+
+           '    <label style="color: red">{{fileError}}</label>'+
+           '  </md-dialog-content>' +
+           '  <md-dialog-actions>' +
+           '    <md-button ng-click="closeDialog()" class="md-primary">' +
+           '      Close' +
+           '    </md-button>' +
+           '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
+           '      Proceed' +
+           '    </md-button>' +
+           '  </md-dialog-actions>' +
+           '</form>'+
+           '</md-dialog>',
+         locals: {
+           chapters: $scope.chapters
+         },
+         controller: DialogController
+      });
 
-    //       .success(function(){
-    //       })
+      function DialogController($scope, $mdDialog,chapters) {
+        $scope.chapters = chapters;
+        $scope.selectedChapter = '';
+        $scope.closeDialog = function() {
+          $mdDialog.hide();
+        }
 
-    //       .error(function(){
-    //       });
-    //   }
-    // }
-    // $scope.$on('SuccessPrompt',function(event,args){
-    //   $scope.showSimpleToast(args);
-    // });
+        $scope.nextStep = function() {
+          $scope.fileError = "";
+          if($scope.files) {
+            var file = $scope.files[0];
+            var reader = new FileReader();
+            var ref = firebase.database().ref();
+            var sequenceRef = ref.child('/courseSequence/');
+            var questionRef = ref.child('/course/questions');
+            var chapterRef = ref.child('/course/chapters');
+                
+            // Closure to capture the file information.
+            reader.onload = (function(theFile) {
+              return function(e) {
+                try {
+                    JsonObj = JSON.parse(e.target.result);
+                    console.log(JsonObj);
+                    var answer = JsonObj.answerKey;
+                    var sequence = JsonObj.courseSequence;
+                    var question = JsonObj.course.questions;
+                    var chapter = JsonObj.course.chapters;
+                    
+                    
+                    
+                    var cid = "";
+                    var qnsList = [];
+                    
+                    angular.forEach(chapters, function(chap, key) {
+                        var chapterRef = chapterRef.push(chap);
+                        cid = chapterRef.key;
+                        ref.child('/course/chapters/' + cid + '/helpRoomCode/').set(cid);
+                    });
+                    
+                    angular.forEach(question, function(qns, key) {
+                        var qnsRef = questionRef.push(qns);
+                        var qid = qnsRef.key;
+                        if (answer[key]) {
+                            ref.child('/answerKey/' + qid).set(answer[key]);
+                        }
+                    qnsList.push({qid : qid, qnsTitle : qns.qnsTitle, qnsType : qns.qnsType});
+                    });
 
+                    sequence.cid = cid.key;
+                    sequence.qns = qnsList;
+                    sequenceRef.push(sequence);
+                    
+                    window.location.reload();
+                }catch(err) {
+                    $scope.fileError = "Please upload JSON file.";
+                }
+              };
+            })(file);
+
+              // Read in the image file as a data URL.
+            reader.readAsText(file);
+          } else {
+              $scope.fileError = "Failed to load file";
+          }
+        }
+
+      }
+    };
 
 
     $scope.showPrompt = function(ev) {

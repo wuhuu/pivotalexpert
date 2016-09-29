@@ -35,9 +35,7 @@
         $rootScope.userID = user.uid;
         var loginEmail = user.providerData[0].email;
         var token = result.credential.accessToken;
-        console.log("TESTING");
-        console.log(user);
-                    console.log(loginEmail);
+
         usersRef.child(user.uid).update({
           pic: user.photoURL,
           email: loginEmail,
@@ -51,7 +49,9 @@
             access_token: token
         });
         
-        ref.child('/signinLogs/' + user.uid).set(new Date().toLocaleString("en-US"));
+        //Create signin log
+        var dateTimeNow = new Date().toISOString().slice(0,10); 
+        ref.child('/signinLogs/' + user.uid + '/' + dateTimeNow).set(true);
         
         var userData = $firebaseObject(usersRef.child(user.uid));
         //navBarService.updateNavBar(user.displayName);

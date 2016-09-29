@@ -18,7 +18,8 @@
           Start Now
         </h2>
       </font>
-      <md-button class="md-raised"  ng-click="login()"><img ng-src="content/images/googlesignin.png" ></md-button>
+        <img ng-src="content/images/googlesignin.png" ng-click="login()" md-whiteframe="{{height}}" ng-init="height = 1" ng-mouseenter="height = 9" ng-mouseleave="height = 3"/>
+
     </div>
   </div>
   <div flex="auto"></div>

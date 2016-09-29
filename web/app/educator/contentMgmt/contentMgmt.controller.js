@@ -670,7 +670,7 @@
                     exportObj["course"] = { questions: questions }
                     delete courseSeqValue.$id;
                     delete courseSeqValue.$priority;
-                    exportObj["courseSequence"] = { seq: courseSeqValue };
+                    exportObj["courseSequence"] = courseSeqValue;
 
                     
                   });
@@ -702,11 +702,6 @@
         }
       }
     };
-<<<<<<< HEAD
-
-    $scope.showPrompt = function (ev) {
-      // Appending dialog to document.body to cover sidenav in docs app
-=======
     
     $scope.showImportPrompt = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
@@ -773,23 +768,20 @@
               return function(e) {
                 try {
                     JsonObj = JSON.parse(e.target.result);
-                    console.log(JsonObj);
+  
                     var answer = JsonObj.answerKey;
                     var sequence = JsonObj.courseSequence;
                     var question = JsonObj.course.questions;
                     var chapter = JsonObj.course.chapters;
-
-                    var chapters = $.map(chapter, function(el) { return el });
                     
                     var cid = "";
                     var qnsList = [];
                     
-                    angular.forEach(chapters, function(chap, key) {
-                        var chapterRef = chapterRef.push(chap);
-                        cid = chapterRef.key;
-                        ref.child('/course/chapters/' + cid + '/helpRoomCode/').set(cid);
+                    angular.forEach(chapter, function(chap, key) {
+                        var chapRef = chapterRef.push(chap);
+                        cid = chapRef.key;
+                        ref.child('/course/chapters/' + cid).update({helpRoomCode : cid});
                     });
-                    
                     angular.forEach(question, function(qns, key) {
                         var qnsRef = questionRef.push(qns);
                         var qid = qnsRef.key;
@@ -798,12 +790,15 @@
                         }
                     qnsList.push({qid : qid, qnsTitle : qns.qnsTitle, qnsType : qns.qnsType});
                     });
-
+                    
                     sequence.cid = cid;
                     sequence.qns = qnsList;
-                    sequenceRef.push(sequence);
+
+                    sequenceRef.once("value", function (snapshot) {
+                        sequenceRef.child(snapshot.numChildren()).set(sequence);
+                        window.location.reload();
+                    });
                     
-                    window.location.reload();
                 }catch(err) {
                     $scope.fileError = "Please upload file in correct JSON format.";
                 }
@@ -883,42 +878,54 @@
             // Closure to capture the file information.
             reader.onload = (function(theFile) {
               return function(e) {
-                try {
+               // try {
                     JsonObj = JSON.parse(e.target.result);
-                    console.log(JsonObj);
+
                     var answer = JsonObj.answerKey;
-                    var sequence = JsonObj.courseSequence;
+                    var sequences = JsonObj.courseSequence;
                     var question = JsonObj.course.questions;
                     var chapter = JsonObj.course.chapters;
-                    
-                    
-                    
-                    var cid = "";
-                    var qnsList = [];
-                    
-                    angular.forEach(chapters, function(chap, key) {
-                        var chapterRef = chapterRef.push(chap);
-                        cid = chapterRef.key;
-                        ref.child('/course/chapters/' + cid + '/helpRoomCode/').set(cid);
-                    });
-                    
-                    angular.forEach(question, function(qns, key) {
-                        var qnsRef = questionRef.push(qns);
-                        var qid = qnsRef.key;
-                        if (answer[key]) {
-                            ref.child('/answerKey/' + qid).set(answer[key]);
-                        }
-                    qnsList.push({qid : qid, qnsTitle : qns.qnsTitle, qnsType : qns.qnsType});
-                    });
 
-                    sequence.cid = cid.key;
-                    sequence.qns = qnsList;
-                    sequenceRef.push(sequence);
+                    angular.forEach(sequences, function(sequence, key) {
+                        
+                        var cid = "";
+                        var qnsList = [];
+                        angular.forEach(chapter, function(chap, key) {
+                            if(key == sequence.cid) {
+                                var chapRef = chapterRef.push(chap);
+                                cid = chapRef.key;
+                                ref.child('/course/chapters/' + cid).update({helpRoomCode : cid});
+                            }
+                        });
+                        
+                        
+                        angular.forEach(sequence.qns, function(seqQns, seqKey) {
+                            angular.forEach(question, function(qns, qnsKey) {
+                                if (seqQns.qid == qnsKey) {
+                                    var qnsRef = questionRef.push(qns);
+                                    var qid = qnsRef.key;
+                                    if (answer[qnsKey]) {
+                                        ref.child('/answerKey/' + qid).set(answer[qnsKey]);
+                                    }
+                                    qnsList.push({qid : qid, qnsTitle : qns.qnsTitle, qnsType : qns.qnsType});
+                                }
+                            });
+                        });
+                        sequence.cid = cid;
+                        sequence.qns = qnsList;
+
+
+                        sequenceRef.once("value", function (snapshot) {
+                            sequenceRef.child(snapshot.numChildren()).set(sequence);
+                            window.location.reload();
+                        });
                     
-                    window.location.reload();
+                    });
+                    /*
                 }catch(err) {
-                    $scope.fileError = "Please upload JSON file.";
+                    $scope.fileError = "Please upload file in correct JSON format.";
                 }
+                */
               };
             })(file);
 
@@ -935,7 +942,6 @@
 
     $scope.showPrompt = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
->>>>>>> master
       var parentEl = angular.element(document.body);
       $mdDialog.show({
         parent: parentEl,
@@ -1031,7 +1037,12 @@
         .cancel('Cancel!');
 
       $mdDialog.show(confirm).then(function () {
-
+        saveCourseSequence();
+        //$location.path('/educator/courseMap');
+      });
+    }
+    
+    function saveCourseSequence() {
         var courseSequence = [];
         var chap = {};
         var qlist = [];
@@ -1069,19 +1080,11 @@
             window.location.reload();
           });
         });
-
-        //$location.path('/educator/courseMap');
-      });
     }
-
-<<<<<<< HEAD
-
+    
     $scope.deleteChapter = function (index, cid) {
       $scope.courseMap.splice(index, 1);
-=======
-    $scope.deleteChapter = function(index,cid){
-      $scope.courseMap.splice(index,1);
->>>>>>> master
+
       $scope.chapTBD.push(cid);
     }
 

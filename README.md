@@ -20,10 +20,11 @@ Instructions to install can be found at https://git-scm.com/book/en/v2/Getting-S
     2. Click on the green 'Clone or download' button on the right.
     3. Unzip the file in your preferred directory.
 
-2. Change Firebase Settings
-  1. Create a new project in Firebase
-  2. At the home page, click "Add Firebase to your web app"
-  3. After which, there will be prompt which will display some codes. Copy the 'config' object. It looks like this:
+2. Create and Change Firebase Settings
+  1. Go to your https://firebase.google.com/ and login in with your Google Account and click to "Go to Console"
+  2. Create a new project in Firebase
+  3. At the home page, click "Add Firebase to your web app"
+  4. After which, there will be prompt which will display some codes. DO NOT CLICK COPY! FOLLOW INSTRUCTIONS. Copy ONLY this snippet of the sample code before:
   ```
   var config = {
     apiKey: "<api-key>",
@@ -31,32 +32,30 @@ Instructions to install can be found at https://git-scm.com/book/en/v2/Getting-S
     databaseURL: "https://<databaseURL>",
     storageBucket: "<URL>",
     messaging SenderId: "<id>"
-  }
+  };
   ```
-  4. At the Authentication Tab in Firebase, enable Google Login under the tab "Sign-In Method".
-  5. Open "common.service.js". It can be found at Folder-Name>web>app>common
-  6. Replace the "config" object with the one you have copied in Step 3.
-  7. Replace the "adminEmail" object with your login email as the educators
-  8. Replace the "courseName" object with your own application name.
-
+  5. At the Auth Tab on the left, click on "Sign-In Method" tab, then enable Google Login and click "Save".
+  6. Return to your preferred directory folder, navigate to web > app > common and open "common.service.js" with a text editor(e.g notepad,text editor).
+  7. Replace the "config" object(line 9 to line 15) with the one you have copied in Step 3.
+  8. Replace the "adminEmail" object with your Google Account email which you planned to use as an educator.
+  9. Replace the "courseName" object with your preferred application name.
+  10. After which, save the file and exit the text editor.
 3. Configure Google API
-  1. Sign in to google with your Administrator Account
-  2. Visit the two links bellow and click "enable"
-       https://console.developers.google.com/apis/api/drive/overview?project=view-d2ba0&duration=PT1H
-       https://console.developers.google.com/apis/api/sheets.googleapis.com/overview?project=view-d2ba0&duration=PT1H
-
+  1. Sign in to https://console.developers.google.com
+  2. Click on the "Library" tab on the left and look for Google Apps API section and click on "Drive API". Click on "Enable" button on the top to activate this API.
+  3. Click on the "Library" tab on the left and look for Google Apps API section and click on "Sheets API". Click on "Enable" button on the top to activate this API.
 
 
 
 # Running locally
 1. Initial Run
-  1. Open cmd in the project folder and run 'npm install'
+  1. Open cmd in your preferred directory folder and run 'npm install'
   2. After which, run 'npm run serve' and the web application will be run locally at http://locahost:8080
 2. Subsequent Run
-  1. Open cmd in the project folder and run 'npm run serve'
+  1. Open cmd in your preferred directory folder and run 'npm run serve'
 
 # Deploying it to Firebase
-1. Open cmd in root folder of the project.
+1. Open cmd in your preferred directory folder 
 2. For initial use:
   1. run 'firebase login'
   2. run 'firebase init'

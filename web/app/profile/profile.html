@@ -1,60 +1,63 @@
 <div layout="row" flex>
-    <div flex="15"></div>
-        <div class="md-whiteframe-z2" layout="column" flex="70" style="padding: 15px 20px">
-          <md-content flex md-scroll-y>
-                <md-card-content>
-                <div class="text-center profile-head">
-                <img ng-src="{{displayPic}}" alt="Profile Photo" class="profile-photo">
-                <br>
-                <h1>[ {{numAchievement}} ]</h1>
-                <h2>User: {{displayName}}</h2>
-                
-                </div>
-
-                <md-divider></md-divider>
-                <md-divider></md-divider>
-                <md-divider></md-divider>
-                <u><h2>Completed Projects</h2></u>
-                    <md-list>
-                      <md-item ng-repeat="project in projects | filter:search | orderBy:'title'">
-                        <md-item-content>
-                          <div class="md-tile-content">
-                            <font class="font-size-course-title">{{project.title}}</font>
-                            <p>
-                              <h4>{{project.description}}<h4>
-                            </p>
-                          </div>
-                        </md-item-content>
-                        <md-divider ng-if="!$last"></md-divider>
-                      </md-item>
-                      <md-divider></md-divider>
-                    </md-list>
-
-                <md-divider></md-divider>
-                <md-divider></md-divider>
-                <u><h2>Completed Courses</h2></u>
-                <md-list>
-                    <div ng-repeat="chapter in achievelist">
-                      <h2>{{chapter.chapterTitle}}</h2>
-                      <div>
-                        <md-list>
-                          <md-item ng-repeat="qns in chapter.qns">
-                            <md-item-content>
-                                <p>
-                                    <font class="font-size-course-title">{{qns.qnsTitle}}</font>
-                                    <img class="coursemap-check pull-right" src="content/images/check-circle-outline-128.png"/>
-                                </p>
-                            </md-item-content>
-                          </md-item>
-                          <md-divider></md-divider>
-                        </md-list>
-                      </div>
-                    <md-divider></md-divider>
-                  </div>
-                  <md-divider></md-divider>
-                </md-list>
-              </md-card-content>
-          </md-content>
+  <div flex="15"></div>
+  <div class="md-whiteframe-z2" layout="column" flex="70" style="padding: 15px 20px">
+    <md-content flex md-scroll-y>
+      <md-card-content>
+        <div class="text-center profile-head">
+          <img ng-src="{{displayPic}}" alt="Profile Photo" class="profile-photo">
+          <br>
+          <div>
+            <h1>[ {{numAchievement}} ]</h1>
+            <md-tooltip>Total Task Completed</md-tooltip>
+          </div>
+          <h2>{{displayName}}</h2>
         </div>
-    </div>
+
+        <md-divider></md-divider>
+        <md-divider></md-divider>
+        <md-divider></md-divider>
+
+        <h2>Completed Projects</h2>
+        <md-list>
+          <md-item ng-repeat="project in projects | filter:search | orderBy:'title'">
+            <md-item-content>
+              <div class="md-tile-content">
+                <font class="font-size-course-title">{{project.title}}</font>
+                <p>
+                  <h4>{{project.description}}<h4>
+                </p>
+              </div>
+              <md-divider></md-divider>
+            </md-item-content>
+            <!--<md-divider ng-if="!$last"></md-divider>-->
+          </md-item>
+        </md-list>
+
+        <md-divider></md-divider>
+        <md-divider></md-divider>
+        <md-divider></md-divider>
+
+        <h2>Completed Courses</h2>
+        <md-list>
+          <div ng-repeat="chapter in achievelist">
+            <h3>{{chapter.chapterTitle}}</h3>
+            <md-divider></md-divider>
+            <md-divider></md-divider>
+            <div>
+              <md-list>
+                <md-item ng-repeat="qns in chapter.qns">
+                  <md-item-content>
+                    <p>
+                      <font class="font-size-course-title">{{qns.qnsTitle}}</font>
+                      <img class="coursemap-check pull-right" src="content/images/tick.png"/>
+                    </p>
+                  </md-item-content>
+                </md-item>
+              </md-list>
+            </div>
+          </div>
+        </md-list>
+      </md-card-content>
+    </md-content>
+  </div>
 </div>

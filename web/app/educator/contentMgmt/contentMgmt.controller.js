@@ -702,7 +702,7 @@
         }
       }
     };
-    
+
     $scope.showImportPrompt = function(ev) {
     // Appending dialog to document.body to cover sidenav in docs app
       var parentEl = angular.element(document.body);
@@ -1084,7 +1084,6 @@
     
     $scope.deleteChapter = function (index, cid) {
       $scope.courseMap.splice(index, 1);
-
       $scope.chapTBD.push(cid);
     }
 

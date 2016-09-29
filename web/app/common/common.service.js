@@ -6,11 +6,12 @@
 	
   
   // Initialize Firebase
-  var config = {      
+  var config = {
     apiKey: "AIzaSyDt22-VriobDs7cNfkmY8yxHur9IQBewWo",
     authDomain: "pivotal-expert.firebaseapp.com",
     databaseURL: "https://pivotal-expert.firebaseio.com",
-    storageBucket: "",
+    storageBucket: "firebase-pivotal-expert.appspot.com",
+    messagingSenderId: "841641391530"
   };
   
   //Replace with your login google account email

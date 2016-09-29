@@ -31,7 +31,7 @@
                         <i style="font-size:1.2em" class="fa fa-pencil" ></i>
                         <a style="font-size:1.3em" ng-href="#/lesson/{{qns.qnsType}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}">{{qns.qnsTitle}}</a>
                       </div>
-                      <div ng-show="complete(qns.qid)" flex>
+                      <div ng-show="qns.complete" flex>
                         <md-icon style="font-size:1.5em" class="material-icons green" flex>check_box</md-icon>
                       </div>
                  </div>

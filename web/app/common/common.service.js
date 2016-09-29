@@ -7,15 +7,15 @@
   
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyDlUzXNIFMWT9uf82nfhjrQNTF5pafVe0I",
-    authDomain: "codevantage-test.firebaseapp.com",
-    databaseURL: "https://codevantage-test.firebaseio.com",
-    storageBucket: "",
-    messagingSenderId: "665849361254"
+    apiKey: "AIzaSyDt22-VriobDs7cNfkmY8yxHur9IQBewWo",
+    authDomain: "pivotal-expert.firebaseapp.com",
+    databaseURL: "https://pivotal-expert.firebaseio.com",
+    storageBucket: "firebase-pivotal-expert.appspot.com",
+    messagingSenderId: "841641391530"
   };
   
   //Replace with your login google account email
-  var adminEmail = "jeremy.pek.2014@smu.edu.sg";
+  var adminEmail = "jianhua.wu.2014@smu.edu.sg";
   
   //Replace with the name of your course
   var courseName = "Pivotal Expert";

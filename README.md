@@ -57,6 +57,17 @@ Instructions to install can be found at https://git-scm.com/book/en/v2/Getting-S
 
 # Deploying it to Firebase
 1. Open cmd in root folder of the project.
-2. For initial use, run 'firebase login' and 'firebase init'
-3. After which, run 'firebase deploy' to upload the application files to Firebase.
+2. For initial use:
+  1. run 'firebase login'
+  2. run 'firebase init'
+    1. When prompted "What Firebase CLI features do you want to setup for this folder?", press ENTER.
+    2. When prompted "What file should be used for Database Rules?", press ENTER.
+    3. When prompted "File database.rules.json already exists. Do you want to overwrite it with the Database Rules for undefined from the Firebase Console?", key in 'n' and ENTER.
+    4. When prompted "What do you want to use as your public directory?", key in "web" and press ENTER.
+    5. When prompted "Configure as a single-page app (rewrite all urls to /index.html)?", key in 'n' and ENTER.
+    6. When prompted "File web/404.html already exists. Overwrite?", key in 'n' and ENTER.
+  3. run 'firebase use --add'
+    1. Choose the project you have created on Firebase and press ENTER.
+    2. Type in an alias for the project and press ENTER.
+3. Subsequently, as long as the firebase login account is the same, just run 'firebase deploy' to upload the application files to Firebase.
 4. The link to the application will be listed in the cmd.

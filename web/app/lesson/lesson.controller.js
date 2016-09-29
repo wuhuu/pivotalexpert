@@ -432,8 +432,8 @@
     function nextQns(chapter, question){
 
         //update course progress in firebase db
-        var currentDateTime = new Date().toLocaleString("en-US");
-        ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid).set(currentDateTime);
+        var dateTimeNow = new Date().toISOString().slice(0,10); 
+        ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid).set(dateTimeNow);
 
         chapter = parseInt(chapter) - 1;
         question = parseInt(question);

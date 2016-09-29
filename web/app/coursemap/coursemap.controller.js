@@ -46,6 +46,7 @@
                 if(chapter.qns) {
                     var qnsCount = chapter.qns.length;
 
+
                     for (j = 0; j < qnsCount; j++) { 
                         if(chapter.qns[j]) {
                             if(achievedlist.indexOf(chapter.qns[j].qid) != -1){

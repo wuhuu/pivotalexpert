@@ -1,7 +1,7 @@
 <div layout="row" flex>
   <div flex="15"></div>
   <div class="md-whiteframe-z2" layout="column" flex="70" style="padding: 15px 20px: background-color:white">
-    <md-content flex md-scroll-y>
+    <md-content style='padding:20px 20px;' flex md-scroll-y>
       <md-card-content>
         <div class="text-center profile-head">
           <img ng-src="{{displayPic}}" alt="Profile Photo" class="profile-photo">
@@ -17,7 +17,7 @@
         <md-divider></md-divider>
         <md-divider></md-divider>
 
-        <h2>Completed Projects</h2>
+        <!--<h2>Completed Projects</h2>
         <md-list>
           <md-item ng-repeat="project in projects | filter:search | orderBy:'title'">
             <md-item-content>
@@ -30,22 +30,22 @@
               <md-divider></md-divider>
             </md-item-content>
             <!--<md-divider ng-if="!$last"></md-divider>-->
-          </md-item>
+          <!--</md-item>
         </md-list>
 
         <md-divider></md-divider>
         <md-divider></md-divider>
-        <md-divider></md-divider>
+        <md-divider></md-divider>-->
 
-        <h2>Completed Courses</h2>
-        <md-list>
-          <div ng-repeat="chapter in achievelist">
-            <h3>{{chapter.chapterTitle}}</h3>
+        <h2 style='padding-left:20px;'>Completed Chapters :</h2>
+        <div>
+          <div style='padding-left:20px;' ng-repeat="chapter in achievelist track by $index">
+            <h3>Chapter Title: {{chapter.chapterTitle}}</h3>
             <md-divider></md-divider>
             <md-divider></md-divider>
             <div>
-              <md-list>
-                <md-item ng-repeat="qns in chapter.qns">
+              <md-list style='padding-left:20px;'>
+                <md-item  ng-repeat="qns in chapter.qns track by $index">
                   <md-item-content>
                     <p>
                       <font class="font-size-course-title">{{qns.qnsTitle}}</font>
@@ -56,7 +56,7 @@
               </md-list>
             </div>
           </div>
-        </md-list>
+        </div>
       </md-card-content>
     </md-content>
   </div>

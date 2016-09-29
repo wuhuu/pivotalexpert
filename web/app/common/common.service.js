@@ -7,15 +7,15 @@
   
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyDt22-VriobDs7cNfkmY8yxHur9IQBewWo",
-    authDomain: "pivotal-expert.firebaseapp.com",
-    databaseURL: "https://pivotal-expert.firebaseio.com",
-    storageBucket: "firebase-pivotal-expert.appspot.com",
-    messagingSenderId: "841641391530"
+    apiKey: "AIzaSyDlUzXNIFMWT9uf82nfhjrQNTF5pafVe0I",
+    authDomain: "codevantage-test.firebaseapp.com",
+    databaseURL: "https://codevantage-test.firebaseio.com",
+    storageBucket: "",
+    messagingSenderId: "665849361254"
   };
   
   //Replace with your login google account email
-  var adminEmail = "Jianhua.Wu.2014@smu.edu.sg";
+  var adminEmail = "jeremy.pek.2014@smu.edu.sg";
   
   //Replace with the name of your course
   var courseName = "Pivotal Expert";
@@ -33,10 +33,10 @@
     
     
 	var last = {
-        bottom: false,
-        top: true,
-        left: true,
-        right: false
+        bottom: true,
+        top: false,
+        left: false,
+        right: true
       };
 
     var toastPosition = angular.extend({},last);

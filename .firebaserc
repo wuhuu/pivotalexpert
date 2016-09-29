@@ -2,6 +2,7 @@
   "projects": {
     "default": "firebase-pivotal-expert",
     "staging": "firebase-pivotal-expert",
-    "FYP": "firebase-pivotal-expert"
+    "FYP": "firebase-pivotal-expert",
+    "testing": "codevantage-test"
   }
 }

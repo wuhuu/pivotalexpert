@@ -4,57 +4,62 @@
     .module('app.layout')
     .factory('navBarService', navBarService);
 
-  navBarService.$inject = ['$rootScope','$firebaseObject', '$firebaseAuth','authService', 'commonService'];
-  
-  function navBarService($rootScope,$firebaseObject, $firebaseAuth, authService, commonService) {
-		var ref = commonService.firebaseRef();
-		
-	   var service = {
-	      updateNavBar: updateNavBar,
-	      getUserAchievements: getUserAchievements,
-		  getCourseTitle: getCourseTitle
-	    };
-	
-		return service;
 
-	   	function updateNavBar($scope,newName) {
-	      //Retrieve User Display Name
-		  var user = authService.fetchAuthData();
-		  $scope.displayName = newName;
-		  user.$loaded().then(function () {
-	        $scope.displayName = user.displayName;
-	        getUserAchievements($scope);
-	      });
-	  	}
+  function navBarService($rootScope, $firebaseObject, $firebaseArray, authService, commonService, $q) {
+    var ref = firebase.database().ref();
+    
 
+    var service = {
+      updateNavBar: updateNavBar,
+      getCourseTitle: getCourseTitle
+    };
 
-	  
-	  	function getUserAchievements($scope) {
-			var user = authService.fetchAuthData();
-			var courseTitle = $firebaseObject(getCourseTitle());
-			courseTitle.$loaded().then(function(){
-				courseTitle = courseTitle.$value;
-			
-			
-				user.$loaded().then(function () {
-					var courseProgressRef = ref.child('/userProfiles/' + user.$id + '/' + courseTitle + '/courseProgress/');
+    return service;
 
-					courseProgressRef.once('value', function(snapshot) {
-					  // The callback function will get called twice, once for "fred" and once for "barney"
-					  
-					   $scope.$apply(function(){
-						$rootScope.numAchievement = snapshot.numChildren();
-					   });
-					});
-				});
-			});
-		}
-		
-		function getCourseTitle() {
-
-			var courseTitleRef = ref.child('/pivotalExpert/content/course/courseTitle');
-			return courseTitleRef;
-		}
+    function updateNavBar() {
+        updateAchievementCount().then(function(result){
+            $rootScope.ownNumAchievement = result;
+        })      
+        
+    }
+    
+    function updateAchievementCount() {
+        var deferred = $q.defer();
+        var user = firebase.auth().currentUser;
+        var achievedlist = [];
+        var achievements = 0;
+        var courseList = $firebaseArray(ref.child('/courseSequence'));
+        courseList.$loaded().then(function (){
+            user = firebase.auth().currentUser;
+            var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
+            courseProgressRef.once('value', function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+                var key = childSnapshot.key;
+                achievedlist.push(key);
+              });
+            
+              var totalCourse = courseList.length;
+              for (i = 0; i < totalCourse; i++) { 
+                var chapter = courseList[i];
+                if(chapter.qns) {
+                    var qnsCount = chapter.qns.length;
+                    for (j = 0; j < qnsCount; j++) { 
+                        if(achievedlist.indexOf(chapter.qns[j].qid) != -1){
+                            achievements++;
+                        }
+                    }
+                }
+              }
+              deferred.resolve(achievements);
+            });
+        });
+        return deferred.promise;
+    }
+    
+    function getCourseTitle() {
+        var courseTitleRef = ref.child('/courseSetting/courseName');
+        return courseTitleRef;
+    }
   }
 
 })();

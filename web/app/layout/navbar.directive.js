@@ -14,41 +14,46 @@
     };
   }
  
-  NavbarController.$inject = ['$firebaseObject','$scope', '$rootScope', '$location','authService', 'navBarService'];
+  function NavbarController($firebaseObject, $scope, $rootScope, $location, authService, navBarService, commonService) {
+      
+      var usersRef = firebase.database().ref().child('auth/users');
+      
+      $scope.login = function () {
+          console.log("Logging in");
+	      authService.login();      
+      }
+      
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+          navBarService.updateNavBar();
+          $scope.displayPic = user.photoURL;
+          $rootScope.logined = true;
+          
+          //Check whether login user email belong to admin account email
+          var adminEmail = commonService.getAdminEmail().toUpperCase();
 
-  function NavbarController($firebaseObject,$scope, $rootScope,$location, authService, navBarService) {
-	  console.log("NavbarController");
-	  //Retrieve User Display Name
-	  var user = authService.fetchAuthData();
-	  var userpic = authService.fetchAuthPic();
-	  
-	  if (user != null) {
-	  	$scope.logined= true;
-		user.$loaded().then(function(){
-		 // var username= authService.fetchAuthUsername();
-		 // 	username.$loaded().then(function(){
-			// 	$scope.displayName = username.$value;
-			// });
-			$scope.displayName = user.displayName;
-			navBarService.getUserAchievements($scope);
-	    });
-		  userpic.$loaded().then(function(){
-		  $scope.displayPic = userpic.$value;
-	    });
-	  } else {
-		$scope.logined = false;
-		//$location.path('/login/');
-	  }
-	
-	  var courseTitle = $firebaseObject(navBarService.getCourseTitle());
-		courseTitle.$loaded().then(function(){
-			$scope.courseTitle = courseTitle.$value;
-	  });
-	  $scope.logout = function () {
-		  $scope.logined= false;
-		  authService.logout();
-		  $location.path('/login');
-		  window.location.reload();
+           var userData = $firebaseObject(usersRef.child(user.uid));
+          //navBarService.updateNavBar(user.displayName);
+          userData.$loaded().then(function(){
+            $scope.profileLink = userData.profileLink;
+            //check if admin role
+            if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
+                $rootScope.isAdmin = true;
+            }
+            
+          });
+        } 
+      });
+      
+      
+    $rootScope.courseTitle = commonService.getCouseName();
+      
+    $scope.logout = function () {
+        $scope.logined = false;
+        authService.logout();
+        $location.path('/login');
+        window.location.reload();
 	}
 	
   }

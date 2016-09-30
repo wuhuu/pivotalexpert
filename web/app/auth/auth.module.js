@@ -4,8 +4,6 @@
 	.module('app.auth', [])
     .config(configFunction);
   
-  configFunction.$inject = ['$routeProvider'];
-  
   function configFunction($routeProvider) {
     $routeProvider.
 	when('/login', {
@@ -13,6 +11,9 @@
       controller: 'AuthController'
     }).when('/changeDisplayName',{
       templateUrl: 'app/auth/changeDisplayName.html',
+      controller: 'AuthController'
+    }).when('/createProfileLink',{
+      templateUrl: 'app/auth/createProfileLink.html',
       controller: 'AuthController'
     });
   }

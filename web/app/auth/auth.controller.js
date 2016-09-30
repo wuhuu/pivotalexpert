@@ -4,33 +4,16 @@
     .module('app.auth')
     .controller('AuthController', AuthController);
 
-  AuthController.$inject = ['$scope', '$location' ,'$firebaseObject', '$firebaseAuth', 'authService','navBarService', 'commonService'];
+  function AuthController($scope, $location, $firebaseObject, authService) {
+    var ref = firebase.database().ref();
+    var userRef = ref.child("auth/users");
+	var user = firebase.auth().currentUser;
 
-  function AuthController($scope, $location, $firebaseObject, $firebaseAuth, authService, navBarService, commonService) {
-	
-	$scope.login = function (service) {
+	$scope.login = function () {
 	  console.log("Logging in");
-	  authService.login(service,$scope)
-		.then(function() {
-		var username = authService.fetchAuthUsername();
-
-		// username.$loaded().then(function(){
-		// 	if(username.$value == null){
-		// 		$location.path('/createUsername');
-		// 	}
-		// });
-		//$location.path('/');
-        })
-	    .catch(function (error) {
-          console.log("Authentication failed:", error);
-        });
-      
-	  //method to retrieve user from db
-	  //var user = authService.fetchAuthData();
-	  //user.$loaded().then(function () {
-        //console.log("User publicID:", user.publicId);
-      //});
+	  authService.login();      
 	}
+    
 	
 	$scope.logout = function () {
 	  authService.logout();
@@ -39,43 +22,40 @@
 
 	
 	$scope.updateDisplayName = function (newName) {
-		var user = authService.fetchAuthData();
-
-		var ref = commonService.firebaseRef().child("auth/users");
-		user.$loaded().then(function(user){
-			ref.child(user.$id).update({displayName:newName});
-			 $location.path('/profile/'+newName);
-			// ref.child('usedUsername').once("value", function(snapshot) {
-			// 	var uid = user.$id;
-			// 	var b = snapshot.child(username).exists();
-			// 	if(!b){
-			// 		var previousUsername = $firebaseObject(ref.child('usernames').child(uid));	
-			// 		// delete the previousUsername for usedUsername
-			// 			previousUsername.$loaded().then(function(){
-			// 			if(previousUsername.$value!=null){
-			// 				ref.child('usedUsername').child(previousUsername.$value).remove();
-			// 			}
-					
-			// 			//update usedUsername object
-			// 			var updateObject = {};
-			// 			updateObject[username] = true; 					
-			// 			ref.child('usedUsername').update(updateObject);
-						
-			// 			//update usernames object
-			// 			updateObject = {};
-			// 			updateObject[uid] = username;
-			// 			ref.child('usernames').update(updateObject);
-			// 			$location.path('/profile/'+username);
-			// 			window.location.reload();
-			// 		});
-			// 	}else {
-			// 		alert("Sorry!  \'"+username +"\' is already in use, try another one.");
-			// 	}
-			// });
-		});
+		
+		
+        userRef.child(user.uid).update({displayName:newName});
+        $location.path('/profile/'+newName);
 	}
-	
-  };
-  
 
+    $scope.createProfileLink = function (newLink) {
+        var usedLinks = $firebaseObject(ref.child("auth/usedLinks"));
+        var usedLinksRef = ref.child("auth/usedLinks");
+
+        newLink = newLink.toLowerCase();
+        newLink = newLink.replace(/ /g, "");
+
+        usedLinks.$loaded().then(function(links) {
+            var b = links[newLink];
+            if(!b){
+                //update usedLinks object
+                var updateObject = {};
+                updateObject[newLink] = user.uid; 					
+                usedLinksRef.update(updateObject);
+                
+                userRef.child(user.uid).update({profileLink: newLink});	
+
+                $location.path('/profile/'+newLink);
+
+            }else {
+                alert("Sorry!  \'" + newLink + "\' is already in use, try another one.");
+            }
+        });
+
+        ref.child('/userProfiles/' + user.uid).update({lastAttempt:""});
+        
+    }
+
+
+  };
 })();

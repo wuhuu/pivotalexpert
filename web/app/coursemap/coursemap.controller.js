@@ -2,41 +2,66 @@
 
   angular
     .module('app.coursemap')
-    .controller('CoursemapController', CoursemapController);
+    .controller('CoursemapController', CoursemapController)
+		.directive('onFinishRender', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attr) {
+            if (scope.$last === true) {
+                $timeout(function () {
+                    $( "#accordion1" )
+                      .accordion({
+                        header: "> div > h2",
+                        collapsible: true,
+                        heightStyle: "content"
+                      });                     
+                });
+            }
+        }
+      }
+    });
 
-  CoursemapController.$inject = ['$scope', '$firebaseObject', 'authService', 'commonService', 'navBarService'];
-
-  function CoursemapController($scope, $firebaseObject, authService, commonService, navBarService) {
+  function CoursemapController($scope, $firebaseArray,$timeout, $q) {
+      
     console.log("Coursemap Page");
-	var user = authService.fetchAuthData();
-	var ref = commonService.firebaseRef();
-	
+    $timeout(loadCourseSequence, 1000);
+    
+    function loadCourseSequence() {
+        var ref = firebase.database().ref();
+        var user = firebase.auth().currentUser;
+        var achievedlist = [];
+        // Retrieve from sequence
+        var courseList = $firebaseArray(ref.child('/courseSequence'));
+        courseList.$loaded().then(function (){
+            var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
+            courseProgressRef.once('value', function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+                var key = childSnapshot.key;
+                achievedlist.push(key);
+              });   
+              var totalCourse = courseList.length;
+              for (i = 0; i < totalCourse; i++) { 
+                var chapter = courseList[i];
 
-	
-	var courseProgressRef = ref.child('/userProfiles/' + user.$id + '/Pivotal-Expert/courseProgress/');
-	var list = [];
-	courseProgressRef.once('value', function(snapshot) {
-	  snapshot.forEach(function(childSnapshot) {
-		var key = childSnapshot.key();
-		list.push(key);
-		});
-			
-		$scope.complete = function (moduleID,qnsId) {
-			var course = 'C' + moduleID + 'Q' + qnsId;
-			return list.indexOf(course) > -1;
-		};
-	
-	
-		 // Retrieve from content
-		var content =  $firebaseObject(ref.child('pivotalExpert').child('content'));
-		content.$loaded().then(function(){
-			$scope.courseTitle = content.course.courseTitle;
-			$scope.courseLogo = content.course.courseLogo;
-			$scope.courseDesc = content.course.courseDescription;
-			$scope.courseMap = content.course.courseMap;
-		});
-	});
+                if(chapter.qns) {
+                    var qnsCount = chapter.qns.length;
 
+
+                    for (j = 0; j < qnsCount; j++) { 
+                        if(chapter.qns[j]) {
+                            if(achievedlist.indexOf(chapter.qns[j].qid) != -1){
+                                chapter.qns[j].complete = true;
+                            }
+                        }
+                    }
+                }
+              }
+            })
+        });
+        $scope.courseMaterial = courseList;
+    }
   }
+  
+
 
 })();

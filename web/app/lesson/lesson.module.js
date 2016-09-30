@@ -4,28 +4,26 @@
     .module('app.lesson', [])
     .config(configFunction);
   
-  configFunction.$inject = ['$routeProvider'];
-  
   function configFunction($routeProvider) {
     $routeProvider.
-	when('/lesson/mcq/:modID/:qnsID', {
+	when('/lesson/mcq/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/mcq.html',
 	  controller: 'LessonController'
     }).
-	when('/lesson/slides/:modID/:qnsID', {
+	when('/lesson/slides/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/slides.html',
 	  controller: 'LessonController'
     }).
-	when('/lesson/video/:modID/:qnsID', {
+	when('/lesson/video/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/video.html',
 	  controller: 'LessonController'
     }).
-	when('/lesson/LSheet/:modID/:qnsID', {
-      templateUrl: 'app/lesson/spreadsheet.html',
+	when('/lesson/excel/:chapter/:qns/:qid', {
+      templateUrl: 'app/lesson/excel.html',
 	  controller: 'LessonController'
     }).
-  when('/lesson/GSheet/:modID/:qnsID', {
-      templateUrl: 'app/lesson/gsheet.html',
+  when('/lesson/code/:chapter/:qns/:qid', {
+      templateUrl: 'app/lesson/codebox.html',
     controller: 'LessonController'
     });
   }

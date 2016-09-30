@@ -1,84 +1,63 @@
+<div layout="row" flex>
+  <div flex="15"></div>
+  <div class="md-whiteframe-z2" layout="column" flex="70" style="padding: 15px 20px: background-color:white">
+    <md-content style='padding:20px 20px;' flex md-scroll-y>
+      <md-card-content>
+        <div class="text-center profile-head">
+          <img ng-src="{{displayPic}}" alt="Profile Photo" class="profile-photo">
+          <br>
+          <div>
+            <h1>[ {{numAchievement}} ]</h1>
+            <md-tooltip>Total Task Completed</md-tooltip>
+          </div>
+          <h2>{{displayName}}</h2>
+        </div>
 
-	
-<div class="container">
+        <md-divider></md-divider>
+        <md-divider></md-divider>
+        <md-divider></md-divider>
 
-	<header class="welcome text-center">
-		<h1><font size="9">Welcome to {{courseTitle}}!</font></h1>
-	</header>
+        <!--<h2>Completed Projects</h2>
+        <md-list>
+          <md-item ng-repeat="project in projects | filter:search | orderBy:'title'">
+            <md-item-content>
+              <div class="md-tile-content">
+                <font class="font-size-course-title">{{project.title}}</font>
+                <p>
+                  <h4>{{project.description}}<h4>
+                </p>
+              </div>
+              <md-divider></md-divider>
+            </md-item-content>
+            <!--<md-divider ng-if="!$last"></md-divider>-->
+          <!--</md-item>
+        </md-list>
 
-	<!-- Profile -->
-	<div class="row container-white">
-		
-		<div>
-			<div class="left profile-img"> <img ng-src="{{displayPic}}" alt="" style="width: 100%;"> </div>
-			
-			<div class="profile-contentBox">
-					<div>
-						<h1>Name: {{displayName}}
-							<sup>
-								<a href="#/changeDisplayName">
-									<i class="fa fa-pencil" style="font-size: small" aria-hidden="true"></i>
-								</a>
-							</sup>
-						</h1>
-						<!--User's Name
-						<br>-->
-						<h2>
-							Email: {{email}}
-						</h2>
-					</div>
-				<div class="profile-content">
-					
-					
-				</div>
-			</div>
-		</div>
-		
-		
-		
-		<!-- <div class="course-name" style="clear: both;">Your Progress</div>
-		<div class="progress-container">
-		  <div id="progressBar" class="progressbarRed" >
-			<div id="percentage">0%</div>
-		  </div>
-		</div>
-		<script>
-			move(25)
-			function move(value) {
-			  var elem = document.getElementById("progressBar");
-			  var width = 0;
-			  var id = setInterval(frame, 10);
-			  function frame() {
-				if (width >= value) {
-				  clearInterval(id);
-				} else {
-				  width++;
-				  elem.style.width = width + '%';
-				  document.getElementById("percentage").innerHTML = width * 1  + '%';
-				}
-			  }
-			}
-		</script> -->
+        <md-divider></md-divider>
+        <md-divider></md-divider>
+        <md-divider></md-divider>-->
 
-	</div>
-
-	<hr>
-	<!-- Course Map -->
-	
-	<div class="container-white row center">
-		<h1>Achievements</h1>
-		
-		<div class="container-contentButton" ng-repeat="item in achievelist">
-			<div class="left" >{{item}}</div>
-		</div>
-		<!-- 
-		<a class="container-contentButton" href="#/lesson3" >
-			<div class="left" >Lesson 3:</div>
-		</a>
-		
-		<a class="container-contentButton" href="#/lesson4" >
-			<div class="left" >Lesson 4:</div>
-		</a> -->
-	</div>
-
+        <h2 style='padding-left:20px;'>Completed Chapters :</h2>
+        <div>
+          <div style='padding-left:20px;' ng-repeat="chapter in achievelist track by $index">
+            <h3>Chapter Title: {{chapter.chapterTitle}}</h3>
+            <md-divider></md-divider>
+            <md-divider></md-divider>
+            <div>
+              <md-list style='padding-left:20px;'>
+                <md-item  ng-repeat="qns in chapter.qns track by $index">
+                  <md-item-content>
+                    <p>
+                      <font class="font-size-course-title">{{qns.qnsTitle}}</font>
+                      <img class="coursemap-check pull-right" src="content/images/tick.png"/>
+                    </p>
+                  </md-item-content>
+                </md-item>
+              </md-list>
+            </div>
+          </div>
+        </div>
+      </md-card-content>
+    </md-content>
+  </div>
 </div>

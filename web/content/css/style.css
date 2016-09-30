@@ -1,0 +1,73 @@
+$gray: #fff;
+
+
+md-content.md-default-theme {
+  background-color: $gray;
+}
+md-card {
+  background-color: #fff;
+  h2:first-of-type {
+    margin-top: 0;
+  }
+}
+md-toolbar {
+  .md-button.md-default-theme {
+    border-radius: 99%; // round toolbar buttons
+  }
+}
+h2 {
+  font-weight: 400;
+}
+.font-size-course-title {
+  font-size: 16px;
+}
+.font-size-normal {
+  font-size: 18px;
+}
+.md-toolbar-tools-bottom {
+  font-size: small;
+  & :last-child {
+    opacity: 0.8;
+  }
+}
+md-toolbar:not(.md-hue-1),
+.md-fab {
+  fill: #fff;
+}
+md-sidenav {
+  fill: #737373;
+  ng-md-icon {
+    position: relative;
+    top: 5px; // adjust for svg viewbox
+  }
+}
+
+.user-avatar {
+  border-radius: 50%;
+}
+
+.text-center{
+  text-align: center;
+}
+.profile-head{
+  font-size: 15px;
+}
+.profile-photo{
+  width: auto;
+  height: 150px;
+}
+.landing-icon{
+  width: 50px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+.coursemap-check{
+  margin-right: 20px;
+  width: 30px;
+  height: auto;
+}
+
+/*******************************************
+|           STUDENT COURSE MAP             |
+*******************************************/

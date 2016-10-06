@@ -203,21 +203,19 @@
                     var annot = editor.getSession().getAnnotations();
                     if (annot.length == 0) {
                         var code = editor.getValue();
-                        console.log(code);
+                        //console.log(code);
                         $scope.codeResult = [];
+                        $scope.hints = [];
                         var errorHints =[];
                         var promises = []
                         var totalTestNum = answerKey.testcases.length;
-                        //var totalTestNum = $scope.testCase.length;
+
                         for (i = 0; i < totalTestNum; i++) {
-                            var test =  answerKey.testcases[i];//var test =  $scope.testCase[i];
+                            var test =  answerKey.testcases[i];
+
                             //Run Test case
                             runTestcase(test, code).then(function(result) {
                                 $scope.codeResult.push(result);
-                                if(!result){
-                                  console.log(test.hint);
-                                  errorHints.push(test.hint);
-                                }
                                 //When end of test case
                                 if($scope.codeResult.length === totalTestNum){
                                     if ($scope.codeResult.indexOf(false) === -1) {
@@ -226,9 +224,9 @@
                                     } else {
                                         $scope.incorrect = true;
                                         var hint = "";
-                                        for (a = 0; a < errorHints.length ; a++){
+                                        for (a = 0; a < $scope.hints.length ; a++){
                                           var hintNo = a + 1;
-                                          hint = hint + hintNo + " " + errorHints[a] + "\n\r";
+                                          hint = hint + hintNo + " " + $scope.hints[a] + "\n\r";
                                         }
                                         $scope.qnsHint = hint;
                                     }
@@ -426,6 +424,9 @@
             var msg = e.data;
             //check if there failed result
             deferred.resolve(msg);
+            if(msg == false){
+              $scope.hints.push(test.hint);
+            }
         };
         return deferred.promise;
     }

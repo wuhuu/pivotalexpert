@@ -205,6 +205,7 @@
                         var code = editor.getValue();
                         console.log(code);
                         $scope.codeResult = [];
+                        var errorHints =[];
                         var promises = []
                         var totalTestNum = answerKey.testcases.length;
                         //var totalTestNum = $scope.testCase.length;
@@ -213,6 +214,10 @@
                             //Run Test case
                             runTestcase(test, code).then(function(result) {
                                 $scope.codeResult.push(result);
+                                if(!result){
+                                  console.log(test.hint);
+                                  errorHints.push(test.hint);
+                                }
                                 //When end of test case
                                 if($scope.codeResult.length === totalTestNum){
                                     if ($scope.codeResult.indexOf(false) === -1) {
@@ -220,6 +225,12 @@
                                         commonService.showSimpleToast("FANTASTIC!! You have completed the code Question");
                                     } else {
                                         $scope.incorrect = true;
+                                        var hint = "";
+                                        for (a = 0; a < errorHints.length ; a++){
+                                          var hintNo = a + 1;
+                                          hint = hint + hintNo + " " + errorHints[a] + "\n\r";
+                                        }
+                                        $scope.qnsHint = hint;
                                     }
                                 }
                             });
@@ -422,8 +433,8 @@
     function getInlineJSandTest (test, code) {
 		var top = 'onmessage = function(msg){';
 		var bottom = 'postMessage(result);};';
-
-		var all = code +"\n\n"+top+"\n"+test+"\n"+bottom+"\n"
+    var newTest = "var result = " + test.expect + " == " + test.toEqual +";";
+		var all = code +"\n\n"+top+"\n"+newTest+"\n"+bottom+"\n"
     console.log(all);
 		var blob = new Blob([all], {"type": "text\/plain"});
 		return URL.createObjectURL(blob);
@@ -435,7 +446,7 @@
         var dateTimeNow = new Date().toLocaleString("en-US");
         var userAchievementRef = ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid);
         userAchievementRef.update({ "completedAt": firebase.database.ServerValue.TIMESTAMP, "text": dateTimeNow});
-        
+
         chapter = parseInt(chapter) - 1;
         question = parseInt(question);
 

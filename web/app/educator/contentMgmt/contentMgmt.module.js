@@ -3,7 +3,7 @@
   angular
     .module('app.contentMgmt', [])
     .config(configFunction);
-   
+
   function configFunction($routeProvider) {
     $routeProvider.
   // for editing
@@ -53,6 +53,5 @@
 	     controller: 'ContentMgmtController'
     });
   }
-  
-})();
 
+})();

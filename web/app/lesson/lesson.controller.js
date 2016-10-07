@@ -203,13 +203,16 @@
                     var annot = editor.getSession().getAnnotations();
                     if (annot.length == 0) {
                         var code = editor.getValue();
-                        console.log(code);
+                        //console.log(code);
                         $scope.codeResult = [];
+                        $scope.hints = [];
+                        var errorHints =[];
                         var promises = []
                         var totalTestNum = answerKey.testcases.length;
-                        //var totalTestNum = $scope.testCase.length;
+
                         for (i = 0; i < totalTestNum; i++) {
-                            var test =  answerKey.testcases[i];//var test =  $scope.testCase[i];
+                            var test =  answerKey.testcases[i];
+
                             //Run Test case
                             runTestcase(test, code).then(function(result) {
                                 $scope.codeResult.push(result);
@@ -220,6 +223,12 @@
                                         commonService.showSimpleToast("FANTASTIC!! You have completed the code Question");
                                     } else {
                                         $scope.incorrect = true;
+                                        var hint = "";
+                                        for (a = 0; a < $scope.hints.length ; a++){
+                                          var hintNo = a + 1;
+                                          hint = hint + hintNo + " " + $scope.hints[a] + "\n\r";
+                                        }
+                                        $scope.qnsHint = hint;
                                     }
                                 }
                             });
@@ -415,6 +424,9 @@
             var msg = e.data;
             //check if there failed result
             deferred.resolve(msg);
+            if(msg == false){
+              $scope.hints.push(test.hint);
+            }
         };
         return deferred.promise;
     }
@@ -422,8 +434,8 @@
     function getInlineJSandTest (test, code) {
 		var top = 'onmessage = function(msg){';
 		var bottom = 'postMessage(result);};';
-
-		var all = code +"\n\n"+top+"\n"+test+"\n"+bottom+"\n"
+    var newTest = "var result = " + test.expect + " == " + test.toEqual +";";
+		var all = code +"\n\n"+top+"\n"+newTest+"\n"+bottom+"\n"
     console.log(all);
 		var blob = new Blob([all], {"type": "text\/plain"});
 		return URL.createObjectURL(blob);
@@ -435,7 +447,7 @@
         var dateTimeNow = new Date().toLocaleString("en-US");
         var userAchievementRef = ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid);
         userAchievementRef.update({ "completedAt": firebase.database.ServerValue.TIMESTAMP, "text": dateTimeNow});
-        
+
         chapter = parseInt(chapter) - 1;
         question = parseInt(question);
 

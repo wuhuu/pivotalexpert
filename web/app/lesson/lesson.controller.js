@@ -4,7 +4,7 @@
     .module('app.lesson')
     .controller('LessonController', LessonController);
 
-  function LessonController($q, $scope, $routeParams, $location, $firebaseObject, $sce, navBarService, commonService) {
+  function LessonController($q, $scope,$mdDialog, $routeParams, $location, $firebaseObject, $sce, navBarService, commonService) {
 
     console.log("LessonController");
 
@@ -17,7 +17,16 @@
 	navBarService.updateNavBar();
 
 	$scope.answer = "";
+    function showCompleteDialog(msg) {
+      var confirm = $mdDialog.confirm()
+          .title('Challenge Completed!')
+          .textContent(msg)
+          .ok('Next Challenge');
 
+        $mdDialog.show(confirm).then(function() {
+            nextQns(chapter,qns);
+        });
+    }
     //Load Question
     var question = $firebaseObject(ref.child('course/questions/' + qid));
     question.$loaded().then(function(){
@@ -71,11 +80,12 @@
                answerKey.$loaded().then(function() {
                    if($scope.questions[$scope.currentMCQ-1].qnsID === answerKey.answer[$scope.currentMCQ-1]) {
                         if($scope.currentMCQ === $scope.totalMCQ) {
-                           nextQns(chapter,qns);
-                           commonService.showSimpleToast("Excellent!! You have completed the MCQ");
-                        }                       
-                        $scope.currentMCQ += changeBy;
-                        $scope.mcq = mcq[$scope.currentMCQ - 1];
+                           //nextQns(chapter,qns);
+                           showCompleteDialog("You have completed the MCQ Challenge, go for the next challenge!");
+                        }else {                       
+                            $scope.currentMCQ += changeBy;
+                            $scope.mcq = mcq[$scope.currentMCQ - 1];
+                        }
                     }else {
                         $scope.mcq = mcq[0];
                         $scope.currentMCQ = 1;

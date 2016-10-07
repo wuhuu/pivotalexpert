@@ -22,7 +22,7 @@
   
   firebase.initializeApp(config);
   
-  function commonService($mdToast) {
+  function commonService($mdToast,$mdDialog) {
 
 	var service = {
       getAdminEmail: getAdminEmail,
@@ -87,6 +87,8 @@
           .hideDelay(3000)
       );
     };
+
+    
   }
 
 })();

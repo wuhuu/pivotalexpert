@@ -59,6 +59,32 @@
             $scope.questions = question.mcq;
             $scope.currentScore = 0;
             $scope.totalScore = $scope.questions.length;
+
+            var mcq = question.mcq;
+
+            $scope.currentMCQ = 1;
+            $scope.totalMCQ = mcq.length
+            var answerKey = $firebaseObject(ref.child('answerKey/' + qid));
+            
+            //MCQ validation
+            $scope.changeMCQ = function(changeBy) {
+               answerKey.$loaded().then(function() {
+                   if($scope.questions[$scope.currentMCQ-1].qnsID === answerKey.answer[$scope.currentMCQ-1]) {
+                        if($scope.currentMCQ === $scope.totalMCQ) {
+                           nextQns(chapter,qns);
+                           commonService.showSimpleToast("Excellent!! You have completed the MCQ");
+                        }                       
+                        $scope.currentMCQ += changeBy;
+                        $scope.mcq = mcq[$scope.currentMCQ - 1];
+                    }else {
+                        $scope.mcq = mcq[0];
+                        $scope.currentMCQ = 1;
+                        commonService.showSimpleToast("Incorrect, try again!");
+                    }
+               }); 
+            }
+            //initial run
+            $scope.mcq = mcq[0];
         }
 
         //Excel type question

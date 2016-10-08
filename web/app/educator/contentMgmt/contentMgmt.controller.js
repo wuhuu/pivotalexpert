@@ -142,7 +142,7 @@
             //set back the answer
             question.testcases = [];
             angular.forEach(answerKey.testcases, function (value, key) {
-              question.testcases.push({ test: value });
+              question.testcases.push(value);
             });
           }
 
@@ -207,7 +207,6 @@
 
 
       } else if (qnsType === "code") {
-        $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['initialCode'] = "";
 
@@ -373,7 +372,7 @@
       } else {
         $scope.qns.testcases = [];
       }
-      $scope.qns.testcases.push({ test: "" });
+      $scope.qns.testcases.push({name:"",expect:"",toEqual:"",hint:""});
     }
     //Create && Update Code box
     $scope.saveCodeBoxChanges = function (ev) {
@@ -417,7 +416,7 @@
     $scope.addValidation = function () {
       $scope.qns.testcases.push({ cellToChange: "", changedTo: "", expectCell: "", toEqual: "", msg: "" });
     }
-
+    
     $scope.deleteValidation = function (index) {
       $scope.qns.testcases.splice(index, 1);
     }
@@ -845,7 +844,7 @@
       function DialogController($scope, $q, $mdDialog,$timeout, chapters) {
         $scope.chapters = chapters;
         $scope.selectedChapter = '';
-        
+
         var ref = firebase.database().ref();
         var sequenceRef = ref.child('/courseSequence/');
         var questionRef = ref.child('/course/questions');
@@ -889,11 +888,11 @@
           var q = $q.defer();
 
           sequenceRef.once("value", function (snapshot) {
-            
-            
+
+
             var numChapter = 0;
             numChapter = snapshot.numChildren();
-            
+
             JsonObj = JSON.parse(e.target.result);
 
             var answer = JsonObj.answerKey;

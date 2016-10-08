@@ -592,7 +592,7 @@
 
                     var testcases = [];
                     for (i = 0; i < question.testcases.length; i++) {
-                        testcases.push(question.testcases[i].test);
+                        testcases.push({name:question.testcases[i].name,expect:question.testcases[i].expect,toEqual:question.testcases[i].toEqual,hint:question.testcases[i].hint});
                     }
 
                     delete question.cid;

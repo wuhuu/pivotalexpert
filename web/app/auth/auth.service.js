@@ -44,7 +44,6 @@
         });
         
         // set the authentication token
-
         gapi.auth.setToken({
             access_token: token
         });
@@ -58,8 +57,6 @@
         userData.$loaded().then(function(){            
             //Check whether login user email belong to admin account email
             var adminEmail = commonService.getAdminEmail().toUpperCase();
-            console.log("TESTING LOGIN");
-            console.log(userData.email.toUpperCase());
 
             //update admin role
             if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
@@ -152,7 +149,7 @@
                   mimeType: "application/vnd.google-apps.spreadsheet",
                   name: studSheetName,
                   parents: [$rootScope.folderID]
-                });
+              });
                 studSheetRequest.execute(function(response){
                     spreadsheetID = response.id;
                     //Update Firebase with folderID
@@ -175,24 +172,7 @@
                           }
                         }
                       ]
-                }).then(function(response){
-                        gapi.client.sheets.spreadsheets.batchUpdate({
-                        spreadsheetId: $scope.userExcelID,
-                        requests: [
-                          {
-                            updateSheetProperties:{
-                              properties:{
-                                title: $scope.qnsTitle,
-                                sheetId: $scope.sheetId1
-                              },
-                              fields: "title"
-                            }
-                          }
-                        ]
-                      }).then(function(response) {
-                        deferred.resolve($scope.sheetId1);
-                      });
-                  });
+                    });
                 });
                 
                 //if educator, create educator sheet

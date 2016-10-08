@@ -665,23 +665,16 @@
 
                 //Valid Question Title
                 if(validQnsTitle || !isNewQuestion) {
-
-                    var formulaAnswer = [];
-                    for (i = 0; i < question.formulaAnswer.length; i++) {
-                        formulaAnswer.push({cell:question.formulaAnswer[i].cell, functionName:question.formulaAnswer[i].functionName});
+                    
+                    for (i = 0; i < question.testcases.length; i++) {
+                        delete question.testcases[i].$$hashKey;
                     }
-
-                    var valueAnswer = [];
-                    for (i = 0; i < question.valueAnswer.length; i++) {
-                        valueAnswer.push({cell:question.valueAnswer[i].cell, value:question.valueAnswer[i].value});
-                    }
+                    
                     // create new answer nodes & fill it up
-                    var answerNode = {formulaAnswer:formulaAnswer , valueAnswer:valueAnswer, range : question.range};
-
+                    var answerNode = {testcases:question.testcases};
+                    
                     delete question.cid;
-                    delete question.formulaAnswer;
-                    delete question.valueAnswer;
-                    delete question.range;
+                    delete question.testcases;
                     delete question.$$conf;
                     delete question.$priority;
                     delete question.$id;

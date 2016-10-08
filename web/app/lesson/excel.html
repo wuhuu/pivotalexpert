@@ -13,12 +13,15 @@
     <div style="padding: 20px" ng-show="incorrect">
       <div class="md-whiteframe-z1">
         <div style="padding: 10px">
-          <i style="color:red" class="fa fa-times-circle" aria-hidden="true"></i> <strong>Incorrect Submission</strong>
+          <strong>Incorrect Submission</strong>
         </div>
         <md-divider></md-divider>
         <md-content style="padding: 0 10px; max-height: 200px">
-          <h4 style="margin: 0.5em 0">Hint:</h4>
-          <p style="margin: 0.5em 0">{{qnsHint}}</p>
+          <div ng-repeat="msg in qnsHint">
+            <p style="margin: 0.5em 0">
+              <i style="color:red" class="fa fa-times-circle" aria-hidden="true"></i>  {{msg}}
+            </p>
+          </div>
         </md-content>
       </div>
     </div>

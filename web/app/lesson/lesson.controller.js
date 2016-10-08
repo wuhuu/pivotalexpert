@@ -91,10 +91,10 @@
 
                         gapi.client.load(discoveryUrl).then(function() {
                             getAllSheets().then(function(result) {
-                                removeAllSheets(result).then(function(){
+                                deleteSheets(result).then(function(){
                                     copyQnsFromEdu().then(function(result) {
                                         updateSheetTitle().then(function(result) {
-                                            var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + $scope.sheetId1;
+                                            var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + $scope.curSheet;
                                             $scope.srclink = $sce.trustAsResourceUrl(excelLink);
                                         });
                                     });
@@ -164,30 +164,22 @@
 
                 //excel question type
                 if (qnsType == 'excel') {
-
+                    $scope.incorrect = false;
                     gapi.auth.setToken({
                         access_token: $scope.token
                     });
-                    $scope.range = answerKey.range;
-                    $scope.formulaAnswer = answerKey.formulaAnswer;
-                    $scope.valueAnswer = answerKey.valueAnswer;
 
                     var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
                     gapi.client.load(discoveryUrl).then(function() {
-                        checkCellFormula().then(function(result) {
-                            if(result.indexOf(false) === -1 && result.indexOf('false') === -1) {
-                                checkCellValue().then(function(result){
-                                    if (result.indexOf(false) === -1 && result.indexOf('false') === -1) {
-                                        deleteCurrentSheet().then(function() {
-                                            nextQns(chapter,qns);
-                                            commonService.showSimpleToast("AWESOME!! You have completed the EXCEL Question");
-                                        });
-
-                                    } else {
-                                        $scope.incorrect = true;
-                                        $scope.checkingAns = false;
-                                    }
-                                });
+                        $scope.sheetsToBeDelete = [];
+                        $scope.qnsHint = [];
+                        validateAns(answerKey.testcases).then(function(result){
+                            deleteSheets($scope.sheetsToBeDelete);
+                            if (result.indexOf(false) === -1) {
+                                nextQns(chapter,qns);
+                                commonService.showSimpleToast("AWESOME!! You have completed the EXCEL Question");
+                                $scope.incorrect = false;
+                                $scope.checkingAns = false;
                             } else {
                                 $scope.incorrect = true;
                                 $scope.checkingAns = false;
@@ -243,6 +235,24 @@
         }
     });
 
+    function validateAns(testcases) {
+        var deferred = $q.defer();
+        $scope.result = [];
+        angular.forEach(testcases, function (value, key) {
+            duplicateSheet(value).then(function(result) {
+                $scope.result.push(result.result);
+                if(!result.result) {
+                    $scope.qnsHint.push(result.msg);
+                }
+                if($scope.result.length == testcases.length) {
+                    deferred.resolve($scope.result);
+                }
+            });
+        });
+
+        return deferred.promise;
+    }
+    
     function getAllSheets() {
         var deferred = $q.defer();
         gapi.client.sheets.spreadsheets.get({
@@ -265,7 +275,7 @@
         return deferred.promise;
     }
 
-    function removeAllSheets(sheetsToBeDelete) {
+    function deleteSheets(sheetsToBeDelete) {
         var deferred = $q.defer();
         var sheets = sheetsToBeDelete;
 
@@ -304,11 +314,45 @@
           destinationSpreadsheetId: $scope.userExcelID,
         }).then(function(response) {
 
-          $scope.sheetId1 = response.result.sheetId;
-          //update user sheetID - Currently not in use
-          //ref.child("/auth/users/" + user.uid).update({ sheetID: $scope.sheetId1 });
+          $scope.curSheet = response.result.sheetId;
           deferred.resolve(true);
 
+        });
+        return deferred.promise;
+    }
+    
+    function duplicateSheet(validation) {
+        var deferred = $q.defer();
+        
+        gapi.client.sheets.spreadsheets.sheets.copyTo({
+            spreadsheetId: $scope.userExcelID,
+            sheetId: $scope.curSheet,
+            destinationSpreadsheetId: $scope.userExcelID,
+        }).then(function(response) {
+            $scope.sheetsToBeDelete.push(response.result.sheetId);
+            var sheetName = response.result.title;
+            
+            gapi.client.sheets.spreadsheets.values.update({
+                spreadsheetId: $scope.userExcelID,
+                range: sheetName + "!" + validation.cellToChange,
+                valueInputOption: "USER_ENTERED",
+                values: 
+                  [
+                    [validation.changedTo]
+                  ]
+            }).then(function(response) {
+                gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: $scope.userExcelID,
+                    range: sheetName + "!" + validation.expectCell
+                }).then(function(response) {
+                    if(response.result.values){
+                        validation.result = response.result.values[0][0] == validation.toEqual;
+                    } else {
+                        validation.result = false;
+                    }
+                    deferred.resolve(validation);
+                });
+            });
         });
         return deferred.promise;
     }
@@ -322,7 +366,7 @@
                 updateSheetProperties:{
                   properties:{
                     title: $scope.qnsTitle,
-                    sheetId: $scope.sheetId1
+                    sheetId: $scope.curSheet
                   },
                   fields: "title"
                 }
@@ -332,86 +376,6 @@
             deferred.resolve(true);
         });
         return deferred.promise;
-    }
-
-
-    function checkCellFormula() {
-      var deferred = $q.defer();
-      gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: $scope.userExcelID,
-        range: $scope.qnsTitle + "!" + $scope.range,
-        valueRenderOption:"FORMULA"
-      }).then(function(response) {
-
-        $scope.formulaResult = []
-        if($scope.formulaAnswer) {
-            var totalTestNum =  $scope.formulaAnswer.length;
-            for (i = 0; i < totalTestNum; i++) {
-                var cell = $scope.formulaAnswer[i].cell;
-                var functionName = $scope.formulaAnswer[i].functionName;
-
-                var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
-                var row = parseInt(cell.substring(1)) - 1;
-
-                var formula = String(response.result.values[parseInt(row)][parseInt(col)]);
-
-                $scope.formulaResult.push(formula.toUpperCase().indexOf(functionName.toUpperCase()) !== -1);
-            }
-        }
-        deferred.resolve($scope.formulaResult);
-
-      });
-      return deferred.promise;
-    }
-
-    function checkCellValue() {
-      var deferred = $q.defer();
-      gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: $scope.userExcelID,
-        range: $scope.qnsTitle + "!" + $scope.range
-      }).then(function(response) {
-
-        $scope.valueResult = []
-        if($scope.formulaAnswer) {
-            var totalTestNum =  $scope.valueAnswer.length;
-            for (i = 0; i < totalTestNum; i++) {
-                var cell = $scope.valueAnswer[i].cell;
-                var answer = $scope.valueAnswer[i].value;
-
-                var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
-                var row = parseInt(cell.substring(1)) - 1;
-                var valueRow = response.result.values[parseInt(row)];
-                if(valueRow) {
-                    value = valueRow[parseInt(col)];
-                    $scope.valueResult.push(value === answer);
-                } else {
-                    $scope.valueResult.push(false);
-                }
-
-            }
-        }
-        deferred.resolve($scope.valueResult);
-      });
-
-      return deferred.promise;
-    }
-
-    function deleteCurrentSheet() {
-        var deferred = $q.defer();
-        gapi.client.sheets.spreadsheets.batchUpdate({
-            spreadsheetId: $scope.userExcelID,
-            requests: [
-              {
-                deleteSheet:{
-                    sheetId: $scope.sheetId1
-                }
-              }
-            ]
-        }).then(function(response) {
-            deferred.resolve(true);
-
-        });
-      return deferred.promise;
     }
 
     function runTestcase(test, code) {

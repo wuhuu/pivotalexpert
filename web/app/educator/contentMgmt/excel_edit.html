@@ -1,17 +1,18 @@
 <div layout="row" flex>
+
+  <!--LEFT SIDE-->
   <div style="position: relative"class="md-whiteframe-z2" layout-padding flex="30">
-    <!--questions and submmit-->
 
     <md-input-container class="md-block">
         <label>Question</label>
         <textarea ng-model="qns.qnsInstruction" rows="4" md-select-on-focus>
         </textarea>
     </md-input-container>
-    
+    <!--
     <div style="padding: 20px">
       <md-button class="md-raised md-primary" ng-disabled="true" style="width: 100%">Submit</md-button>
     </div>
-    <!--if ans is incorrect display this-->
+    <!--if ans is incorrect display this
     <div style="padding: 20px">
       <div class="md-whiteframe-z1">
         <div style="padding: 10px">
@@ -25,14 +26,18 @@
             <input ng-model="qns.hint">
           </md-input-container>
         </md-content>
+        
       </div>
     </div>
-    <!--help button-->
+    <!--help button
     <md-button style="position:absolute; bottom:0; right:0; margin: 10px" ng-click="showGridBottomSheet()">
       <i class="fa fa-info-circle" aria-hidden="true"></i>
       Help
     </md-button>
+    -->
   </div>
+  
+  <!--RIGHT SIDE-->
   <div flex="70" layout="column">
     <div style="padding: 0 20px">
       <h2 class="pull-left">
@@ -41,53 +46,47 @@
           <input ng-model="qns.qnsTitle">
         </md-input-container>
       </h2>
-        <div class="pull-right"style="padding:20px">
+        <div class="pull-right" style="padding:20px">
             <md-button class="md-raised " ng-click='saveExcelChanges($event)'>Save all changes</md-button>
             <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
             <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
         </div>
     </div>
-    <md-divider></md-divider>
-        <label ng-if="!srclink"> Please wait while we prepare the excel sheet. </label>
-        <iframe style="height: 350px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
-        <div style="padding: 10px 0px">
-          <md-input-container class="md-block">
-            <label>Cells Range of the Question. Eg. A1:E8</label>
-            <input ng-model="qns.range">
-          </md-input-container>
-          
-          <div ng-repeat="ans in qns.formulaAnswer">
-            <label>Formula Answers</label>
-              <md-button ng-click='deleteFormulaAns($index)' class="md-icon-button" aria-label="Settings">
-                  <i class="fa fa-times"></i>
-                </md-button>
-              <md-input-container class="md-block">
-                <label>Cell [Eg. C1]</label>
-                <input ng-model="ans.cell">
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>Function Name [Eg. SUM]</label>
-                <input ng-model="ans.functionName">
-              </md-input-container>
-          </div>
-          
-          <div ng-repeat="ans in qns.valueAnswer">
-            <label>Value Answers</label>
-            <md-button ng-click='deleteValueAns($index)' class="md-icon-button" aria-label="Settings">
-              <i class="fa fa-times"></i>
+    
+    
+    <label ng-if="!srclink"> Please wait while we prepare the excel sheet. </label>
+    <div ng-if="srclink">
+        <iframe style="height: 450px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
+        <div style="padding: 10px 0px">          
+          <div ng-repeat="ans in qns.testcases">
+            <label>Validate Answers</label>
+            <md-button ng-click='deleteValidation($index)' class="md-icon-button" aria-label="deleteValidation">
+                <i class="fa fa-times"></i>
             </md-button>
-              <md-input-container class="md-block">
-                <label>Cell [Eg. C1]</label>
-                <input ng-model="ans.cell">
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>Value [Eg. 25]</label>
-                <input ng-model="ans.value">
-              </md-input-container>
+            <br/>
+            <md-input-container class="md-block">
+              <label>Cell to Change</label>
+              <input ng-model="ans.cellToChange"/>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>Changed To</label>
+                <input ng-model="ans.changedTo">
+            </md-input-container>
+            <md-input-container class="md-block" >
+              <label>Expect Cell</label>
+              <input ng-model="ans.expectCell">
+            </md-input-container>
+            <md-input-container class="md-block" >
+              <label>toEqual</label>
+              <input ng-model="ans.toEqual">
+            </md-input-container>
+            <md-input-container class="md-block" >
+              <label>Hint Message</label>
+              <input ng-model="ans.msg">
+            </md-input-container>
           </div>
           
-          <md-button class="md-raised pull-right" ng-click="addValueAnswer()">Add Value Answer Cell</md-button>
-          <md-button class="md-raised pull-right" ng-click="addFormulaAnswer()">Add Formula Answer Cell</md-button>
+          <md-button class="md-raised pull-right" ng-click="addValidation()">Add Validation Check</md-button>
 
         </div>
       </div>

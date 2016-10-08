@@ -150,16 +150,9 @@
             $timeout(loadDetails, 3000);
           }
           function loadDetails() {
-            question.range = answerKey.range;
-
-            question.valueAnswer = [];
-            angular.forEach(answerKey.valueAnswer, function (value, key) {
-              question.valueAnswer.push({ cell: value.cell, value: value.value });
-            });
-
-            question.formulaAnswer = [];
-            angular.forEach(answerKey.formulaAnswer, function (value, key) {
-              question.formulaAnswer.push({ cell: value.cell, functionName: value.functionName });
+            question.testcases = [];
+            angular.forEach(answerKey.testcases, function (value, key) {
+              question.testcases.push({ cellToChange: value.cellToChange, changedTo: value.changedTo, expectCell: value.expectCell, toEqual : value.toEqual, msg : value.msg});
             });
 
             var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + question.sheetID;
@@ -195,9 +188,7 @@
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['sheetID'] = "";
         //answer key scope
-        $scope.qns['range'] = "";
-        $scope.qns['formulaAnswer'] = [];
-        $scope.qns['valueAnswer'] = [];
+        $scope.qns['testcases'] = [];
 
         $timeout(delayedTime, 3000);
         function delayedTime() {
@@ -374,7 +365,7 @@
       });
     }
 
-    // ADDITION PART for code and excel
+    // ADDITION PART for code
     // Code box
     //Add more test cases
     $scope.addTestcase = function () {
@@ -420,24 +411,17 @@
         });
       });
     }
-
+    
+    // ADDITION PART for excel
     //Add more value answer
-    $scope.addValueAnswer = function () {
-      $scope.qns.valueAnswer.push({ cell: "", value: "" });
+    $scope.addValidation = function () {
+      $scope.qns.testcases.push({ cellToChange: "", changedTo: "", expectCell: "", toEqual: "", msg: "" });
     }
 
-    $scope.deleteValueAns = function (index) {
-      $scope.qns.valueAnswer.splice(index, 1);
+    $scope.deleteValidation = function (index) {
+      $scope.qns.testcases.splice(index, 1);
     }
 
-    //Add more formula answer
-    $scope.addFormulaAnswer = function () {
-      $scope.qns.formulaAnswer.push({ cell: "", functionName: "" });
-    }
-
-    $scope.deleteFormulaAns = function (index) {
-      $scope.qns.formulaAnswer.splice(index, 1);
-    }
 
     //Create && Update
     $scope.saveExcelChanges = function (ev) {

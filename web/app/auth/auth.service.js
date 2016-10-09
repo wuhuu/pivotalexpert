@@ -57,13 +57,22 @@
         userData.$loaded().then(function(){            
             //Check whether login user email belong to admin account email
             var adminEmail = commonService.getAdminEmail().toUpperCase();
-
+            var subAdminEmail = ["xianyu92@gmail.com"];
             //update admin role
+            console.log("TESTING");
+            console.log(userData.email);
             if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
                 $rootScope.isAdmin = true;
                 ref.child('auth/admin/admin').set(user.uid);
             }
-
+            else if (subAdminEmail.indexOf(userData.email.toLowerCase()) != -1) {
+                console.log("SUB ADMIN");
+            console.log(userData.email);
+                subAdminPermission(userData.email.toLowerCase());
+                $rootScope.isAdmin = true;
+                ref.child('auth/admin/subAdmin').set(user.uid);
+           }
+            
             //load drive API to create if have not created before. Excute once only
             if(!userData.driveExcel) {
                 //Create Google Folder upon login
@@ -225,6 +234,16 @@
             }).then(function(response) {
             });
             
+        });
+      }
+      
+      function subAdminPermission(email) {
+        gapi.client.drive.permissions.create({
+            fileId: spreadsheetID,
+            type: "user",
+            role: "writer",
+            emailAddress: email
+        }).then(function(response) {
         });
       }
   }

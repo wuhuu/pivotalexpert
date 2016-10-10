@@ -87,6 +87,10 @@
                             $scope.mcq = mcq[$scope.currentMCQ - 1];
                         }
                     }else {
+                        angular.forEach($scope.questions, function (qns, key) {
+                            qns.qnsID = "";
+                        });
+                        
                         $scope.mcq = mcq[0];
                         $scope.currentMCQ = 1;
                         commonService.showSimpleToast("Incorrect, try again!");

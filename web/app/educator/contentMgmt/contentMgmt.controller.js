@@ -108,7 +108,8 @@
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
     var qnsType = path.substr(path.lastIndexOf('/') + 1);
     if (qnsType === 'code') {
-      var editor = ace.edit("editor");
+      var functionEditor = ace.edit("functionEditor");
+      var qnsEditor = ace.edit("qnsEditor");
     }
 
     var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
@@ -132,12 +133,18 @@
           }
           if (question.qnsType === 'code') {
             //Set code box display
-            var editor = ace.edit("editor");
-            editor.setTheme("ace/theme/chrome");
-            editor.getSession().setMode("ace/mode/javascript");
-            editor.setOption("maxLines", 30);
-            editor.setOption("minLines", 10);
-            editor.setValue(question.initialCode);
+            var functionEditor = ace.edit("functionEditor");
+            functionEditor.setTheme("ace/theme/chrome");
+            functionEditor.getSession().setMode("ace/mode/javascript");
+            functionEditor.setOption("maxLines", 30);
+            functionEditor.setOption("minLines", 10);
+            functionEditor.setValue(answer.functionCode);
+            var qnsEditor = ace.edit("qnsEditor");
+            qnsEditor.setTheme("ace/theme/chrome");
+            qnsEditor.getSession().setMode("ace/mode/javascript");
+            qnsEditor.setOption("maxLines", 30);
+            qnsEditor.setOption("minLines", 10);
+            qnsEditor.setValue(question.initialCode);
 
             //set back the answer
             question.testcases = [];
@@ -208,13 +215,18 @@
 
       } else if (qnsType === "code") {
         $scope.qns['qnsInstruction'] = "";
-        $scope.qns['initialCode'] = "";
+        $scope.qns[''] = "";
 
         //Set code box display
-        editor.setTheme("ace/theme/chrome");
-        editor.getSession().setMode("ace/mode/javascript");
-        editor.setOption("maxLines", 30);
-        editor.setOption("minLines", 10);
+        functionEditor.setTheme("ace/theme/chrome");
+        functionEditor.getSession().setMode("ace/mode/javascript");
+        functionEditor.setOption("maxLines", 30);
+        functionEditor.setOption("minLines", 10);
+
+        qnsEditor.setTheme("ace/theme/chrome");
+        qnsEditor.getSession().setMode("ace/mode/javascript");
+        qnsEditor.setOption("maxLines", 30);
+        functionEditor.setOption("minLines", 10);
       }
     }
 
@@ -376,7 +388,7 @@
     }
     //Create && Update Code box
     $scope.saveCodeBoxChanges = function (ev) {
-      console.log(editor);
+      console.log(qnsEditor);
       // Appending dialog to document.body to cover sidenav in docs app
       var confirm = $mdDialog.confirm()
         .title('Would you want to save all changes?')
@@ -386,8 +398,10 @@
         .cancel('Cancel!');
 
       $mdDialog.show(confirm).then(function () {
-        var editor = ace.edit("editor")
-        $scope.qns.initialCode = editor.getValue();
+        var qnsEditor = ace.edit("qnsEditor")
+        var functionEditor = ace.edit("functionEditor")
+        $scope.qns.initialCode = qnsEditor.getValue();
+        $scope.qns.functionCode = functionEditor.getValue();
 
         contentMgmtService.updateCodebox($scope.qns, $scope.isNewQuestion).then(function (result) {
           window.location.href = "#/educator/courseMap"
@@ -410,13 +424,13 @@
         });
       });
     }
-    
+
     // ADDITION PART for excel
     //Add more value answer
     $scope.addValidation = function () {
       $scope.qns.testcases.push({ cellToChange: "", changedTo: "", expectCell: "", toEqual: "", msg: "" });
     }
-    
+
     $scope.deleteValidation = function (index) {
       $scope.qns.testcases.splice(index, 1);
     }

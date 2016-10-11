@@ -34,16 +34,18 @@
         </div>
     </div>
     <md-divider></md-divider>
-        <div id="editor" style="padding: 20px" flex >
-
-        </div>
+    </br>
+    <label>Pre-Defined Functions</label>
+    <div id="functionEditor" style="padding: 20px" flex ></div>
+    </br>
+    <md-divider></md-divider>
+    </br>
+    <label>Pre-Loaded Codes in Question</label>
+    <div id="qnsEditor" style="padding: 20px" flex ></div>
 
         <div style="padding: 10px 0px">
-          <div ng-repeat="test in qns.testcases">
-            <label>Test Case</label>
-            <md-button ng-click='deleteCodeTestCase($index)' class="md-icon-button" aria-label="Settings">
-              <i class="fa fa-times"></i>
-            </md-button>
+          <label>Test Case</label>
+          <div ng-repeat="test in qns.testcases" layout="row">
               <md-input-container class="md-block">
                 <label>Test Case - Name</label>
                 <input ng-model="test.name">
@@ -60,6 +62,9 @@
                 <label>Test Case - Hint</label>
                 <input ng-model="test.hint">
               </md-input-container>
+              <md-button ng-click='deleteCodeTestCase($index)' class="md-icon-button" aria-label="Settings">
+                <i class="fa fa-times"></i>
+              </md-button>
           </div>
           <div style="width: 50%">
             <md-button style="width: 100%; margin: 40px 0px" ng-click="addTestcase()" class="md-primary md-raised">add test case</md-button>

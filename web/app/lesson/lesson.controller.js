@@ -201,12 +201,13 @@
                         var errorHints =[];
                         var promises = []
                         var totalTestNum = answerKey.testcases.length;
+                        var functionCode = answerKey.functionCode;
 
                         for (i = 0; i < totalTestNum; i++) {
                             var test =  answerKey.testcases[i];
 
                             //Run Test case
-                            runTestcase(test, code).then(function(result) {
+                            runTestcase(test, code, functionCode).then(function(result) {
                                 $scope.codeResult.push(result);
                                 //When end of test case
                                 if($scope.codeResult.length === totalTestNum){
@@ -252,7 +253,7 @@
 
         return deferred.promise;
     }
-    
+
     function getAllSheets() {
         var deferred = $q.defer();
         gapi.client.sheets.spreadsheets.get({
@@ -320,10 +321,10 @@
         });
         return deferred.promise;
     }
-    
+
     function duplicateSheet(validation) {
         var deferred = $q.defer();
-        
+
         gapi.client.sheets.spreadsheets.sheets.copyTo({
             spreadsheetId: $scope.userExcelID,
             sheetId: $scope.curSheet,
@@ -331,12 +332,12 @@
         }).then(function(response) {
             $scope.sheetsToBeDelete.push(response.result.sheetId);
             var sheetName = response.result.title;
-            
+
             gapi.client.sheets.spreadsheets.values.update({
                 spreadsheetId: $scope.userExcelID,
                 range: sheetName + "!" + validation.cellToChange,
                 valueInputOption: "USER_ENTERED",
-                values: 
+                values:
                   [
                     [validation.changedTo]
                   ]
@@ -378,10 +379,10 @@
         return deferred.promise;
     }
 
-    function runTestcase(test, code) {
+    function runTestcase(test, code, functionCode) {
 
         var deferred = $q.defer();
-        var ww = new Worker(getInlineJSandTest(test, code));
+        var ww = new Worker(getInlineJSandTest(test, code, functionCode));
         //Send any message to worker
         ww.postMessage("and message");
         ww.onmessage = function (e) {
@@ -395,11 +396,11 @@
         return deferred.promise;
     }
 
-    function getInlineJSandTest (test, code) {
+    function getInlineJSandTest (test, code,functionCode) {
 		var top = 'onmessage = function(msg){';
 		var bottom = 'postMessage(result);};';
     var newTest = "var result = " + test.expect + " == " + test.toEqual +";";
-		var all = code +"\n\n"+top+"\n"+newTest+"\n"+bottom+"\n"
+		var all = functionCode + code +"\n\n"+top+"\n"+newTest+"\n"+bottom+"\n"
     console.log(all);
 		var blob = new Blob([all], {"type": "text\/plain"});
 		return URL.createObjectURL(blob);

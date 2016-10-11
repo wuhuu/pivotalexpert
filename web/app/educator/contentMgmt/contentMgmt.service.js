@@ -594,18 +594,22 @@
                     for (i = 0; i < question.testcases.length; i++) {
                         testcases.push({name:question.testcases[i].name,expect:question.testcases[i].expect,toEqual:question.testcases[i].toEqual,hint:question.testcases[i].hint});
                     }
+                    var functionCode = question.functionCode;
 
                     delete question.cid;
                     delete question.testcases;
+                    delete question.functionCode;
                     delete question.$$conf;
                     delete question.$priority;
                     delete question.$id;
+
 
                     //Update to firebase question node
                     questionNodeRef.child(qid).update(question);
 
                     //Update to firebase answer node
                     answerKeyNodeRef.child(qid).update({testcases:testcases});
+                    answerKeyNodeRef.child(qid).update({functionCode:functionCode});
 
                     //Update course sequence
                     var questionSeqNode = {qid:qid, qnsTitle:question.qnsTitle, qnsType: "code"};
@@ -665,14 +669,14 @@
 
                 //Valid Question Title
                 if(validQnsTitle || !isNewQuestion) {
-                    
+
                     for (i = 0; i < question.testcases.length; i++) {
                         delete question.testcases[i].$$hashKey;
                     }
-                    
+
                     // create new answer nodes & fill it up
                     var answerNode = {testcases:question.testcases};
-                    
+
                     delete question.cid;
                     delete question.testcases;
                     delete question.$$conf;

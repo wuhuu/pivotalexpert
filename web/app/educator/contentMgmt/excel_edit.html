@@ -1,11 +1,13 @@
 <div layout="row" flex>
-
   <!--LEFT SIDE-->
   <div style="position: relative"class="md-whiteframe-z2" layout-padding flex="30">
 
     <md-input-container class="md-block">
-        <label>Question</label>
-        <textarea ng-model="qns.qnsInstruction" rows="4" md-select-on-focus>
+        <label>Challenge Instruction</label>
+        <textarea ng-model="qns.qnsInstruction" name="qnsInstruction" rows="4" md-select-on-focus required>
+        <ng-messages for="qnsForm.qnsInstruction.$error" md-auto-hide="true">
+          <div ng-message="required">This is required.</div>
+        </ng-messages>
         </textarea>
     </md-input-container>
     <!--
@@ -42,13 +44,16 @@
     <div style="padding: 0 20px">
       <h2 class="pull-left">
         <md-input-container class="md-block">
-          <label>Question Title</label>
-          <input ng-model="qns.qnsTitle">
+          <label>Challenge Title</label>
+          <input ng-model="qns.qnsTitle" name="qnsTitle" required>
+          <ng-messages for="qnsForm.qnsTitle.$error" md-auto-hide="true">
+            <div ng-message="required">This is required.</div>
+          </ng-messages>
         </md-input-container>
       </h2>
         <div class="pull-right" style="padding:20px">
             <md-button class="md-raised " ng-click='saveExcelChanges($event)'>Save all changes</md-button>
-            <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
+            <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Challenge</md-button>
             <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
         </div>
     </div>
@@ -62,6 +67,9 @@
             <label>Validate Answers</label>
             <md-button ng-click='deleteValidation($index)' class="md-icon-button" aria-label="deleteValidation">
                 <i class="fa fa-times"></i>
+                <md-tooltip md-direction="right" md-delay="200" >
+                  Remove validation
+                </md-tooltip>
             </md-button>
             <br/>
             <md-input-container class="md-block">
@@ -89,7 +97,6 @@
           <md-button class="md-raised pull-right" ng-click="addValidation()">Add Validation Check</md-button>
 
         </div>
-      </div>
     </div>
   </div>
 </div>

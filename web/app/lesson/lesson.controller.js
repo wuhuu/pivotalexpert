@@ -86,6 +86,16 @@
 
         }
 
+        //Google Form type question
+        if(qnsType == 'form'){
+            $scope.srclink = $sce.trustAsResourceUrl(question.link);
+            var iframeElem = document.getElementById('iframeId');
+
+            $scope.$watch('srclink', function(newValue, oldValue) {
+              console.log("TESTING");
+            });
+                      
+        }
         //Slides type question
         if(qnsType == 'slides'){
            var slides = question.slides;
@@ -150,9 +160,9 @@
             var adminID = $firebaseObject(ref.child('auth/admin/admin'));
             adminID.$loaded().then(function(){
                 //load admin spreadsheetId
-                var adminUser = $firebaseObject(ref.child('auth/users/' + adminID.$value));
-                adminUser.$loaded().then(function(){
-                    $scope.eduExcelID = adminUser.eduSheet;
+                var admin = $firebaseObject(ref.child('auth/admin/'));
+                admin.$loaded().then(function(){
+                    $scope.eduExcelID = admin.spreadsheetID;
 
                     //load user spreadsheetId
                     var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));

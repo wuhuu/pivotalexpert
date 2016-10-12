@@ -19,7 +19,8 @@
       <span>{{courseTitle}}</span>
     </h2>
     <span flex></span>
-    <md-button style="margin-right:10px" href="#/educator/courseMap" ng-show="isAdmin" >Educator course</md-button>
+    <md-button style="margin-right:10px" href="#/educator/administrator" ng-show="mainAdmin" >Administrators</md-button>
+    <md-button style="margin-right:10px" href="#/educator/courseMap" ng-show="isAdmin || mainAdmin" >Educator course</md-button>
     <md-button style="margin-right:10px" href="#/course" >course</md-button>
     <!-- <md-button style="margin-right:10px">chat</md-button> -->
     <md-button style="margin-right:10px"  href="#/profile/{{profileLink}}" >[ {{ownNumAchievement}} ]</md-button>

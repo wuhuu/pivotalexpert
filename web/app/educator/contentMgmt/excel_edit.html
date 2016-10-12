@@ -10,33 +10,6 @@
         </ng-messages>
         </textarea>
     </md-input-container>
-    <!--
-    <div style="padding: 20px">
-      <md-button class="md-raised md-primary" ng-disabled="true" style="width: 100%">Submit</md-button>
-    </div>
-    <!--if ans is incorrect display this
-    <div style="padding: 20px">
-      <div class="md-whiteframe-z1">
-        <div style="padding: 10px">
-          <i style="color:red" class="fa fa-times-circle" aria-hidden="true"></i> <strong>Incorrect Submission</strong>
-        </div>
-        <md-divider></md-divider>
-        <md-content style="padding: 0 10px; max-height: 200px">
-
-          <md-input-container class="md-block">
-            <label>Hints</label>
-            <input ng-model="qns.hint">
-          </md-input-container>
-        </md-content>
-        
-      </div>
-    </div>
-    <!--help button
-    <md-button style="position:absolute; bottom:0; right:0; margin: 10px" ng-click="showGridBottomSheet()">
-      <i class="fa fa-info-circle" aria-hidden="true"></i>
-      Help
-    </md-button>
-    -->
   </div>
   
   <!--RIGHT SIDE-->
@@ -62,15 +35,10 @@
     <label ng-if="!srclink"> Please wait while we prepare the excel sheet. </label>
     <div ng-if="srclink">
         <iframe style="height: 450px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
-        <div style="padding: 10px 0px">          
+        <div style="padding: 10px 0px">   
+          <label>Validate Answers</label>        
           <div ng-repeat="ans in qns.testcases">
-            <label>Validate Answers</label>
-            <md-button ng-click='deleteValidation($index)' class="md-icon-button" aria-label="deleteValidation">
-                <i class="fa fa-times"></i>
-                <md-tooltip md-direction="right" md-delay="200" >
-                  Remove validation
-                </md-tooltip>
-            </md-button>
+            <div layout="row">
             <br/>
             <md-input-container class="md-block">
               <label>Cell to Change</label>
@@ -88,6 +56,13 @@
               <label>toEqual</label>
               <input ng-model="ans.toEqual">
             </md-input-container>
+            <md-button ng-click='deleteValidation($index)' class="md-icon-button" aria-label="deleteValidation">
+                <i class="fa fa-times"></i>
+                <md-tooltip md-direction="right" md-delay="200" >
+                  Remove validation
+                </md-tooltip>
+            </md-button>
+            </div> 
             <md-input-container class="md-block" >
               <label>Hint Message</label>
               <input ng-model="ans.msg">

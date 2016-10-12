@@ -43,7 +43,47 @@
 
         //Video type question
         if(qnsType == 'video'){
-            $scope.srclink = $sce.trustAsResourceUrl(question.link);
+            //$scope.srclink = $sce.trustAsResourceUrl(question.link);
+            var player;
+            $scope.completed = false;
+            loadPlayer();
+
+            function loadPlayer(){
+              if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                var tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                var firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                window.onYouTubeIframeAPIReady = function() {
+                  onYouTubePlayer();
+                };
+
+              } else {
+                onYouTubePlayer();
+              }
+            }
+
+            function onYouTubePlayer() {
+              player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: question.link,
+                events: {
+                  'onStateChange': onPlayerStateChange
+                }
+              });
+            }
+
+
+            function onPlayerStateChange(event) {
+              if(event.data === 0) {
+                $scope.completed = true;
+                $scope.$apply();
+                //commonService.showSimpleToast("Time to applied what you have learnt!");
+                //nextQns(chapter,qns);
+              }
+            }
+
         }
 
         //Slides type question
@@ -74,7 +114,7 @@
             $scope.currentMCQ = 1;
             $scope.totalMCQ = mcq.length
             var answerKey = $firebaseObject(ref.child('answerKey/' + qid));
-            
+
             //MCQ validation
             $scope.changeMCQ = function(changeBy) {
                answerKey.$loaded().then(function() {
@@ -82,7 +122,7 @@
                         if($scope.currentMCQ === $scope.totalMCQ) {
                            //nextQns(chapter,qns);
                            showCompleteDialog("You have completed the MCQ Challenge, go for the next challenge!");
-                        }else {                       
+                        }else {
                             $scope.currentMCQ += changeBy;
                             $scope.mcq = mcq[$scope.currentMCQ - 1];
                         }
@@ -90,12 +130,12 @@
                         angular.forEach($scope.questions, function (qns, key) {
                             qns.qnsID = "";
                         });
-                        
+
                         $scope.mcq = mcq[0];
                         $scope.currentMCQ = 1;
                         commonService.showSimpleToast("Incorrect, try again!");
                     }
-               }); 
+               });
             }
             //initial run
             $scope.mcq = mcq[0];

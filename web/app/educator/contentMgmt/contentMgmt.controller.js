@@ -427,9 +427,13 @@
 
     function loadUserDetails() {
       var user = firebase.auth().currentUser;
+      var adminRef = ref.child('auth/admin');
       var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
       currentUser.$loaded().then(function () {
-        $scope.userExcelID = currentUser.eduSheet;
+        //load educator spreadsheets
+        adminRef.once('value', function(snapshot) {
+            $scope.userExcelID = snapshot.child('spreadsheetID').val()
+        });
         $scope.userToken = currentUser.access_token;
         gapi.auth.setToken({
           access_token: $scope.userToken

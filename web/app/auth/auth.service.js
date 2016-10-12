@@ -5,23 +5,23 @@
     .factory('authService', authService);
 
   function authService($firebaseObject, $firebaseAuth, $location, $rootScope, commonService) {
-	  
-	// create an instance of the authentication service
-	var ref = firebase.database().ref();
-	var auth = $firebaseAuth();
-	var usersRef = ref.child('auth/users');
-    var adminSpreadSheetRef = ref.child('auth/admin');
-	
-	var service = {
+      
+    // create an instance of the authentication service
+    var ref = firebase.database().ref();
+    var auth = $firebaseAuth();
+    var usersRef = ref.child('auth/users');
+    var adminRef = ref.child('auth/admin');
+    
+    var service = {
       login: login,
       logout: logout,
       fetchAuthData: fetchAuthData,
     };
-	
-	return service;
-	
-	//Different function of the auth service
-	function login() {
+    
+    return service;
+    
+    //Different function of the auth service
+    function login() {
       
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/userinfo.email');
@@ -55,33 +55,39 @@
         
         var userData = $firebaseObject(usersRef.child(user.uid));
         //navBarService.updateNavBar(user.displayName);
-        userData.$loaded().then(function(){            
+        userData.$loaded().then(function(){
+            
             //Check whether login user email belong to admin account email
             var adminEmail = commonService.getAdminEmail().toUpperCase();
-            var subAdminEmail = ["xianyu92@gmail.com"];
+            
             //update admin role
-            console.log("TESTING");
-            console.log(userData.email);
             if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
-                $rootScope.isAdmin = true;
+                $rootScope.mainAdmin = true;
                 ref.child('auth/admin/admin').set(user.uid);
+                
+                //console.log($rootScope.folderID)
+                adminRef.once('value', function(snapshot) {
+                  if (!snapshot.hasChild('spreadsheetID') && userData.driveExcel) {
+                    //create edu sheet
+                    $rootScope.folderID = userData.driveFolder;
+                    createEduSheetAPI();
+                  }
+                });
+            } else {
+                //Retrieve subAdmin from firebase
+                adminRef.child('subAdmins').once('value', function(snapshot) {
+                  snapshot.forEach(function(childSnapshot) {
+                    if(childSnapshot.key == userData.$id) {
+                      $rootScope.isAdmin = true;
+                    }
+                  });   
+                });
             }
-            else if (subAdminEmail.indexOf(userData.email.toLowerCase()) != -1) {
-                console.log("SUB ADMIN");
-            console.log(userData.email);
-                subAdminPermission(userData.email.toLowerCase());
-                $rootScope.isAdmin = true;
-                ref.child('auth/admin/subAdmin').set(user.uid);
-           }
             
             //load drive API to create if have not created before. Excute once only
             if(!userData.driveExcel) {
                 //Create Google Folder upon login
                 loadDriveApi();   
-            } else if (!userData.eduSheet) {
-                //create edu sheet
-                $rootScope.folderID = userData.driveFolder;
-                createEduSheetAPI();
             }
             
             $rootScope.logined = true;
@@ -130,7 +136,6 @@
         gapi.client.load(discoveryUrl);
         gapi.client.load('drive', 'v3', createEduSheet);
     }
-    
     
     function createDriveFolder() {
         var spreadsheetID ;
@@ -183,29 +188,28 @@
                 });
                 
                 //if educator, create educator sheet
-                if($rootScope.isAdmin) {
+                if($rootScope.mainAdmin) {
                     createEduSheet();
                 }
-
             });
         });
       }
       
-      function createEduSheet() {
+    function createEduSheet() {
           
         var eduSheetName = "Educator_Question_Sheet";
 
         var eduSheetRequest = gapi.client.drive.files.create({
           mimeType: "application/vnd.google-apps.spreadsheet",
           name: eduSheetName,
-          parents: [$rootScope.folderID ]
+          parents: [$rootScope.folderID]
 
         });
         eduSheetRequest.execute(function(response){
-            spreadsheetID = response.id;
+            var spreadsheetID = response.id;
             
             //Update Firebase with admin spreadsheetID
-            adminSpreadSheetRef.update({ spreadsheetID: spreadsheetID });
+            adminRef.update({ spreadsheetID: spreadsheetID });
             
             gapi.client.sheets.spreadsheets.batchUpdate({
               spreadsheetId: spreadsheetID,
@@ -228,26 +232,9 @@
                 role: "reader",
                 type: "anyone"
             }).then(function(response) {
+                console.log(response);
             });
             
-        });
-      }
-      
-      function subAdminPermission(email) {
-        var adminSpreadsheet = $firebaseObject(adminSpreadSheetRef.child('spreadsheetID'));
-        //navBarService.updateNavBar(user.displayName);
-        adminSpreadsheet.$loaded().then(function(result){
-            console.log("TESTING LOAD ADMIN SPREADSHEET");
-            console.log(result);
-            gapi.client.load('drive', 'v3', function () {
-                gapi.client.drive.permissions.create({
-                    fileId: result.$value,
-                    type: "user",
-                    role: "writer",
-                    emailAddress: email
-                }).then(function(response) {
-                });
-            });
         });
       }
   }

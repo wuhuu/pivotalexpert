@@ -10,6 +10,7 @@
 	var ref = firebase.database().ref();
 	var auth = $firebaseAuth();
 	var usersRef = ref.child('auth/users');
+    var adminSpreadSheetRef = ref.child('auth/admin');
 	
 	var service = {
       login: login,
@@ -129,7 +130,7 @@
         gapi.client.load(discoveryUrl);
         gapi.client.load('drive', 'v3', createEduSheet);
     }
-
+    
     
     function createDriveFolder() {
         var spreadsheetID ;
@@ -163,9 +164,6 @@
                     spreadsheetID = response.id;
                     //Update Firebase with folderID
                     usersRef.child($rootScope.userID).update({ driveExcel: spreadsheetID });
-                    
-                    //Update Firebase with sheetID
-                    usersRef.child($rootScope.userID).update({ sheetID: 0 });
                     
                     gapi.client.sheets.spreadsheets.batchUpdate({
                       spreadsheetId: spreadsheetID,
@@ -205,11 +203,9 @@
         });
         eduSheetRequest.execute(function(response){
             spreadsheetID = response.id;
-            //Update Firebase with folderID
-            usersRef.child($rootScope.userID).update({ eduSheet: spreadsheetID });
             
-            //Update Firebase with sheetID
-            usersRef.child($rootScope.userID).update({ sheetID: 0 });
+            //Update Firebase with admin spreadsheetID
+            adminSpreadSheetRef.update({ spreadsheetID: spreadsheetID });
             
             gapi.client.sheets.spreadsheets.batchUpdate({
               spreadsheetId: spreadsheetID,
@@ -238,12 +234,20 @@
       }
       
       function subAdminPermission(email) {
-        gapi.client.drive.permissions.create({
-            fileId: spreadsheetID,
-            type: "user",
-            role: "writer",
-            emailAddress: email
-        }).then(function(response) {
+        var adminSpreadsheet = $firebaseObject(adminSpreadSheetRef.child('spreadsheetID'));
+        //navBarService.updateNavBar(user.displayName);
+        adminSpreadsheet.$loaded().then(function(result){
+            console.log("TESTING LOAD ADMIN SPREADSHEET");
+            console.log(result);
+            gapi.client.load('drive', 'v3', function () {
+                gapi.client.drive.permissions.create({
+                    fileId: result.$value,
+                    type: "user",
+                    role: "writer",
+                    emailAddress: email
+                }).then(function(response) {
+                });
+            });
         });
       }
   }

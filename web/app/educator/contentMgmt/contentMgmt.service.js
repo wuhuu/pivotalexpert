@@ -4,8 +4,6 @@
     .module('app.contentMgmt')
     .factory('contentMgmtService', contentMgmtService);
 
-
-
     function contentMgmtService($q,$firebaseObject,$firebaseArray, $firebaseAuth,$location, commonService) {
 
         var ref = firebase.database().ref();
@@ -32,7 +30,8 @@
             deleteQuestionFromCM:deleteQuestionFromCM,
             updateCodebox:updateCodebox,
             updateExcel:updateExcel,
-            getCourseJson:getCourseJson
+            getCourseJson:getCourseJson,
+            updateFormQuestion:updateFormQuestion
         };
 
 		return service;
@@ -140,7 +139,6 @@
 
             return q.promise;
         }
-
 
         //questions functions
         function getQuestion(qid) {
@@ -319,7 +317,6 @@
             return q.promise;
         }
 
-
         function updateQuestionSeq(questionSeq,cid) {
             var newQuestionSeq = [];
             var index = getChapterIndex(cid);
@@ -370,7 +367,6 @@
             });
             return q.promise;
         }
-
 
         function deleteQuestion (cid,qid) {
             // get chapter qns and delete them
@@ -555,9 +551,7 @@
             return q.promise;
         }
 
-
-        //ADDIION PART FOR excel and code
-
+        //ADDIION PART FOR excel and code and FORM
         function updateCodebox(question, isNewQuestion) {
 
             var q = $q.defer();
@@ -677,14 +671,15 @@
                     // create new answer nodes & fill it up
                     var answerNode = {testcases:question.testcases};
 
-                    delete question.cid;
-                    delete question.testcases;
-                    delete question.$$conf;
-                    delete question.$priority;
-                    delete question.$id;
+                    var questionContent = {
+                        qnsInstruction:question.qnsInstruction,
+                        qnsTitle:question.qnsTitle,
+                        qnsType:question.qnsType,
+                        sheetID:question.sheetID
+                    };
 
                     //Update to firebase question node
-                    questionNodeRef.child(qid).update(question);
+                    questionNodeRef.child(qid).update(questionContent);
 
                     //Update to firebase answer node
                     answerKeyNodeRef.child(qid).update(answerNode);
@@ -709,12 +704,79 @@
                         console.log("ERROR CAUGHT: "+ reason)
                     });
                 } else {
-                    q.resolve("This Question Title is being used now.");
+                    q.resolve(false);
                 }
             });
             return q.promise;
         }
 
+        function updateFormQuestion(question,isNewQuestion) {
+
+            var q = $q.defer();
+
+            // retrieve question node
+            var questionNode = $firebaseObject(questionNodeRef);
+
+            var validQnsTitle = true;
+            var cid = question.cid;
+
+            questionNode.$loaded().then(function(){
+
+                //Create new
+                if(isNewQuestion) {
+                    var qid = commonService.guid();
+
+                    // checking if chapterTitle already exist
+                    questionNode.forEach(function(qns) {
+                        if(qns.qnsTitle === question.qnsTitle) {
+                            //Chapter Title Been used
+                            validQnsTitle = false;
+                        }
+                    });
+
+                } else {
+                    var qid = question.qid;
+                }
+
+                //Valid Question Title
+                if(validQnsTitle || !isNewQuestion) {
+
+                    // create new question node & fill it up
+                    var questionContent = {
+                        qnsTitle:question.qnsTitle,
+                        qnsType:question.qnsType,
+                        link:question.link
+                    };
+                
+                    //Update to firebase question node
+                    questionNodeRef.child(qid).update(questionContent);
+                    
+                    //Update course sequence
+                    var questionSeqNode = {qid:qid, qnsTitle:question.qnsTitle, qnsType: "form"};
+
+                    //find the chapter cidIndex
+                    getChapterIndex(cid).then(function(chapIndex){
+                        var courseArray = $firebaseObject(courseSeqNodeRef);
+                        getQnsIndex(chapIndex,qid).then(function(qnsIndex){
+                            courseArray.$loaded().then(function(){
+                                if(courseArray[chapIndex]!=null) {
+                                    //Update to firebase sequence node
+                                    courseSeqNodeRef.child(chapIndex + "/qns/" + qnsIndex).update(questionSeqNode);
+                                    q.resolve(true);
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(reason){
+                        console.log("ERROR CAUGHT: "+ reason);
+                        q.resolve(false);;
+                    });
+                } else {
+                    q.resolve(false);
+                }
+            });
+            return q.promise;
+        }
     }
 
 })();

@@ -107,7 +107,9 @@
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
     var qnsType = path.substr(path.lastIndexOf('/') + 1);
-    if (qnsType === 'code') {
+    if(qnsType == 'google_form'){
+        qnsType = 'form';
+    }else if (qnsType === 'code') {
       var functionEditor = ace.edit("functionEditor");
       var qnsEditor = ace.edit("qnsEditor");
     }
@@ -166,7 +168,6 @@
             $scope.srclink = $sce.trustAsResourceUrl(excelLink);
           }
 
-
           question.qid = question.$id;
           question.cid = $routeParams.cid;
           $scope.qns = question;
@@ -190,8 +191,9 @@
         $scope.qns['mcq'] = [];
         $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = [];
-      } else if (qnsType === "excel") {
-        $scope.qns['hint'] = "";
+      } else if (qnsType === "form") {
+        $scope.qns['link'] = "";
+      }else if (qnsType === "excel") {
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['sheetID'] = "";
         //answer key scope
@@ -233,10 +235,11 @@
     $scope.backToCourseMap = function () {
       window.location.href = "#/educator/courseMap";
     }
+    
     $scope.saveQns = function (ev) {
       var confirm = $mdDialog.confirm()
         .title('Would you want to save all changes?')
-        .textContent('This question will be saved to what you configured, is it ok to proceed?')
+        .textContent('This challenge will be saved to what you configured, is it ok to proceed?')
         .targetEvent(ev)
         .ok('Please do it!')
         .cancel('Cancel!');
@@ -254,6 +257,15 @@
             window.location.href = "#/educator/courseMap";
             commonService.showSimpleToast("Slides Challenge Added/Updated.");
             //$scope.$emit("SuccessPrompt",);
+          });
+        } else if ($scope.qns.qnsType == "form") {
+          contentMgmtService.updateFormQuestion($scope.qns, $scope.isNewQuestion).then(function (result) {
+            if(result) {
+              window.location.href = "#/educator/courseMap";
+              commonService.showSimpleToast("Google Form Challenge Added/Updated.");
+            } else {
+              commonService.showSimpleToast(" Added/Updated Failed! This Challenge Title had been used.");
+            }
           });
         }
       });
@@ -343,8 +355,8 @@
 
     $scope.deleteQns = function (ev, cid, qid) {
       var confirm = $mdDialog.confirm()
-        .title('Do you really want to DELETE this question?')
-        .textContent('This question will deleted, is it ok to proceed?')
+        .title('Do you really want to DELETE this challenge?')
+        .textContent('This challenge will deleted, is it ok to proceed?')
         .targetEvent(ev)
         .ok('Delete it now!')
         .cancel('Cancel');
@@ -392,7 +404,7 @@
       // Appending dialog to document.body to cover sidenav in docs app
       var confirm = $mdDialog.confirm()
         .title('Would you want to save all changes?')
-        .textContent('This question will be saved to what you configured, is it ok to proceed?')
+        .textContent('This challenge will be saved to what you configured, is it ok to proceed?')
         .targetEvent(ev)
         .ok('Please do it!')
         .cancel('Cancel!');
@@ -435,13 +447,12 @@
       $scope.qns.testcases.splice(index, 1);
     }
 
-
     //Create && Update
     $scope.saveExcelChanges = function (ev) {
       // Appending dialog to document.body to cover sidenav in docs app
       var confirm = $mdDialog.confirm()
         .title('Would you want to save all changes?')
-        .textContent('This question will be saved to what you configured, is it ok to proceed?')
+        .textContent('This challenge will be saved to what you configured, is it ok to proceed?')
         .targetEvent(ev)
         .ok('Please do it!')
         .cancel('Cancel!');
@@ -449,8 +460,12 @@
       $mdDialog.show(confirm).then(function () {
 
         contentMgmtService.updateExcel($scope.qns, $scope.isNewQuestion).then(function (result) {
-          gapi.client.load(discoveryUrl).then(updateSheetTitle);
-          commonService.showSimpleToast("Excel Challenge Added/Updated.");
+          if(result) {
+            gapi.client.load(discoveryUrl).then(updateSheetTitle);
+            commonService.showSimpleToast("Excel Challenge Added/Updated.");
+          } else {
+            commonService.showSimpleToast(" Added/Updated Failed! This Challenge Title had been used.");
+          }
         });
       }, function () {
         // cancel function
@@ -545,7 +560,7 @@
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
-    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Excel", "Code"];
+    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Excel", "Code", "Google_Form"];
     var courseMap = contentMgmtService.getCourseSeq();
     courseMap.$loaded().then(function () {
       var seq = [];
@@ -954,8 +969,6 @@
       }
     };
 
-
-
     $scope.showPrompt = function (ev) {
       // Appending dialog to document.body to cover sidenav in docs app
       var parentEl = angular.element(document.body);
@@ -966,10 +979,10 @@
 
         '<md-dialog style="padding:20px">' +
         '<form name="qnsForm">' +
-        ' <h3>Options to create question:</h3><br>' +
+        ' <h3>Options to create challenge:</h3><br>' +
         '  <md-dialog-content>' +
         '  <md-input-container style="width:500px;height:auto;">' +
-        '    <label>Please select Chapter to put question in.</label> ' +
+        '    <label>Please select Chapter to put challenge in.</label> ' +
         '    <md-select ng-model="selectedChapter" name="chapter" required>' +
         '      <md-option ng-repeat="item in chapters" value="{{item.cid}}">' +
         '       {{item.chapterTitle}}' +
@@ -980,7 +993,7 @@
         '    </ng-messages>' +
         '  </md-input-container><br>' +
         '  <md-input-container style="width:500px;height:auto;">' +
-        '    <label>Select question Type.</label> ' +
+        '    <label>Select challenge Type.</label> ' +
         '    <md-select ng-model="selectedQnsType" name="type" required>' +
         '      <md-option ng-repeat="item in qnsTypes" value="{{item}}">' +
         '       {{item}}' +

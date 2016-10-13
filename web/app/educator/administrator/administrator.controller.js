@@ -10,16 +10,17 @@
       var adminRef = ref.child('admin');
       var subAdminRef = ref.child('admin/subAdmins');
       var userRef = ref.child('users');
+      $scope.admins = [];
       
       adminRef.once('value', function(snapshot) {
         $scope.adminID = snapshot.child('admin').val();
         $scope.adminShet = snapshot.child('spreadsheetID').val();
         loadAdminAuth();
       });
-      $scope.admins = [];
       
-      //$timeout(2000, loadAdmin());
-      //function loadAdmin() {
+      
+      $timeout(1000, loadAdmin());
+      function loadAdmin() {
         subAdminRef.once('value', function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
                 var userID = childSnapshot.key;
@@ -30,7 +31,7 @@
                 });
             });
         });
-      //}
+      }
       
       $scope.removeAdmin = function(index){
         var user = $scope.admins[index];

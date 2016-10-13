@@ -4,30 +4,27 @@
   <div class="md-whiteframe-z2" layout="column" flex="70">
     <div style="padding: 0px 20px">
       <h2 class="pull-left">{{qnsTitle}}</h2>
+      <h2 class="pull-right">({{currentSlide}}/{{totalSlide}})</h2>
     </div>
     <md-divider></md-divider>
     <div style="padding: 10px 100px">
-      <img height="315" width="100%" ng-src="{{srclink}}"></img>
-      <md-content style="max-height: 100px">
-        <p>{{explanation}}</p>
-        </md-content>
+       <div layout= "column"  layout-align="space-between center">
+          <img height="300px" ng-src="{{srclink}}"></img>
+          <div style=" margin-top:20px;" />
+          <md-content style="max-height: 100px; background-color:white ">
+            <p>{{explanation}}</p>
+            </md-content>
+      </div>
       <div style="padding: 20px 0px"layout="row">
         <div flex="33">
           <md-button style="width:70%" class="md-raised md-primary pull-left" ng-show="currentSlide != 1" ng-click="changeSlide(-1)">prev</md-button>
         </div>
-        <div flex = "33">
-          <center>({{currentSlide}}/{{totalSlide}})</center>
-        </div>
+        <div flex = "33"/>
         <div flex="33">
           <md-button style="width:70%" class="md-raised md-primary pull-right" ng-show="currentSlide != totalSlide" ng-click="changeSlide(1)">next</md-button>
           <md-button style="width:70%" class="md-raised md-primary pull-right" ng-show="currentSlide == totalSlide" ng-click="submit()">complete</md-button>
         </div>
-
-
-
       </div>
     </div>
-
-
   </div>
 </div>

@@ -79,8 +79,7 @@
               if(event.data === 0) {
                 $scope.completed = true;
                 $scope.$apply();
-                //commonService.showSimpleToast("Time to applied what you have learnt!");
-                //nextQns(chapter,qns);
+                //showCompleteDialog("Time to applied what you have learnt!");
               }
             }
 
@@ -130,8 +129,7 @@
                answerKey.$loaded().then(function() {
                    if($scope.questions[$scope.currentMCQ-1].qnsID === answerKey.answer[$scope.currentMCQ-1]) {
                         if($scope.currentMCQ === $scope.totalMCQ) {
-                           //nextQns(chapter,qns);
-                           showCompleteDialog("You have completed the MCQ Challenge, go for the next challenge!");
+                           showCompleteDialog("You have completed the Challenge, go for more!");
                         }else {
                             $scope.currentMCQ += changeBy;
                             $scope.mcq = mcq[$scope.currentMCQ - 1];
@@ -229,8 +227,7 @@
 
                 //video and slides question type
                 if (qnsType == 'video' || qnsType == 'slides'){
-                    commonService.showSimpleToast("Time to applied what you have learnt!");
-                    nextQns(chapter,qns);
+                    showCompleteDialog("Time to applied what you have learnt!");
                 }
 
                 //mcq question type
@@ -244,11 +241,6 @@
                         if(result) {
                             $scope.currentScore += 1;
                         }
-                    }
-                    //all correct, go to next qns
-                    if($scope.currentScore == $scope.totalScore) {
-                        nextQns(chapter,qns);
-                        commonService.showSimpleToast("Excellent!! You have completed the MCQ");
                     }
                 }
 
@@ -266,8 +258,7 @@
                         validateAns(answerKey.testcases).then(function(result){
                             deleteSheets($scope.sheetsToBeDelete);
                             if (result.indexOf(false) === -1) {
-                                nextQns(chapter,qns);
-                                commonService.showSimpleToast("AWESOME!! You have completed the EXCEL Question");
+                                showCompleteDialog("AWESOME!! You have completed the Challenge, go for more!");
                                 $scope.incorrect = false;
                                 $scope.checkingAns = false;
                             } else {
@@ -302,8 +293,7 @@
                                 //When end of test case
                                 if($scope.codeResult.length === totalTestNum){
                                     if ($scope.codeResult.indexOf(false) === -1) {
-                                        nextQns(chapter,qns);
-                                        commonService.showSimpleToast("FANTASTIC!! You have completed the code Question");
+                                        showCompleteDialog("FANTASTIC!! You have completed the Challenge, go for more!");
                                     } else {
                                         $scope.incorrect = true;
                                         var hint = "";

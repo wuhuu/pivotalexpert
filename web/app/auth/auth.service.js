@@ -93,9 +93,11 @@
             $rootScope.logined = true;
             if(userData.profileLink == null) {
               $location.path('/createProfileLink');
+            } else if($rootScope.isAdmin || $rootScope.mainAdmin){
+                $location.path('/educator/courseMap/');
             }
             else{
-              $location.path('/profile/' + userData.profileLink);
+              $location.path('/course/');
             }
         });
       });

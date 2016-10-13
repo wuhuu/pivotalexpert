@@ -1,6 +1,6 @@
 <div layout="row" flex>
   <!--LEFT SIDE-->
-  <div style="position: relative"class="md-whiteframe-z2" layout-padding flex="30">
+  <div style="position: relative"class="md-whiteframe-z2" layout-padding flex="25">
 
     <md-input-container class="md-block">
         <label>Challenge Instruction</label>
@@ -10,38 +10,11 @@
         </ng-messages>
         </textarea>
     </md-input-container>
-    <!--
-    <div style="padding: 20px">
-      <md-button class="md-raised md-primary" ng-disabled="true" style="width: 100%">Submit</md-button>
-    </div>
-    <!--if ans is incorrect display this
-    <div style="padding: 20px">
-      <div class="md-whiteframe-z1">
-        <div style="padding: 10px">
-          <i style="color:red" class="fa fa-times-circle" aria-hidden="true"></i> <strong>Incorrect Submission</strong>
-        </div>
-        <md-divider></md-divider>
-        <md-content style="padding: 0 10px; max-height: 200px">
-
-          <md-input-container class="md-block">
-            <label>Hints</label>
-            <input ng-model="qns.hint">
-          </md-input-container>
-        </md-content>
-        
-      </div>
-    </div>
-    <!--help button
-    <md-button style="position:absolute; bottom:0; right:0; margin: 10px" ng-click="showGridBottomSheet()">
-      <i class="fa fa-info-circle" aria-hidden="true"></i>
-      Help
-    </md-button>
-    -->
   </div>
   
   <!--RIGHT SIDE-->
   <div flex="70" layout="column">
-    <div style="padding: 0 20px">
+    <div style="padding: 0px 20px">
       <h2 class="pull-left">
         <md-input-container class="md-block">
           <label>Challenge Title</label>
@@ -58,9 +31,11 @@
         </div>
     </div>
     
-    
-    <label ng-if="!srclink"> Please wait while we prepare the excel sheet. </label>
-    <div ng-if="srclink">
+    <div layout="column"  ng-if="!srclink">
+        <label style="padding: 0 20px"> Please wait while we prepare the excel sheet.  </label>
+        <md-progress-linear md-mode="query"></md-progress-linear>
+    </div>
+    <div ng-if="srclink" style="padding-bottom: 60px">
         <iframe style="height: 450px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
         <div style="padding: 10px 0px">          
           <div ng-repeat="ans in qns.testcases">
@@ -93,9 +68,7 @@
               <input ng-model="ans.msg">
             </md-input-container>
           </div>
-          
           <md-button class="md-raised pull-right" ng-click="addValidation()">Add Validation Check</md-button>
-
         </div>
     </div>
   </div>

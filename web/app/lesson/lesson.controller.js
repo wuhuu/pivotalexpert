@@ -4,7 +4,7 @@
     .module('app.lesson')
     .controller('LessonController', LessonController);
 
-  function LessonController($q, $scope,$mdDialog, $routeParams, $location, $firebaseObject, $sce, navBarService, commonService) {
+  function LessonController($q, $scope,$mdDialog, $routeParams, $location, $firebaseObject, $sce, $mdToast, navBarService, commonService) {
 
     console.log("LessonController");
 
@@ -141,10 +141,20 @@
 
                         $scope.mcq = mcq[0];
                         $scope.currentMCQ = 1;
-                        commonService.showSimpleToast("Incorrect, try again!");
+                        $mdToast.show({
+                            template: '<md-toast class="md-top">' +
+                              '<div class="md-toast-content">' +
+                                '<i style="color:red" class="fa fa-times-circle" aria-hidden="true"></i> ' +
+                                '&nbsp&nbsp&nbspIncorrect. Re-attempt the challenge!' +
+                              '</div>' +
+                            '</md-toast>',
+                            hideDelay: 3000
+                        });                            
+          
                     }
                });
             }
+            
             //initial run
             $scope.mcq = mcq[0];
         }

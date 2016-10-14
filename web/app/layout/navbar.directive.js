@@ -15,8 +15,9 @@
   }
  
   function NavbarController($firebaseObject, $scope, $rootScope, $location, authService, navBarService, commonService) {
-      
-      var usersRef = firebase.database().ref().child('auth/users');
+      var ref = firebase.database().ref();
+      var usersRef = ref.child('auth/users');
+      var adminRef = ref.child('auth/admin');
       
       $scope.login = function () {
           console.log("Logging in");
@@ -33,13 +34,22 @@
           //Check whether login user email belong to admin account email
           var adminEmail = commonService.getAdminEmail().toUpperCase();
 
-           var userData = $firebaseObject(usersRef.child(user.uid));
+          var userData = $firebaseObject(usersRef.child(user.uid));
           //navBarService.updateNavBar(user.displayName);
           userData.$loaded().then(function(){
             $scope.profileLink = userData.profileLink;
             //check if admin role
             if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
-                $rootScope.isAdmin = true;
+                $rootScope.mainAdmin = true;
+            } else {
+                //Retrieve subAdmin from firebase
+                adminRef.child('subAdmins').once('value', function(snapshot) {
+                  snapshot.forEach(function(childSnapshot) {
+                    if(childSnapshot.key == userData.$id) {
+                      $rootScope.isAdmin = true;
+                    }
+                  });   
+                });
             }
             
           });

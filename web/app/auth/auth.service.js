@@ -5,22 +5,23 @@
     .factory('authService', authService);
 
   function authService($firebaseObject, $firebaseAuth, $location, $rootScope, commonService) {
-	  
-	// create an instance of the authentication service
-	var ref = firebase.database().ref();
-	var auth = $firebaseAuth();
-	var usersRef = ref.child('auth/users');
-	
-	var service = {
+      
+    // create an instance of the authentication service
+    var ref = firebase.database().ref();
+    var auth = $firebaseAuth();
+    var usersRef = ref.child('auth/users');
+    var adminRef = ref.child('auth/admin');
+    
+    var service = {
       login: login,
       logout: logout,
       fetchAuthData: fetchAuthData,
     };
-	
-	return service;
-	
-	//Different function of the auth service
-	function login() {
+    
+    return service;
+    
+    //Different function of the auth service
+    function login() {
       
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/userinfo.email');
@@ -44,7 +45,6 @@
         });
         
         // set the authentication token
-
         gapi.auth.setToken({
             access_token: token
         });
@@ -55,34 +55,49 @@
         
         var userData = $firebaseObject(usersRef.child(user.uid));
         //navBarService.updateNavBar(user.displayName);
-        userData.$loaded().then(function(){            
+        userData.$loaded().then(function(){
+            
             //Check whether login user email belong to admin account email
             var adminEmail = commonService.getAdminEmail().toUpperCase();
-            console.log("TESTING LOGIN");
-            console.log(userData.email.toUpperCase());
-
+            
             //update admin role
             if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
-                $rootScope.isAdmin = true;
+                $rootScope.mainAdmin = true;
                 ref.child('auth/admin/admin').set(user.uid);
+                
+                //console.log($rootScope.folderID)
+                adminRef.once('value', function(snapshot) {
+                  if (!snapshot.hasChild('spreadsheetID') && userData.driveExcel) {
+                    //create edu sheet
+                    $rootScope.folderID = userData.driveFolder;
+                    createEduSheetAPI();
+                  }
+                });
+            } else {
+                //Retrieve subAdmin from firebase
+                adminRef.child('subAdmins').once('value', function(snapshot) {
+                  snapshot.forEach(function(childSnapshot) {
+                    if(childSnapshot.key == userData.$id) {
+                      $rootScope.isAdmin = true;
+                    }
+                  });   
+                });
             }
-
+            
             //load drive API to create if have not created before. Excute once only
             if(!userData.driveExcel) {
                 //Create Google Folder upon login
                 loadDriveApi();   
-            } else if (!userData.eduSheet) {
-                //create edu sheet
-                $rootScope.folderID = userData.driveFolder;
-                createEduSheetAPI();
             }
             
             $rootScope.logined = true;
             if(userData.profileLink == null) {
               $location.path('/createProfileLink');
+            } else if($rootScope.isAdmin || $rootScope.mainAdmin){
+                $location.path('/educator/courseMap/');
             }
             else{
-              $location.path('/profile/' + userData.profileLink);
+              $location.path('/course/');
             }
         });
       });
@@ -123,7 +138,6 @@
         gapi.client.load(discoveryUrl);
         gapi.client.load('drive', 'v3', createEduSheet);
     }
-
     
     function createDriveFolder() {
         var spreadsheetID ;
@@ -152,14 +166,11 @@
                   mimeType: "application/vnd.google-apps.spreadsheet",
                   name: studSheetName,
                   parents: [$rootScope.folderID]
-                });
+              });
                 studSheetRequest.execute(function(response){
                     spreadsheetID = response.id;
                     //Update Firebase with folderID
                     usersRef.child($rootScope.userID).update({ driveExcel: spreadsheetID });
-                    
-                    //Update Firebase with sheetID
-                    usersRef.child($rootScope.userID).update({ sheetID: 0 });
                     
                     gapi.client.sheets.spreadsheets.batchUpdate({
                       spreadsheetId: spreadsheetID,
@@ -175,52 +186,32 @@
                           }
                         }
                       ]
-                }).then(function(response){
-                        gapi.client.sheets.spreadsheets.batchUpdate({
-                        spreadsheetId: $scope.userExcelID,
-                        requests: [
-                          {
-                            updateSheetProperties:{
-                              properties:{
-                                title: $scope.qnsTitle,
-                                sheetId: $scope.sheetId1
-                              },
-                              fields: "title"
-                            }
-                          }
-                        ]
-                      }).then(function(response) {
-                        deferred.resolve($scope.sheetId1);
-                      });
-                  });
+                    });
                 });
                 
                 //if educator, create educator sheet
-                if($rootScope.isAdmin) {
+                if($rootScope.mainAdmin) {
                     createEduSheet();
                 }
-
             });
         });
       }
       
-      function createEduSheet() {
+    function createEduSheet() {
           
         var eduSheetName = "Educator_Question_Sheet";
 
         var eduSheetRequest = gapi.client.drive.files.create({
           mimeType: "application/vnd.google-apps.spreadsheet",
           name: eduSheetName,
-          parents: [$rootScope.folderID ]
+          parents: [$rootScope.folderID]
 
         });
         eduSheetRequest.execute(function(response){
-            spreadsheetID = response.id;
-            //Update Firebase with folderID
-            usersRef.child($rootScope.userID).update({ eduSheet: spreadsheetID });
+            var spreadsheetID = response.id;
             
-            //Update Firebase with sheetID
-            usersRef.child($rootScope.userID).update({ sheetID: 0 });
+            //Update Firebase with admin spreadsheetID
+            adminRef.update({ spreadsheetID: spreadsheetID });
             
             gapi.client.sheets.spreadsheets.batchUpdate({
               spreadsheetId: spreadsheetID,
@@ -243,6 +234,7 @@
                 role: "reader",
                 type: "anyone"
             }).then(function(response) {
+                console.log(response);
             });
             
         });

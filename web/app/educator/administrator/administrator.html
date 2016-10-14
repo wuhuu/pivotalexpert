@@ -1,0 +1,49 @@
+<div layout="row" flex>
+  <div flex="15"></div>
+  <div class="md-whiteframe-z2" layout="column" flex="70">
+    <div style="padding: 0px 20px">
+      <h2 class="pull-left">Manage Administrators</h2>
+    </div>
+    <md-divider></md-divider>
+    <div style="padding: 10px 0px">
+      <div layout="column">
+        <div layout="column" layout-align=" center">
+            <div flex style="padding:20px">
+                <h3>Current Administrators</h3>
+                <div ng-repeat="user in admins">
+                </br>
+                    <label>Name : {{user.name}}</label>
+                    <md-button ng-click='removeAdmin($index)' class="md-icon-button" aria-label="removeAdmin">
+                        <i class="fa fa-times"></i>
+                        <md-tooltip md-direction="right" md-delay="200" >
+                          Remove Administrators Rights
+                        </md-tooltip>
+                    </md-button>
+                    </br>
+                    <label>Email : {{user.email}}</label>
+                    
+                </div>
+            </div>
+            
+            <div flex style="padding:20px">
+            
+              <md-input-container class="md-block">
+                <label>Enter their profile username to add as administrators</label>
+                <input ng-model="newAdmin" name="newAdmin" required>
+                <ng-messages for="qnsForm.qnsTitle.$error" md-auto-hide="true">
+                  <div ng-message="required">This is required.</div>
+                </ng-messages>
+              </md-input-container> 
+              <label style="color:red" ng-show="newAdmin && invalid"> The username entered is invalid. </label>
+            </div>
+        </div>
+        <div style="padding: 20px 0px" layout="row" ng-show="newAdmin">
+        <center flex="80"></center>
+            <md-button flex="20" class="md-raised md-primary pull-right" ng-click="addAdmin()">Add</md-button>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>

@@ -107,8 +107,11 @@
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
     var qnsType = path.substr(path.lastIndexOf('/') + 1);
-    if (qnsType === 'code') {
-      var editor = ace.edit("editor");
+    if(qnsType == 'google_form'){
+        qnsType = 'form';
+    }else if (qnsType === 'code') {
+      var functionEditor = ace.edit("functionEditor");
+      var qnsEditor = ace.edit("qnsEditor");
     }
 
     var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
@@ -132,17 +135,23 @@
           }
           if (question.qnsType === 'code') {
             //Set code box display
-            var editor = ace.edit("editor");
-            editor.setTheme("ace/theme/chrome");
-            editor.getSession().setMode("ace/mode/javascript");
-            editor.setOption("maxLines", 30);
-            editor.setOption("minLines", 10);
-            editor.setValue(question.initialCode);
+            var functionEditor = ace.edit("functionEditor");
+            functionEditor.setTheme("ace/theme/chrome");
+            functionEditor.getSession().setMode("ace/mode/javascript");
+            functionEditor.setOption("maxLines", 30);
+            functionEditor.setOption("minLines", 10);
+            functionEditor.setValue(answer.functionCode);
+            var qnsEditor = ace.edit("qnsEditor");
+            qnsEditor.setTheme("ace/theme/chrome");
+            qnsEditor.getSession().setMode("ace/mode/javascript");
+            qnsEditor.setOption("maxLines", 30);
+            qnsEditor.setOption("minLines", 10);
+            qnsEditor.setValue(question.initialCode);
 
             //set back the answer
             question.testcases = [];
             angular.forEach(answerKey.testcases, function (value, key) {
-              question.testcases.push({ test: value });
+              question.testcases.push(value);
             });
           }
 
@@ -150,22 +159,14 @@
             $timeout(loadDetails, 3000);
           }
           function loadDetails() {
-            question.range = answerKey.range;
-
-            question.valueAnswer = [];
-            angular.forEach(answerKey.valueAnswer, function (value, key) {
-              question.valueAnswer.push({ cell: value.cell, value: value.value });
-            });
-
-            question.formulaAnswer = [];
-            angular.forEach(answerKey.formulaAnswer, function (value, key) {
-              question.formulaAnswer.push({ cell: value.cell, functionName: value.functionName });
+            question.testcases = [];
+            angular.forEach(answerKey.testcases, function (value, key) {
+              question.testcases.push({ cellToChange: value.cellToChange, changedTo: value.changedTo, expectCell: value.expectCell, toEqual : value.toEqual, msg : value.msg});
             });
 
             var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + question.sheetID;
             $scope.srclink = $sce.trustAsResourceUrl(excelLink);
           }
-
 
           question.qid = question.$id;
           question.cid = $routeParams.cid;
@@ -190,14 +191,13 @@
         $scope.qns['mcq'] = [];
         $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = [];
-      } else if (qnsType === "excel") {
-        $scope.qns['hint'] = "";
+      } else if (qnsType === "form") {
+        $scope.qns['link'] = "";
+      }else if (qnsType === "excel") {
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['sheetID'] = "";
         //answer key scope
-        $scope.qns['range'] = "";
-        $scope.qns['formulaAnswer'] = [];
-        $scope.qns['valueAnswer'] = [];
+        $scope.qns['testcases'] = [];
 
         $timeout(delayedTime, 3000);
         function delayedTime() {
@@ -216,25 +216,30 @@
 
 
       } else if (qnsType === "code") {
-        $scope.qns['hint'] = "";
         $scope.qns['qnsInstruction'] = "";
-        $scope.qns['initialCode'] = "";
+        $scope.qns[''] = "";
 
         //Set code box display
-        editor.setTheme("ace/theme/chrome");
-        editor.getSession().setMode("ace/mode/javascript");
-        editor.setOption("maxLines", 30);
-        editor.setOption("minLines", 10);
+        functionEditor.setTheme("ace/theme/chrome");
+        functionEditor.getSession().setMode("ace/mode/javascript");
+        functionEditor.setOption("maxLines", 30);
+        functionEditor.setOption("minLines", 10);
+
+        qnsEditor.setTheme("ace/theme/chrome");
+        qnsEditor.getSession().setMode("ace/mode/javascript");
+        qnsEditor.setOption("maxLines", 30);
+        functionEditor.setOption("minLines", 10);
       }
     }
 
     $scope.backToCourseMap = function () {
       window.location.href = "#/educator/courseMap";
     }
+    
     $scope.saveQns = function (ev) {
       var confirm = $mdDialog.confirm()
         .title('Would you want to save all changes?')
-        .textContent('This question will be saved to what you configured, is it ok to proceed?')
+        .textContent('This challenge will be saved to what you configured, is it ok to proceed?')
         .targetEvent(ev)
         .ok('Please do it!')
         .cancel('Cancel!');
@@ -252,6 +257,15 @@
             window.location.href = "#/educator/courseMap";
             commonService.showSimpleToast("Slides Challenge Added/Updated.");
             //$scope.$emit("SuccessPrompt",);
+          });
+        } else if ($scope.qns.qnsType == "form") {
+          contentMgmtService.updateFormQuestion($scope.qns, $scope.isNewQuestion).then(function (result) {
+            if(result) {
+              window.location.href = "#/educator/courseMap";
+              commonService.showSimpleToast("Google Form Challenge Added/Updated.");
+            } else {
+              commonService.showSimpleToast(" Added/Updated Failed! This Challenge Title had been used.");
+            }
           });
         }
       });
@@ -341,8 +355,8 @@
 
     $scope.deleteQns = function (ev, cid, qid) {
       var confirm = $mdDialog.confirm()
-        .title('Do you really want to DELETE this question?')
-        .textContent('This question will deleted, is it ok to proceed?')
+        .title('Do you really want to DELETE this challenge?')
+        .textContent('This challenge will deleted, is it ok to proceed?')
         .targetEvent(ev)
         .ok('Delete it now!')
         .cancel('Cancel');
@@ -374,7 +388,7 @@
       });
     }
 
-    // ADDITION PART for code and excel
+    // ADDITION PART for code
     // Code box
     //Add more test cases
     $scope.addTestcase = function () {
@@ -382,22 +396,24 @@
       } else {
         $scope.qns.testcases = [];
       }
-      $scope.qns.testcases.push({ test: "" });
+      $scope.qns.testcases.push({name:"",expect:"",toEqual:"",hint:""});
     }
     //Create && Update Code box
     $scope.saveCodeBoxChanges = function (ev) {
-      console.log(editor);
+      console.log(qnsEditor);
       // Appending dialog to document.body to cover sidenav in docs app
       var confirm = $mdDialog.confirm()
         .title('Would you want to save all changes?')
-        .textContent('This question will be saved to what you configured, is it ok to proceed?')
+        .textContent('This challenge will be saved to what you configured, is it ok to proceed?')
         .targetEvent(ev)
         .ok('Please do it!')
         .cancel('Cancel!');
 
       $mdDialog.show(confirm).then(function () {
-        var editor = ace.edit("editor")
-        $scope.qns.initialCode = editor.getValue();
+        var qnsEditor = ace.edit("qnsEditor")
+        var functionEditor = ace.edit("functionEditor")
+        $scope.qns.initialCode = qnsEditor.getValue();
+        $scope.qns.functionCode = functionEditor.getValue();
 
         contentMgmtService.updateCodebox($scope.qns, $scope.isNewQuestion).then(function (result) {
           window.location.href = "#/educator/courseMap"
@@ -411,9 +427,13 @@
 
     function loadUserDetails() {
       var user = firebase.auth().currentUser;
+      var adminRef = ref.child('auth/admin');
       var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
       currentUser.$loaded().then(function () {
-        $scope.userExcelID = currentUser.eduSheet;
+        //load educator spreadsheets
+        adminRef.once('value', function(snapshot) {
+            $scope.userExcelID = snapshot.child('spreadsheetID').val()
+        });
         $scope.userToken = currentUser.access_token;
         gapi.auth.setToken({
           access_token: $scope.userToken
@@ -421,22 +441,14 @@
       });
     }
 
+    // ADDITION PART for excel
     //Add more value answer
-    $scope.addValueAnswer = function () {
-      $scope.qns.valueAnswer.push({ cell: "", value: "" });
+    $scope.addValidation = function () {
+      $scope.qns.testcases.push({ cellToChange: "", changedTo: "", expectCell: "", toEqual: "", msg: "" });
     }
 
-    $scope.deleteValueAns = function (index) {
-      $scope.qns.valueAnswer.splice(index, 1);
-    }
-
-    //Add more formula answer
-    $scope.addFormulaAnswer = function () {
-      $scope.qns.formulaAnswer.push({ cell: "", functionName: "" });
-    }
-
-    $scope.deleteFormulaAns = function (index) {
-      $scope.qns.formulaAnswer.splice(index, 1);
+    $scope.deleteValidation = function (index) {
+      $scope.qns.testcases.splice(index, 1);
     }
 
     //Create && Update
@@ -444,7 +456,7 @@
       // Appending dialog to document.body to cover sidenav in docs app
       var confirm = $mdDialog.confirm()
         .title('Would you want to save all changes?')
-        .textContent('This question will be saved to what you configured, is it ok to proceed?')
+        .textContent('This challenge will be saved to what you configured, is it ok to proceed?')
         .targetEvent(ev)
         .ok('Please do it!')
         .cancel('Cancel!');
@@ -452,8 +464,12 @@
       $mdDialog.show(confirm).then(function () {
 
         contentMgmtService.updateExcel($scope.qns, $scope.isNewQuestion).then(function (result) {
-          gapi.client.load(discoveryUrl).then(updateSheetTitle);
-          commonService.showSimpleToast("Excel Challenge Added/Updated.");
+          if(result) {
+            gapi.client.load(discoveryUrl).then(updateSheetTitle);
+            commonService.showSimpleToast("Excel Challenge Added/Updated.");
+          } else {
+            commonService.showSimpleToast(" Added/Updated Failed! This Challenge Title had been used.");
+          }
         });
       }, function () {
         // cancel function
@@ -548,7 +564,7 @@
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
-    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Excel", "Code"];
+    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Excel", "Code", "Google_Form"];
     var courseMap = contentMgmtService.getCourseSeq();
     courseMap.$loaded().then(function () {
       var seq = [];
@@ -861,7 +877,7 @@
       function DialogController($scope, $q, $mdDialog,$timeout, chapters) {
         $scope.chapters = chapters;
         $scope.selectedChapter = '';
-        
+
         var ref = firebase.database().ref();
         var sequenceRef = ref.child('/courseSequence/');
         var questionRef = ref.child('/course/questions');
@@ -905,11 +921,11 @@
           var q = $q.defer();
 
           sequenceRef.once("value", function (snapshot) {
-            
-            
+
+
             var numChapter = 0;
             numChapter = snapshot.numChildren();
-            
+
             JsonObj = JSON.parse(e.target.result);
 
             var answer = JsonObj.answerKey;
@@ -957,8 +973,6 @@
       }
     };
 
-
-
     $scope.showPrompt = function (ev) {
       // Appending dialog to document.body to cover sidenav in docs app
       var parentEl = angular.element(document.body);
@@ -969,10 +983,10 @@
 
         '<md-dialog style="padding:20px">' +
         '<form name="qnsForm">' +
-        ' <h3>Options to create question:</h3><br>' +
+        ' <h3>Options to create challenge:</h3><br>' +
         '  <md-dialog-content>' +
         '  <md-input-container style="width:500px;height:auto;">' +
-        '    <label>Please select Chapter to put question in.</label> ' +
+        '    <label>Please select Chapter to put challenge in.</label> ' +
         '    <md-select ng-model="selectedChapter" name="chapter" required>' +
         '      <md-option ng-repeat="item in chapters" value="{{item.cid}}">' +
         '       {{item.chapterTitle}}' +
@@ -983,7 +997,7 @@
         '    </ng-messages>' +
         '  </md-input-container><br>' +
         '  <md-input-container style="width:500px;height:auto;">' +
-        '    <label>Select question Type.</label> ' +
+        '    <label>Select challenge Type.</label> ' +
         '    <md-select ng-model="selectedQnsType" name="type" required>' +
         '      <md-option ng-repeat="item in qnsTypes" value="{{item}}">' +
         '       {{item}}' +

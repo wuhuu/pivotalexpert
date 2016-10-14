@@ -27,7 +27,7 @@
                   </md-menu-item>
                   <md-menu-item>
                     <md-button ng-click="showPrompt($event)">
-                      Add a Question
+                      Add a challenge
                     </md-button>
                   </md-menu-item>
                   <md-menu-divider></md-menu-divider>
@@ -54,9 +54,6 @@
                   </md-menu-item>
                 </md-menu-content>
               </md-menu>
-              <!--<md-button class="md-raised" ng-click="">Add Chapter</md-button>
-              <md-button class="md-raised" ng-click="">Add Question</md-button>
-              <md-button class="md-raised" ng-click="">Export Course</md-button>-->
         </div>
         <div flex="auto"></div>
       </div>
@@ -66,7 +63,7 @@
         <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: 0px;padding: 20px 20px;">
           <md-content flex md-scroll-y>
           <md-card-content >
-            <div class="accordion1">
+            <div class="accordion1" style='background-color:white'>
               <div id="chapter" style="height:auto;" layout="column" ng-repeat="item in courseMap track by $index" on-finish-render="ngRepeatFinished">
                 
                 <!--chapterTitle div-->
@@ -119,7 +116,7 @@
                             <md-button style="padding-top:15px" class="md-icon-button" ng-click="deleteQuestion($parent.$index,$index,question.qid)">
                               <i class="fa fa-times fa-lg"></i>
                               <md-tooltip md-direction="left" md-delay="200">
-                                    Delete question
+                                    Delete challenge
                               </md-tooltip>
                             </md-button>
                             <div flex="70" class="md-tile-content">
@@ -129,7 +126,7 @@
                               <md-button class="md-icon-button" ng-click="editQuestion(question.qid,item.cid)">
                                 <i class="fa fa-pencil fa-lg"></i>
                                   <md-tooltip md-direction="right" md-delay="200">
-                                    Edit question
+                                    Edit challenge
                                   </md-tooltip>
                               </md-button>
                             </div>

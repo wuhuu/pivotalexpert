@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html ng-app="app">
   <head>
-	
+
 	<title>{{courseTitle}}</title>
-    
+
 
     <!--<link rel="stylesheet" href="content/css/angular-material.min.css">-->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
@@ -17,25 +17,27 @@
     <div style="min-height: 100%" layout="column">
         <!--navbar directive that stays at the top of every page-->
         <mv-navbar></mv-navbar>
-        
+
         <!--Main content that changes based on route-->
         <div ng-view flex layout="column"></div>
     </div>
+    <!--Youtube API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
     <!-- jquery Dependencies-->
-	
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 	<!-- Angular Dependencies-->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
-        
+
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
 
     <!-- AngularFire -->
     <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script>
-    
+
     <!-- Angular Material Dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
     <!--<script src="content/lib/angular-aria.min.js"></script>-->
@@ -44,39 +46,39 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.1/angular-material.min.js"></script>
     <!--<script src="content/lib/angular-material.min.js"></script>-->
     <script src="content/lib/angular-material-icons.min.js"></script>
-    
+
     <!-- Code box Dependencies -->
 	<script src="content/lib/ace-builds-master/src/ace.js" type="text/javascript" charset="utf-8"></script>
-    
+
     <!-- Google API -->
     <script src="https://apis.google.com/js/client.js"></script>
 
-	
+
 	<!--main app module-->
     <script src="app/app.js"></script>
-	
+
 	<!--common module-->
 	<script src="app/common/common.service.js"></script>
-	
+
 	<!--auth module-->
     <script src="app/auth/auth.module.js"></script>
 	<script src="app/auth/auth.controller.js"></script>
 	<script src="app/auth/auth.service.js"></script>
-	
+
     	<!--layout module-->
     <script src="app/layout/layout.module.js"></script>
 	<script src="app/layout/navbar.directive.js"></script>
 	<script src="app/layout/navbar.service.js"></script>
-	
+
 	<!--landing module-->
     <script src="app/landing/landing.module.js"></script>
 	<script src="app/landing/landing.controller.js"></script>
 
-    
+
 	<!--lesson module-->
     <script src="app/lesson/lesson.module.js"></script>
 	<script src="app/lesson/lesson.controller.js"></script>
-	
+
 	<!--profile module-->
     <script src="app/profile/profile.module.js"></script>
 	<script src="app/profile/profile.controller.js"></script>
@@ -89,5 +91,10 @@
 	<script src="app/educator/contentMgmt/contentMgmt.module.js"></script>
 	<script src="app/educator/contentMgmt/contentMgmt.controller.js"></script>
 	<script src="app/educator/contentMgmt/contentMgmt.service.js"></script>
+    
+    <!--administrator module-->
+	<script src="app/educator/administrator/administrator.module.js"></script>
+	<script src="app/educator/administrator/administrator.controller.js"></script>
+    
   </body>
 </html>

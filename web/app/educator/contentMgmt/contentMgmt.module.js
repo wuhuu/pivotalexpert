@@ -3,7 +3,7 @@
   angular
     .module('app.contentMgmt', [])
     .config(configFunction);
-   
+
   function configFunction($routeProvider) {
     $routeProvider.
   // for editing
@@ -31,6 +31,10 @@
       templateUrl: 'app/educator/contentMgmt/code_edit.html',
 	     controller: 'ContentMgmtController'
     })
+    .when('/educator/form_edit/:cid/:qid', {
+      templateUrl: 'app/educator/contentMgmt/form_edit.html',
+	     controller: 'ContentMgmtController'
+    })
     // for creation
     .when('/educator/video_create/:cid', {
       templateUrl: 'app/educator/contentMgmt/video_edit.html',
@@ -51,8 +55,11 @@
     .when('/educator/code_create/:cid', {
       templateUrl: 'app/educator/contentMgmt/code_edit.html',
 	     controller: 'ContentMgmtController'
+    })
+    .when('/educator/google_form_create/:cid', {
+      templateUrl: 'app/educator/contentMgmt/form_edit.html',
+	     controller: 'ContentMgmtController'
     });
   }
-  
-})();
 
+})();

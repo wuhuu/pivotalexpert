@@ -4,7 +4,7 @@
     .module('app.lesson')
     .controller('LessonController', LessonController);
 
-  function LessonController($q, $scope, $routeParams, $location, $firebaseObject, $sce, navBarService, commonService) {
+  function LessonController($q, $scope,$mdDialog, $routeParams, $location, $firebaseObject, $sce, $mdToast, navBarService, commonService) {
 
     console.log("LessonController");
 
@@ -17,7 +17,16 @@
 	navBarService.updateNavBar();
 
 	$scope.answer = "";
+    function showCompleteDialog(msg) {
+      var confirm = $mdDialog.confirm()
+          .title('Challenge Completed!')
+          .textContent(msg)
+          .ok('Next Challenge');
 
+        $mdDialog.show(confirm).then(function() {
+            nextQns(chapter,qns,question);
+        });
+    }
     //Load Question
     var question = $firebaseObject(ref.child('course/questions/' + qid));
     question.$loaded().then(function(){
@@ -34,9 +43,58 @@
 
         //Video type question
         if(qnsType == 'video'){
-            $scope.srclink = $sce.trustAsResourceUrl(question.link);
+            //$scope.srclink = $sce.trustAsResourceUrl(question.link);
+            var player;
+            $scope.completed = false;
+            loadPlayer();
+
+            function loadPlayer(){
+              if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                var tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                var firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                window.onYouTubeIframeAPIReady = function() {
+                  onYouTubePlayer();
+                };
+
+              } else {
+                onYouTubePlayer();
+              }
+            }
+
+            function onYouTubePlayer() {
+              player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: question.link,
+                events: {
+                  'onStateChange': onPlayerStateChange
+                }
+              });
+            }
+
+
+            function onPlayerStateChange(event) {
+              if(event.data === 0) {
+                $scope.completed = true;
+                $scope.$apply();
+                //showCompleteDialog("Time to applied what you have learnt!");
+              }
+            }
+
         }
 
+        //Google Form type question
+        if(qnsType == 'form'){
+            $scope.srclink = $sce.trustAsResourceUrl(question.link);
+            var iframeElem = document.getElementById('iframeId');
+
+            $scope.$watch('srclink', function(newValue, oldValue) {
+              console.log("TESTING");
+            });
+
+        }
         //Slides type question
         if(qnsType == 'slides'){
            var slides = question.slides;
@@ -59,6 +117,46 @@
             $scope.questions = question.mcq;
             $scope.currentScore = 0;
             $scope.totalScore = $scope.questions.length;
+
+            var mcq = question.mcq;
+
+            $scope.currentMCQ = 1;
+            $scope.totalMCQ = mcq.length
+            var answerKey = $firebaseObject(ref.child('answerKey/' + qid));
+
+            //MCQ validation
+            $scope.changeMCQ = function(changeBy) {
+               answerKey.$loaded().then(function() {
+                   if($scope.questions[$scope.currentMCQ-1].qnsID === answerKey.answer[$scope.currentMCQ-1]) {
+                        if($scope.currentMCQ === $scope.totalMCQ) {
+                           showCompleteDialog("You have completed the Challenge, go for more!");
+                        }else {
+                            $scope.currentMCQ += changeBy;
+                            $scope.mcq = mcq[$scope.currentMCQ - 1];
+                        }
+                    }else {
+                        angular.forEach($scope.questions, function (qns, key) {
+                            qns.qnsID = "";
+                        });
+
+                        $scope.mcq = mcq[0];
+                        $scope.currentMCQ = 1;
+                        $mdToast.show({
+                            template: '<md-toast class="md-top">' +
+                              '<div class="md-toast-content">' +
+                                '<i style="color:red" class="fa fa-times-circle" aria-hidden="true"></i> ' +
+                                '&nbsp&nbsp&nbspIncorrect. Re-attempt the challenge!' +
+                              '</div>' +
+                            '</md-toast>',
+                            hideDelay: 3000
+                        });                            
+          
+                    }
+               });
+            }
+            
+            //initial run
+            $scope.mcq = mcq[0];
         }
 
         //Excel type question
@@ -70,9 +168,9 @@
             var adminID = $firebaseObject(ref.child('auth/admin/admin'));
             adminID.$loaded().then(function(){
                 //load admin spreadsheetId
-                var adminUser = $firebaseObject(ref.child('auth/users/' + adminID.$value));
-                adminUser.$loaded().then(function(){
-                    $scope.eduExcelID = adminUser.eduSheet;
+                var admin = $firebaseObject(ref.child('auth/admin/'));
+                admin.$loaded().then(function(){
+                    $scope.eduExcelID = admin.spreadsheetID;
 
                     //load user spreadsheetId
                     var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
@@ -91,10 +189,10 @@
 
                         gapi.client.load(discoveryUrl).then(function() {
                             getAllSheets().then(function(result) {
-                                removeAllSheets(result).then(function(){
+                                deleteSheets(result).then(function(){
                                     copyQnsFromEdu().then(function(result) {
                                         updateSheetTitle().then(function(result) {
-                                            var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + $scope.sheetId1;
+                                            var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + $scope.curSheet;
                                             $scope.srclink = $sce.trustAsResourceUrl(excelLink);
                                         });
                                     });
@@ -115,8 +213,17 @@
             editor.setOption("maxLines", 30);
             editor.setOption("minLines", 10);
 
-            //insert code to codebox from firebase
-            editor.insert(question.initialCode);
+            var userAch = $firebaseObject(ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid));
+            userAch.$loaded().then(function(){
+              if(userAch){
+                editor.insert(userAch.userAnswer);
+              }else{
+                //insert code to codebox from firebase
+                editor.insert(question.initialCode);
+              }
+            });
+
+
 
             /* Bind to commands
             editor.commands.addCommand({
@@ -139,8 +246,7 @@
 
                 //video and slides question type
                 if (qnsType == 'video' || qnsType == 'slides'){
-                    commonService.showSimpleToast("Time to applied what you have learnt!");
-                    nextQns(chapter,qns);
+                    showCompleteDialog("Time to applied what you have learnt!");
                 }
 
                 //mcq question type
@@ -155,39 +261,25 @@
                             $scope.currentScore += 1;
                         }
                     }
-                    //all correct, go to next qns
-                    if($scope.currentScore == $scope.totalScore) {
-                        nextQns(chapter,qns);
-                        commonService.showSimpleToast("Excellent!! You have completed the MCQ");
-                    }
                 }
 
                 //excel question type
                 if (qnsType == 'excel') {
-
+                    $scope.incorrect = false;
                     gapi.auth.setToken({
                         access_token: $scope.token
                     });
-                    $scope.range = answerKey.range;
-                    $scope.formulaAnswer = answerKey.formulaAnswer;
-                    $scope.valueAnswer = answerKey.valueAnswer;
 
                     var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
                     gapi.client.load(discoveryUrl).then(function() {
-                        checkCellFormula().then(function(result) {
-                            if(result.indexOf(false) === -1 && result.indexOf('false') === -1) {
-                                checkCellValue().then(function(result){
-                                    if (result.indexOf(false) === -1 && result.indexOf('false') === -1) {
-                                        deleteCurrentSheet().then(function() {
-                                            nextQns(chapter,qns);
-                                            commonService.showSimpleToast("AWESOME!! You have completed the EXCEL Question");
-                                        });
-
-                                    } else {
-                                        $scope.incorrect = true;
-                                        $scope.checkingAns = false;
-                                    }
-                                });
+                        $scope.sheetsToBeDelete = [];
+                        $scope.qnsHint = [];
+                        validateAns(answerKey.testcases).then(function(result){
+                            deleteSheets($scope.sheetsToBeDelete);
+                            if (result.indexOf(false) === -1) {
+                                showCompleteDialog("AWESOME!! You have completed the Challenge, go for more!");
+                                $scope.incorrect = false;
+                                $scope.checkingAns = false;
                             } else {
                                 $scope.incorrect = true;
                                 $scope.checkingAns = false;
@@ -203,23 +295,32 @@
                     var annot = editor.getSession().getAnnotations();
                     if (annot.length == 0) {
                         var code = editor.getValue();
-                        console.log(code);
+                        //console.log(code);
                         $scope.codeResult = [];
+                        $scope.hints = [];
+                        var errorHints =[];
                         var promises = []
                         var totalTestNum = answerKey.testcases.length;
-                        //var totalTestNum = $scope.testCase.length;
+                        var functionCode = answerKey.functionCode;
+
                         for (i = 0; i < totalTestNum; i++) {
-                            var test =  answerKey.testcases[i];//var test =  $scope.testCase[i];
+                            var test =  answerKey.testcases[i];
+
                             //Run Test case
-                            runTestcase(test, code).then(function(result) {
+                            runTestcase(test, code, functionCode).then(function(result) {
                                 $scope.codeResult.push(result);
                                 //When end of test case
                                 if($scope.codeResult.length === totalTestNum){
                                     if ($scope.codeResult.indexOf(false) === -1) {
-                                        nextQns(chapter,qns);
-                                        commonService.showSimpleToast("FANTASTIC!! You have completed the code Question");
+                                        showCompleteDialog("FANTASTIC!! You have completed the Challenge, go for more!");
                                     } else {
                                         $scope.incorrect = true;
+                                        var hint = "";
+                                        for (a = 0; a < $scope.hints.length ; a++){
+                                          var hintNo = a + 1;
+                                          hint = hint + hintNo + " " + $scope.hints[a] + "\n\r";
+                                        }
+                                        $scope.qnsHint = hint;
                                     }
                                 }
                             });
@@ -233,6 +334,24 @@
             });
         }
     });
+
+    function validateAns(testcases) {
+        var deferred = $q.defer();
+        $scope.result = [];
+        angular.forEach(testcases, function (value, key) {
+            duplicateSheet(value).then(function(result) {
+                $scope.result.push(result.result);
+                if(!result.result) {
+                    $scope.qnsHint.push(result.msg);
+                }
+                if($scope.result.length == testcases.length) {
+                    deferred.resolve($scope.result);
+                }
+            });
+        });
+
+        return deferred.promise;
+    }
 
     function getAllSheets() {
         var deferred = $q.defer();
@@ -256,7 +375,7 @@
         return deferred.promise;
     }
 
-    function removeAllSheets(sheetsToBeDelete) {
+    function deleteSheets(sheetsToBeDelete) {
         var deferred = $q.defer();
         var sheets = sheetsToBeDelete;
 
@@ -295,11 +414,45 @@
           destinationSpreadsheetId: $scope.userExcelID,
         }).then(function(response) {
 
-          $scope.sheetId1 = response.result.sheetId;
-          //update user sheetID - Currently not in use
-          //ref.child("/auth/users/" + user.uid).update({ sheetID: $scope.sheetId1 });
+          $scope.curSheet = response.result.sheetId;
           deferred.resolve(true);
 
+        });
+        return deferred.promise;
+    }
+
+    function duplicateSheet(validation) {
+        var deferred = $q.defer();
+
+        gapi.client.sheets.spreadsheets.sheets.copyTo({
+            spreadsheetId: $scope.userExcelID,
+            sheetId: $scope.curSheet,
+            destinationSpreadsheetId: $scope.userExcelID,
+        }).then(function(response) {
+            $scope.sheetsToBeDelete.push(response.result.sheetId);
+            var sheetName = response.result.title;
+
+            gapi.client.sheets.spreadsheets.values.update({
+                spreadsheetId: $scope.userExcelID,
+                range: sheetName + "!" + validation.cellToChange,
+                valueInputOption: "USER_ENTERED",
+                values:
+                  [
+                    [validation.changedTo]
+                  ]
+            }).then(function(response) {
+                gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: $scope.userExcelID,
+                    range: sheetName + "!" + validation.expectCell
+                }).then(function(response) {
+                    if(response.result.values){
+                        validation.result = response.result.values[0][0] == validation.toEqual;
+                    } else {
+                        validation.result = false;
+                    }
+                    deferred.resolve(validation);
+                });
+            });
         });
         return deferred.promise;
     }
@@ -313,7 +466,7 @@
                 updateSheetProperties:{
                   properties:{
                     title: $scope.qnsTitle,
-                    sheetId: $scope.sheetId1
+                    sheetId: $scope.curSheet
                   },
                   fields: "title"
                 }
@@ -325,117 +478,47 @@
         return deferred.promise;
     }
 
-
-    function checkCellFormula() {
-      var deferred = $q.defer();
-      gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: $scope.userExcelID,
-        range: $scope.qnsTitle + "!" + $scope.range,
-        valueRenderOption:"FORMULA"
-      }).then(function(response) {
-
-        $scope.formulaResult = []
-        if($scope.formulaAnswer) {
-            var totalTestNum =  $scope.formulaAnswer.length;
-            for (i = 0; i < totalTestNum; i++) {
-                var cell = $scope.formulaAnswer[i].cell;
-                var functionName = $scope.formulaAnswer[i].functionName;
-
-                var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
-                var row = parseInt(cell.substring(1)) - 1;
-
-                var formula = String(response.result.values[parseInt(row)][parseInt(col)]);
-
-                $scope.formulaResult.push(formula.toUpperCase().indexOf(functionName.toUpperCase()) !== -1);
-            }
-        }
-        deferred.resolve($scope.formulaResult);
-
-      });
-      return deferred.promise;
-    }
-
-    function checkCellValue() {
-      var deferred = $q.defer();
-      gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: $scope.userExcelID,
-        range: $scope.qnsTitle + "!" + $scope.range
-      }).then(function(response) {
-
-        $scope.valueResult = []
-        if($scope.formulaAnswer) {
-            var totalTestNum =  $scope.valueAnswer.length;
-            for (i = 0; i < totalTestNum; i++) {
-                var cell = $scope.valueAnswer[i].cell;
-                var answer = $scope.valueAnswer[i].value;
-
-                var col = sheetColMapping(cell.charAt(0).toUpperCase()) - 1;
-                var row = parseInt(cell.substring(1)) - 1;
-                var valueRow = response.result.values[parseInt(row)];
-                if(valueRow) {
-                    value = valueRow[parseInt(col)];
-                    $scope.valueResult.push(value === answer);
-                } else {
-                    $scope.valueResult.push(false);
-                }
-
-            }
-        }
-        deferred.resolve($scope.valueResult);
-      });
-
-      return deferred.promise;
-    }
-
-    function deleteCurrentSheet() {
-        var deferred = $q.defer();
-        gapi.client.sheets.spreadsheets.batchUpdate({
-            spreadsheetId: $scope.userExcelID,
-            requests: [
-              {
-                deleteSheet:{
-                    sheetId: $scope.sheetId1
-                }
-              }
-            ]
-        }).then(function(response) {
-            deferred.resolve(true);
-
-        });
-      return deferred.promise;
-    }
-
-    function runTestcase(test, code) {
+    function runTestcase(test, code, functionCode) {
 
         var deferred = $q.defer();
-        var ww = new Worker(getInlineJSandTest(test, code));
+        var ww = new Worker(getInlineJSandTest(test, code, functionCode));
         //Send any message to worker
         ww.postMessage("and message");
         ww.onmessage = function (e) {
             var msg = e.data;
             //check if there failed result
             deferred.resolve(msg);
+            if(msg == false){
+              $scope.hints.push(test.hint);
+            }
         };
         return deferred.promise;
     }
 
-    function getInlineJSandTest (test, code) {
+    function getInlineJSandTest (test, code,functionCode) {
 		var top = 'onmessage = function(msg){';
 		var bottom = 'postMessage(result);};';
-
-		var all = code +"\n\n"+top+"\n"+test+"\n"+bottom+"\n"
+    var newTest = "var result = " + test.expect + " == " + test.toEqual +";";
+		var all = functionCode + code +"\n\n"+top+"\n"+newTest+"\n"+bottom+"\n"
     console.log(all);
 		var blob = new Blob([all], {"type": "text\/plain"});
 		return URL.createObjectURL(blob);
 	}
 
-    function nextQns(chapter, question){
+    function nextQns(chapter, question, loadedQns){
 
         //update course progress in firebase db
         var dateTimeNow = new Date().toLocaleString("en-US");
         var userAchievementRef = ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid);
-        userAchievementRef.update({ "completedAt": firebase.database.ServerValue.TIMESTAMP, "text": dateTimeNow});
-        
+        console.log(loadedQns.qnsType);
+        if (loadedQns.qnsType == 'code') {
+          var editor = ace.edit("editor");
+          var code = editor.getValue();
+          userAchievementRef.update({ "completedAt": firebase.database.ServerValue.TIMESTAMP, "text": dateTimeNow, "userAnswer":code});
+        }else{
+          userAchievementRef.update({ "completedAt": firebase.database.ServerValue.TIMESTAMP, "text": dateTimeNow});
+        }
+
         chapter = parseInt(chapter) - 1;
         question = parseInt(question);
 

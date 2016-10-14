@@ -1,7 +1,7 @@
 <div layout="row" flex>
   <div style="position: relative"class="md-whiteframe-z2" layout-padding flex="30">
     <!--questions and submmit-->
-    <h2>Question:</h2>
+    <h2>Challenge:</h2>
     <p>{{qnsInstruction}}</p>
     <div style="padding: 20px">
       <md-button class="md-raised md-primary" style="width: 100%" ng-click="submit()" ng-if="srclink">Submit</md-button>
@@ -13,20 +13,18 @@
     <div style="padding: 20px" ng-show="incorrect">
       <div class="md-whiteframe-z1">
         <div style="padding: 10px">
-          <i style="color:red" class="fa fa-times-circle" aria-hidden="true"></i> <strong>Incorrect Submission</strong>
+          <strong>Incorrect Submission</strong>
         </div>
         <md-divider></md-divider>
         <md-content style="padding: 0 10px; max-height: 200px">
-          <h4 style="margin: 0.5em 0">Hint:</h4>
-          <p style="margin: 0.5em 0">{{qnsHint}}</p>
+          <div ng-repeat="msg in qnsHint">
+            <p style="margin: 0.5em 0">
+              <i style="color:red" class="fa fa-times-circle" aria-hidden="true"></i>  {{msg}}
+            </p>
+          </div>
         </md-content>
       </div>
     </div>
-    <!--help button-->
-    <md-button style="position:absolute; bottom:0; right:0; margin: 10px" ng-click="showGridBottomSheet()">
-      <i class="fa fa-info-circle" aria-hidden="true"></i>
-      Help
-    </md-button>
   </div>
   <div flex="70" layout="column">
     <div style="padding: 0 20px">
@@ -34,7 +32,10 @@
     </div>
     <md-divider></md-divider>
     <div style="padding: 20px" flex>
-      <label ng-if="!srclink"> Please wait while we prepare the excel sheet for you. </label>
+      <div layout="column"  ng-if="!srclink">
+        <label style="padding: 0 20px"> Please wait while we prepare the excel sheet for you.  </label>
+        <md-progress-linear md-mode="query"></md-progress-linear>
+      </div>
       <iframe style="height: 400px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
     </div>
   </div>

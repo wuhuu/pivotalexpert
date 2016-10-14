@@ -69,9 +69,12 @@ md-sidenav {
 }
 
 /*******************************************
-|           STUDENT COURSE MAP             |
+|           STUDENT CHALLENGE              |
 *******************************************/
 
-.ui-corner-all{
-    border-color: red;
+md-toast.md-top {
+    top: 50%;
+    left: 50%;
+    margin-left: 150px;
+    margin-top: -140px;
 }

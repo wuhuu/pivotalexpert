@@ -24,7 +24,7 @@
           .ok('Next Challenge');
 
         $mdDialog.show(confirm).then(function() {
-            nextQns(chapter,qns);
+            nextQns(chapter,qns,question);
         });
     }
     //Load Question
@@ -93,7 +93,7 @@
             $scope.$watch('srclink', function(newValue, oldValue) {
               console.log("TESTING");
             });
-                      
+
         }
         //Slides type question
         if(qnsType == 'slides'){
@@ -203,8 +203,17 @@
             editor.setOption("maxLines", 30);
             editor.setOption("minLines", 10);
 
-            //insert code to codebox from firebase
-            editor.insert(question.initialCode);
+            var userAch = $firebaseObject(ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid));
+            userAch.$loaded().then(function(){
+              if(userAch){
+                editor.insert(userAch.userAnswer);
+              }else{
+                //insert code to codebox from firebase
+                editor.insert(question.initialCode);
+              }
+            });
+
+
 
             /* Bind to commands
             editor.commands.addCommand({
@@ -486,12 +495,19 @@
 		return URL.createObjectURL(blob);
 	}
 
-    function nextQns(chapter, question){
+    function nextQns(chapter, question, loadedQns){
 
         //update course progress in firebase db
         var dateTimeNow = new Date().toLocaleString("en-US");
         var userAchievementRef = ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid);
-        userAchievementRef.update({ "completedAt": firebase.database.ServerValue.TIMESTAMP, "text": dateTimeNow});
+        console.log(loadedQns.qnsType);
+        if (loadedQns.qnsType == 'code') {
+          var editor = ace.edit("editor");
+          var code = editor.getValue();
+          userAchievementRef.update({ "completedAt": firebase.database.ServerValue.TIMESTAMP, "text": dateTimeNow, "userAnswer":code});
+        }else{
+          userAchievementRef.update({ "completedAt": firebase.database.ServerValue.TIMESTAMP, "text": dateTimeNow});
+        }
 
         chapter = parseInt(chapter) - 1;
         question = parseInt(question);

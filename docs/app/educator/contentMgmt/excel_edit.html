@@ -1,0 +1,77 @@
+<div layout="row" flex>
+  <!--LEFT SIDE-->
+  <div style="position: relative"class="md-whiteframe-z2" layout-padding flex="25">
+
+    <md-input-container class="md-block">
+        <label>Challenge Instruction</label>
+        <textarea ng-model="qns.qnsInstruction" name="qnsInstruction" rows="4" md-select-on-focus required>
+        <ng-messages for="qnsForm.qnsInstruction.$error" md-auto-hide="true">
+          <div ng-message="required">This is required.</div>
+        </ng-messages>
+        </textarea>
+    </md-input-container>
+  </div>
+  
+  <!--RIGHT SIDE-->
+  <div flex="70" layout="column">
+    <div style="padding: 0px 20px">
+      <h2 class="pull-left">
+        <md-input-container class="md-block">
+          <label>Challenge Title</label>
+          <input ng-model="qns.qnsTitle" name="qnsTitle" required>
+          <ng-messages for="qnsForm.qnsTitle.$error" md-auto-hide="true">
+            <div ng-message="required">This is required.</div>
+          </ng-messages>
+        </md-input-container>
+      </h2>
+        <div class="pull-right" style="padding:20px">
+            <md-button class="md-raised " ng-click='saveExcelChanges($event)'>Save all changes</md-button>
+            <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Challenge</md-button>
+            <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
+        </div>
+    </div>
+    
+    <div layout="column"  ng-if="!srclink">
+        <label style="padding: 0 20px"> Please wait while we prepare the excel sheet.  </label>
+        <md-progress-linear md-mode="query"></md-progress-linear>
+    </div>
+    <div ng-if="srclink" style="padding-bottom: 60px">
+        <iframe style="height: 450px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
+        <div style="padding: 10px 0px">   
+          <label>Validate Answers</label>        
+          <div ng-repeat="ans in qns.testcases">
+            <div layout="row">
+            <br/>
+            <md-input-container class="md-block">
+              <label>Cell to Change</label>
+              <input ng-model="ans.cellToChange"/>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>Changed To</label>
+                <input ng-model="ans.changedTo">
+            </md-input-container>
+            <md-input-container class="md-block" >
+              <label>Expect Cell</label>
+              <input ng-model="ans.expectCell">
+            </md-input-container>
+            <md-input-container class="md-block" >
+              <label>toEqual</label>
+              <input ng-model="ans.toEqual">
+            </md-input-container>
+            <md-button ng-click='deleteValidation($index)' class="md-icon-button" aria-label="deleteValidation">
+                <i class="fa fa-times"></i>
+                <md-tooltip md-direction="right" md-delay="200" >
+                  Remove validation
+                </md-tooltip>
+            </md-button>
+            </div> 
+            <md-input-container class="md-block" >
+              <label>Hint Message</label>
+              <input ng-model="ans.msg">
+            </md-input-container>
+          </div>
+          <md-button class="md-raised pull-right" ng-click="addValidation()">Add Validation Check</md-button>
+        </div>
+    </div>
+  </div>
+</div>

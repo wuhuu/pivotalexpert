@@ -1,0 +1,56 @@
+  <h2>Pivotal Expert</h2>
+  <div ng-hide="user">
+    <button type="submit" ng-click="login('github')">Github Login</button>
+    <button type="submit" ng-click="googleLogin()">Google Login</button>
+
+  </div>
+  <div ng-show="user">
+    Hi {{profile.user.displayName}}. (edit) <a href="#/profile/{{user.publicId}}"+>Profile</a> |
+    <button type="submit" ng-click="logout()">Logout</button>
+    <br>
+    <div ng-show="user && !user.publicId">
+      <form ng-submit="addNewUserProfile()">
+        Pick a unique username for Pivotal Expert. http://profile/<input ng-model="newProfileId" />
+        <button type="submit">Save</button>
+      </form>
+    </div>
+    Achievements<br>
+    <ol>
+      <li ng-repeat="a in achievements">
+        {{a.name}}
+        <!-- Only show the clear button and checkmark if the user has completed the achievement.
+             Using ng-show and ng-hide based on if the user has completed a challenge. 
+         -->
+        <button ng-hide="profile.userAchievements[a.$id]" type="submit" ng-click="markAchievementCompleted(a.$id)">Mark completed</button>
+        <span ng-show="profile.userAchievements[a.$id]">
+          <button type="submit" ng-click="markAchievementUncompleted(a.$id)">Clear</button>
+          <img width="25" src="images/tick_green.png"> 
+        </span>
+      </li>
+    </ol>
+  </div>
+  
+  <h1>All Users</h1>
+  <table class="table table-striped">
+    <tr>
+      <th></th>
+      <th>User</th>
+      <th>Photo</th>
+      <th>Achievements</th>
+
+    </tr>
+    <tr ng-repeat="item in allUsers">
+      <td>
+        {{$index+1}}.
+      </td>
+      <td>
+          {{item.user.displayName}}
+      </td>
+      <td> <img ng-src="{{item.user.pic}}" height="42" width="42"> </td>
+      <td>
+        <span ng-repeat="(key, value) in item.userAchievements">
+             <span ng-show="value">{{key}}</span>
+        </span>
+      </td>
+    </tr>
+    <table>

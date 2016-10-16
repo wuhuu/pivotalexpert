@@ -1,0 +1,47 @@
+<div layout="column" class="relative" layout-fill role="main">
+    <div layout="row" flex>
+        <div flex="auto"></div>
+        <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 0px 10px;height: 70px;">
+              <h1>{{courseTitle}} Course Map</h1>
+        </div>
+        <div flex="auto">
+          
+        </div>
+    </div>
+    <style>
+      a {
+        color: black;
+        text-decoration:none;
+        padding: 20px 20px;
+      }
+      .material-icons.green { color: 	#008000; }
+    </style>
+    <div layout="row" flex>
+    <div flex="auto"></div>
+    <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: 0px;padding: 20px 20px;">
+      <md-content flex md-scroll-y>
+      <md-card-content>
+        <div id="accordion1" style='background-color:white'>
+          <div style="height:auto;" layout="column" ng-repeat="chapter in courseMaterial" ng-init="courseIndex = $index" on-finish-render="ngRepeatFinished">
+              <h2>Chapter {{$index+1}}. {{chapter.chapterTitle}}  <i class="material-icons pull-right">expand_more</i> </h2>
+              <div layout="column">
+                 <div layout="row" ng-repeat="qns in chapter.qns" ng-init="qnsIndex = $index" style="padding:20px 50px;">
+                      
+                      <div flex=90>
+                        <i class="material-icons">label</i>
+                        <a style="font-size:1.3em" ng-href="#/lesson/{{qns.qnsType}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}">{{qns.qnsTitle}}</a>
+                      </div>
+                      <div ng-show="qns.complete" flex>
+                        <md-icon style="font-size:1.5em" class="material-icons green" flex>check_box</md-icon>
+                      </div>
+                 </div>
+              </div>
+              <md-divider></md-divider>
+          </div>
+        </div>
+      </md-card-content>
+    </md-content>
+    </div>
+    <div flex="auto"></div>
+    </div>
+</div>    

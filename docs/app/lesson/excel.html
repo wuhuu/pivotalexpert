@@ -1,0 +1,42 @@
+<div layout="row" flex>
+  <div style="position: relative"class="md-whiteframe-z2" layout-padding flex="30">
+    <!--questions and submmit-->
+    <h2>Challenge:</h2>
+    <p>{{qnsInstruction}}</p>
+    <div style="padding: 20px">
+      <md-button class="md-raised md-primary" style="width: 100%" ng-click="submit()" ng-if="srclink">Submit</md-button>
+      <br/>
+      <br/>
+      <label ng-if="checkingAns"> Please wait while we check your answer. </label>
+    </div>
+    <!--if ans is incorrect display this-->
+    <div style="padding: 20px" ng-show="incorrect">
+      <div class="md-whiteframe-z1">
+        <div style="padding: 10px">
+          <strong>Incorrect Submission</strong>
+        </div>
+        <md-divider></md-divider>
+        <md-content style="padding: 0 10px; max-height: 200px">
+          <div ng-repeat="msg in qnsHint">
+            <p style="margin: 0.5em 0">
+              <i style="color:red" class="fa fa-times-circle" aria-hidden="true"></i>  {{msg}}
+            </p>
+          </div>
+        </md-content>
+      </div>
+    </div>
+  </div>
+  <div flex="70" layout="column">
+    <div style="padding: 0 20px">
+      <h2>{{qnsTitle}}</h2>
+    </div>
+    <md-divider></md-divider>
+    <div style="padding: 20px" flex>
+      <div layout="column"  ng-if="!srclink">
+        <label style="padding: 0 20px"> Please wait while we prepare the excel sheet for you.  </label>
+        <md-progress-linear md-mode="query"></md-progress-linear>
+      </div>
+      <iframe style="height: 400px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<div layout="row" flex>
+  <div style="position: relative"class="md-whiteframe-z2" layout-padding flex="30">
+    <!--questions and submmit-->
+
+    <md-input-container class="md-block">
+        <label>Challenge</label>
+        <textarea ng-model="qns.qnsInstruction" rows="4" md-select-on-focus>
+        </textarea>
+    </md-input-container>
+
+    <div style="padding: 20px">
+      <md-button class="md-raised md-primary" ng-disabled="true" style="width: 100%">Submit</md-button>
+
+    </div>
+  </div>
+  <div flex="70" layout="column">
+    <div style="padding: 0 20px">
+      <h2 class="pull-left">
+        <md-input-container class="md-block">
+          <label>Challenge Title</label>
+          <input ng-model="qns.qnsTitle">
+        </md-input-container>
+      </h2>
+        <div class="pull-right"style="padding:20px">
+            <md-button class="md-raised " ng-click='saveCodeBoxChanges($event)'>Save all changes</md-button>
+            <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
+            <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
+        </div>
+    </div>
+    <md-divider></md-divider>
+    </br>
+    <label>Pre-Defined Functions</label>
+    <div id="functionEditor" style="padding: 20px" flex ></div>
+    </br>
+    <md-divider></md-divider>
+    </br>
+    <label>Pre-Loaded Codes in Question</label>
+    <div id="qnsEditor" style="padding: 20px" flex ></div>
+
+        <div style="padding: 10px 0px">
+          <label>Test Case</label>
+          <div ng-repeat="test in qns.testcases" layout="row">
+              <md-input-container class="md-block">
+                <label>Test Case - Name</label>
+                <input ng-model="test.name">
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Test Case - Expect</label>
+                <input ng-model="test.expect">
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Test Case - To Equal</label>
+                <input ng-model="test.toEqual">
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Test Case - Hint</label>
+                <input ng-model="test.hint">
+              </md-input-container>
+              <md-button ng-click='deleteCodeTestCase($index)' class="md-icon-button" aria-label="Settings">
+                <i class="fa fa-times"></i>
+              </md-button>
+          </div>
+          <div style="width: 50%">
+            <md-button style="width: 100%; margin: 40px 0px" ng-click="addTestcase()" class="md-primary md-raised">add test case</md-button>
+           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

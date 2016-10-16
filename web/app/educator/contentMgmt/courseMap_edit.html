@@ -14,37 +14,39 @@
         <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 30px;height:auto;">
               <h1>{{courseTitle}} Course Map</h1>
               <md-button class="md-raised" ng-click="saveAllChanges($event)">Save all changes</md-button>
-              
+              <md-button class="md-raised" ng-click="showPrompt($event)">Add a challenge</md-button>
               <md-menu>
-                <md-button class="md-raised md-primary" ng-click="openMenu($mdOpenMenu, $event)">
-                 Options
+                <md-button class="md-raised md-primary" ng-click="courseMenu($mdOpenMenu, $event)">
+                 Course Options
                 </md-button>
                 <md-menu-content width="4">
-                  <md-menu-item>
-                    <md-button ng-click="addChapter()">
-                      Add a Chapter
-                    </md-button>
-                  </md-menu-item>
-                  <md-menu-item>
-                    <md-button ng-click="showPrompt($event)">
-                      Add a challenge
-                    </md-button>
-                  </md-menu-item>
-                  <md-menu-divider></md-menu-divider>
                    <md-menu-item>
                     <md-button ng-click="exportCourse($event)">
                       Export Course
-                    </md-button>
-                  </md-menu-item>
-                  <md-menu-item>
-                    <md-button ng-click="showExportPrompt($event)">
-                      Export a Chapter
                     </md-button>
                   </md-menu-item>
                   <md-menu-divider></md-menu-divider>
                    <md-menu-item>
                     <md-button ng-click="importCourse($event)">
                       Import Course
+                    </md-button>
+                  </md-menu-item>
+                </md-menu-content>
+              </md-menu>
+
+              <md-menu>
+                <md-button class="md-raised md-primary" ng-click="chapterMenu($mdOpenMenu, $event)">
+                 Chapter Options
+                </md-button>
+                <md-menu-content width="4">
+                  <md-menu-item>
+                    <md-button ng-click="addChapter($event)">
+                      Create a Chapter
+                    </md-button>
+                  </md-menu-item>
+                  <md-menu-item>
+                    <md-button ng-click="showExportPrompt($event)">
+                      Export a Chapter
                     </md-button>
                   </md-menu-item>
                   <md-menu-item>

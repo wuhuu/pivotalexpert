@@ -576,7 +576,12 @@
       $scope.courseMap = seq;
     });
 
-    $scope.openMenu = function ($mdOpenMenu, ev) {
+    $scope.chapterMenu = function ($mdOpenMenu, ev) {
+      originatorEv = ev;
+      $mdOpenMenu(ev);
+    };
+
+    $scope.courseMenu = function ($mdOpenMenu, ev) {
       originatorEv = ev;
       $mdOpenMenu(ev);
     };
@@ -1052,13 +1057,67 @@
         });
     }
 
-    $scope.addChapter = function () {
-      $scope.courseMap.push({ chapterTitle: "", });
-      $("#text_" + ($scope.courseMap.length - 1)).show();
-      $scope.chapterAdded = true;
-      //window.scrollTo(0,document.body.scrollHeight);
-      $('html, body').animate({ scrollTop: $(document).height() }, 'slow');
-    }
+   $scope.addChapter = function (ev) {
+      // Appending dialog to document.body to cover sidenav in docs app
+      var parentEl = angular.element(document.body);
+      $mdDialog.show({
+        parent: parentEl,
+        targetEvent: ev,
+        template:
+
+        '<md-dialog style="padding:20px">' +
+        '<form name="qnsForm">' +
+        ' <h3>Fill the form to create a new chapter</h3><br>' +
+        '  <md-dialog-content>' +
+        '  <md-input-container style="width:500px;height:auto;">' +
+        '    <label>Chapter Title</label> ' +
+        '    <input ng-model="chapterTitle" name="chapterTitle" required>' +
+        '    <ng-messages for="qnsForm.chapterTitle.$error" md-auto-hide="true">' +
+        '      <div ng-message="required">This is required.</div>' +
+        '    </ng-messages>' +
+        '  </md-input-container><br>' +
+        '  </md-dialog-content>' +
+        '  <md-dialog-actions>' +
+        '    <md-button ng-click="closeDialog()" class="md-primary">' +
+        '      Close' +
+        '    </md-button>' +
+        '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
+        '      Proceed' +
+        '    </md-button>' +
+        '  </md-dialog-actions>' +
+        '</form>' +
+        '</md-dialog>',
+        locals: {
+          courseMap: $scope.courseMap,
+          chapters:$scope.chapters
+        },
+        controller: DialogController
+      });
+
+      function DialogController($scope, $mdDialog,courseMap,chapters,contentMgmtService) {
+        $scope.chapterTitle ='';
+        $scope.closeDialog = function () {
+          $mdDialog.hide();
+        }
+
+        $scope.nextStep = function () {
+         
+          courseMap.push({ chapterTitle: $scope.chapterTitle });
+          courseMap.forEach(function(v){ delete v.$id; delete v.$priority; });
+          //contentMgmtService.updateChapter({ chapterTitle: $scope.chapterTitle },true);
+            $("#text_" + (courseMap.length - 1)).show();
+            $scope.chapterAdded = true;
+            //window.scrollTo(0,document.body.scrollHeight);
+            $('html, body').animate({ scrollTop: $(document).height() }, 'slow');
+            $mdDialog.hide();
+            $scope.chapterTitle ='';
+            contentMgmtService.updateEntireSeq(courseMap).then(function(courseSeq){
+              chapters.push(courseSeq[courseSeq.length-1]);
+            });
+          
+        }
+      }
+    };
 
     $scope.saveAllChanges = function (ev) {
 

@@ -11,6 +11,10 @@
       templateUrl: 'app/educator/contentMgmt/courseMap_edit.html',
 	     controller: 'CourseMapController'
     })
+    .when('/educator/books_edit', {
+      templateUrl: 'app/educator/contentMgmt/books_edit.html',
+	     controller: 'CourseMapController'
+    })
     .when('/educator/slides_edit/:cid/:qid', {
       templateUrl: 'app/educator/contentMgmt/slides_edit.html',
 	     controller: 'ContentMgmtController'

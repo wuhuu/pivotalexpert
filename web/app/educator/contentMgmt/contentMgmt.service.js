@@ -45,12 +45,12 @@
                 var cid = chapter.cid;
                 if(isNewChapter) {
                     // checking if chapterTitle already exist
-                    for(var element in courseSeq) {
-                        if(element.chapterTitle === chapter.chapterTitle) {
+                    angular.forEach(courseSeq, function(value, key) {
+                        if(value.chapterTitle === chapter.chapterTitle) {
                             //response this chapter is being used now.
                             return "This chapter name is being used now.";
                         }
-                    }
+                    });
                 }
 
                 if(!chapter.cid) {
@@ -133,7 +133,7 @@
                 });
 
                 courseSeqNodeRef.set(courseSequence,function(error){
-                    q.resolve(true);
+                    q.resolve(courseSequence);
                 });
             });
 

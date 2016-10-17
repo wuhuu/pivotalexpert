@@ -453,7 +453,7 @@
                                         // for each user, remove from their courseProgress the current qns
                                         snapshot.forEach(function(user) {
                                             var key = user.key;
-                                            angular.forEach(chapToDelete.qns, function(value, key) {
+                                            angular.forEach(chapToDelete.qns, function(value, index) {
                                                 userProfileNodeRef.child(key+'/courseProgress/'+value.qid).remove();
                                             });
                                         });

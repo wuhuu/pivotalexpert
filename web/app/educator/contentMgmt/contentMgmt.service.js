@@ -11,6 +11,8 @@
 		var chapterNodeRef = ref.child('course/chapters');
 		var questionNodeRef = ref.child('course/questions');
 		var answerKeyNodeRef = ref.child('answerKey');
+        var adminSheetRef = ref.child('auth/admin/spreadsheetID');
+        
 		var service = {
             updateChapter: updateChapter,
             getAllChapters: getAllChapters,
@@ -31,7 +33,9 @@
             updateCodebox:updateCodebox,
             updateExcel:updateExcel,
             getCourseJson:getCourseJson,
-            updateFormQuestion:updateFormQuestion
+            updateFormQuestion:updateFormQuestion,
+            getAdminSpreadsheetID:getAdminSpreadsheetID,
+            copySpreadsheetQns:copySpreadsheetQns
         };
 
 		return service;
@@ -776,6 +780,49 @@
                 }
             });
             return q.promise;
+        }
+    
+        function getAdminSpreadsheetID() {
+            var q = $q.defer();
+            adminSheetRef.once("value", function(snapshot) {
+                q.resolve(snapshot.val());
+            });
+            return q.promise;
+        }
+        
+        function copySpreadsheetQns(accessToken, IDCopyFrom, sheetID, IDCopyTo) {
+            var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+            var deferred = $q.defer();
+            gapi.client.load(discoveryUrl).then(function() {
+              gapi.client.sheets.spreadsheets.sheets.copyTo({
+                spreadsheetId: IDCopyFrom,
+                sheetId: sheetID,
+                destinationSpreadsheetId: IDCopyTo,
+              }).then(function(response) {
+                var title = response.result.title.substring(8);
+                deferred.resolve(response.result.sheetId);
+                updateSheetTitle(IDCopyTo, title, response.result.sheetId);
+              }); 
+            });
+            return deferred.promise;
+        }
+        
+        function updateSheetTitle(spreadsheetID, titleName, sheetID) {
+            gapi.client.sheets.spreadsheets.batchUpdate({
+                spreadsheetId: spreadsheetID,
+                requests: [
+                  {
+                    updateSheetProperties:{
+                      properties:{
+                        title: titleName,
+                        sheetId: sheetID
+                      },
+                      fields: "title"
+                    }
+                  }
+                ]
+              }).then(function(response) {
+            });
         }
     }
 

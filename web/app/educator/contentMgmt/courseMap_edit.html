@@ -17,7 +17,7 @@
               
               <md-menu>
                 <md-button class="md-raised md-primary" ng-click="openMenu($mdOpenMenu, $event)">
-                 Options
+                 Add Chapter/Challenge
                 </md-button>
                 <md-menu-content width="4">
                   <md-menu-item>
@@ -30,7 +30,14 @@
                       Add a challenge
                     </md-button>
                   </md-menu-item>
-                  <md-menu-divider></md-menu-divider>
+                </md-menu-content>
+              </md-menu>
+              
+              <md-menu>
+                <md-button class="md-raised md-primary" ng-click="openMenu($mdOpenMenu, $event)">
+                 Export / Import
+                </md-button>
+                <md-menu-content width="4">
                    <md-menu-item>
                     <md-button ng-click="exportCourse($event)">
                       Export Course

@@ -94,7 +94,7 @@
             if(userData.profileLink == null) {
               $location.path('/createProfileLink');
             } else if($rootScope.isAdmin || $rootScope.mainAdmin){
-                $location.path('/educator/courseMap/');
+                $location.path('/educator/courseLibrary/');
             }
             else{
               $location.path('/course/');

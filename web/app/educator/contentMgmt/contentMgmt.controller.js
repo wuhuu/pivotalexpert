@@ -561,7 +561,7 @@
 
   }
 
-  function CourseMapController($timeout, $http, $scope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService) {
+  function CourseMapController($timeout, $http, $scope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService, $q) {
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
@@ -571,13 +571,29 @@
     $scope.book = contentMgmtService.getBook($routeParams.bid);
 
     var courseMap = contentMgmtService.getCourseSeq($routeParams.bid);
+
+    var ref = firebase.database().ref();
+
+    //Load Google Auth 
+    var adminIDRef = ref.child('auth/admin/admin');
+    adminIDRef.once("value", function (adminID) {
+      var adminUserRef = ref.child('auth/users/' + adminID.val());
+      adminUserRef.once("value", function (adminUser) {
+        console.log("gapi auth token");
+        gapi.auth.setToken({
+          access_token: adminUser.child('access_token').val()
+        });
+        $scope.accessToken = adminUser.child('access_token').val();
+      });
+    });
+
+
     courseMap.$loaded().then(function () {
       var seq = [];
       for (i = 0; i < courseMap.length; i++) {
         seq.push(courseMap[i]);
         $scope.chapters.push({ cid: courseMap[i].cid, chapterTitle: courseMap[i].chapterTitle });
       }
-
       $scope.courseMap = seq;
     });
 
@@ -637,6 +653,7 @@
           var ref = firebase.database().ref();
           var exportObj = {};
           var course = {};
+
           var courseSeq = contentMgmtService.getCourseSeq();
           courseSeq.$loaded().then(function (courseSeq) {
             angular.forEach(courseSeq, function (courseSeqValue, key) {
@@ -675,18 +692,21 @@
                       delete chapter.$$conf;
                       delete chapter.$id;
                       delete chapter.$priority;
-
                       exportObj["course"]["chapters"] = { chap: chapter };
 
-                      var jsonString = JSON.stringify(exportObj);
-                      var url = URL.createObjectURL(new Blob([jsonString]));
-                      var a = document.createElement('a');
-                      a.href = url;
-                      a.download = 'chapter_json.json';
-                      a.target = '_blank';
-                      a.click();
+                      contentMgmtService.getAdminSpreadsheetID().then(function (spreadsheetID) { 
 
-                      $mdDialog.hide();
+                        exportObj["spreadsheetID"] = spreadsheetID;
+                        var jsonString = JSON.stringify(exportObj);
+                        var url = URL.createObjectURL(new Blob([jsonString]));
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'chapter_json.json';
+                        a.target = '_blank';
+                        a.click();
+
+                        $mdDialog.hide();
+                      });
                     });
                   });
                 });
@@ -724,6 +744,7 @@
         '     </div> ' +
         '   </choose-file> ' +
         '    <label style="color: red">{{fileError}}</label>' +
+        '  <md-progress-linear md-mode="query" ng-show="loading"></md-progress-linear>' +
         '  </md-dialog-content>' +
         '  <md-dialog-actions>' +
         '    <md-button ng-click="closeDialog()" class="md-primary">' +
@@ -749,6 +770,7 @@
         }
 
         $scope.nextStep = function () {
+          $scope.loading = true;
           $scope.fileError = "";
           if ($scope.files) {
             var file = $scope.files[0];
@@ -757,7 +779,6 @@
             var sequenceRef = ref.child('/courseSequence/');
             var questionRef = ref.child('/course/questions');
             var chapterRef = ref.child('/course/chapters');
-
             // Closure to capture the file information.
             reader.onload = (function (theFile) {
               return function (e) {
@@ -768,42 +789,80 @@
                   var sequence = JsonObj.courseSequence;
                   var question = JsonObj.course.questions;
                   var chapter = JsonObj.course.chapters;
-
+                  var spreadsheetID = JsonObj.spreadsheetID;
                   var cid = "";
-                  var qnsList = [];
 
-                  angular.forEach(chapter, function (chap, key) {
-                    var chapRef = chapterRef.push(chap);
-                    cid = chapRef.key;
-                    ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
+                  contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
+                    //Add to course chapter
+                    angular.forEach(chapter, function (chap, key) {
+                      var chapRef = chapterRef.push(chap);
+                      cid = chapRef.key;
+                      ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
+                    });
+
+                    importQuestions(question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
+
+                      sequence.cid = cid;
+                      sequence.qns = qnsList;
+                      // Add to sequence
+                      sequenceRef.once("value", function (snapshot) {
+                        sequenceRef.child(snapshot.numChildren()).set(sequence);
+                        window.location.reload();
+                      });
+                    });
+
                   });
-                  angular.forEach(question, function (qns, key) {
+                } catch (err) {
+                  $scope.fileError = "Please upload file in correct JSON format.";
+                  $scope.loading = false;
+                }
+              };
+            })(file);
+
+            function importQuestions(question, spreadsheetID, userSpreadsheetID, answer) {
+              var q = $q.defer();
+              var qnsList = [];
+              var totalQnsCount = 0;
+              var currentQnsCount = 0
+              //Add to course Question
+              angular.forEach(question, function (qns, key) {
+                totalQnsCount++;
+                //if excel qns
+                if (qns.qnsType == 'excel') {
+                  contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
+
+                    qns.sheetID = response;
                     var qnsRef = questionRef.push(qns);
                     var qid = qnsRef.key;
                     if (answer[key]) {
                       ref.child('/answerKey/' + qid).set(answer[key]);
                     }
                     qnsList.push({ qid: qid, qnsTitle: qns.qnsTitle, qnsType: qns.qnsType });
+                    currentQnsCount++;
+                    if (currentQnsCount == totalQnsCount) {
+                      q.resolve(qnsList);
+                    }
                   });
-
-                  sequence.cid = cid;
-                  sequence.qns = qnsList;
-
-                  sequenceRef.once("value", function (snapshot) {
-                    sequenceRef.child(snapshot.numChildren()).set(sequence);
-                    window.location.reload();
-                  });
-
-                } catch (err) {
-                  $scope.fileError = "Please upload file in correct JSON format.";
+                } else {
+                  currentQnsCount++;
+                  var qnsRef = questionRef.push(qns);
+                  var qid = qnsRef.key;
+                  if (answer[key]) {
+                    ref.child('/answerKey/' + qid).set(answer[key]);
+                  }
+                  qnsList.push({ qid: qid, qnsTitle: qns.qnsTitle, qnsType: qns.qnsType });
                 }
-              };
-            })(file);
+
+              });
+
+              return q.promise;
+            }
 
             // Read in the image file as a data URL.
             reader.readAsText(file);
           } else {
             $scope.fileError = "Failed to load file";
+            $scope.loading = false;
           }
         }
 
@@ -836,6 +895,7 @@
         '     </div> ' +
         '   </choose-file> ' +
         '    <label style="color: red">{{fileError}}</label>' +
+        '  <md-progress-linear md-mode="query" ng-show="loading"></md-progress-linear>' +
         '  </md-dialog-content>' +
         '  <md-dialog-actions>' +
         '    <md-button ng-click="closeDialog()" class="md-primary">' +
@@ -853,7 +913,22 @@
         controller: DialogController
       });
 
+
       function DialogController($scope, $q, $mdDialog, $timeout, chapters) {
+        var ref = firebase.database().ref();
+        //Load Google Auth 
+        var adminIDRef = ref.child('auth/admin/admin');
+        adminIDRef.once("value", function (adminID) {
+          var adminUserRef = ref.child('auth/users/' + adminID.val());
+          adminUserRef.once("value", function (adminUser) {
+            console.log("gapi auth token");
+            gapi.auth.setToken({
+              access_token: adminUser.child('access_token').val()
+            });
+            $scope.accessToken = adminUser.child('access_token').val();
+          });
+        });
+
         $scope.chapters = chapters;
         $scope.selectedChapter = '';
 
@@ -877,76 +952,111 @@
             reader.onload = (function (theFile) {
               return function (e) {
                 // try {
+                $scope.loading = true;
                 importCourse(e).then(function () {
                   $timeout(function () { window.location.reload(); }, 1000);
                 });
 
-                /*
-            }catch(err) {
-                $scope.fileError = "Please upload file in correct JSON format.";
-            }
-            */
               };
             })(file);
 
             // Read in the image file as a data URL.
             reader.readAsText(file);
           } else {
+            $scope.loading = false;
             $scope.fileError = "Failed to load file";
           }
         }
 
         function importCourse(e) {
           var q = $q.defer();
+          JsonObj = JSON.parse(e.target.result);
+          var answer = JsonObj.answerKey;
+          var sequences = JsonObj.courseSequence;
+          var question = JsonObj.course.questions;
+          var chapter = JsonObj.course.chapters;
+          var spreadsheetID = JsonObj.spreadsheetID;
 
-          sequenceRef.once("value", function (snapshot) {
+          contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
+            sequenceRef.once("value", function (snapshot) {
 
+              var chapterCount = 0;
+              var numChapter = 0;
+              numChapter = snapshot.numChildren();
 
-            var numChapter = 0;
-            numChapter = snapshot.numChildren();
+              angular.forEach(sequences, function (sequence, key) {
+                chapterCount++;
+                var cid = "";
+                angular.forEach(chapter, function (chap, key) {
+                  if (key == sequence.cid) {
+                    var chapRef = chapterRef.push(chap);
+                    cid = chapRef.key;
+                    ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
+                  }
+                });
 
-            JsonObj = JSON.parse(e.target.result);
+                importQuestions(sequence.qns, question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
 
-            var answer = JsonObj.answerKey;
-            var sequences = JsonObj.courseSequence;
-            var question = JsonObj.course.questions;
-            var chapter = JsonObj.course.chapters;
-
-            angular.forEach(sequences, function (sequence, key) {
-
-              var cid = "";
-              var qnsList = [];
-              angular.forEach(chapter, function (chap, key) {
-                if (key == sequence.cid) {
-                  var chapRef = chapterRef.push(chap);
-                  cid = chapRef.key;
-                  ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
-                }
+                  sequence.cid = cid;
+                  sequence.qns = qnsList;
+                  // Add to sequence
+                  sequenceRef.child(numChapter).set(sequence);
+                  numChapter++;
+                  if (chapterCount == numChapter) {
+                    q.resolve(true);
+                  }
+                });
               });
+            });
+          });
+          return q.promise;
+        }
 
+        function importQuestions(sequenceQns, questionList, spreadsheetID, userSpreadsheetID, answer) {
+          var q = $q.defer();
+          var totalQnsCount = 0;
+          var currentQnsCount = 0;
+          var qnsList = [];
 
-              angular.forEach(sequence.qns, function (seqQns, seqKey) {
-                angular.forEach(question, function (qns, qnsKey) {
-                  if (seqQns.qid == qnsKey) {
-                    var qnsRef = questionRef.push(qns);
+          console.log("TESTING");
+          if (sequenceQns) {
+            angular.forEach(sequenceQns, function (seqQns, seqKey) {
+              angular.forEach(questionList, function (qns, qnsKey) {
+                if (seqQns.qid == qnsKey) {
+                  totalQnsCount++
+                  importQuestion(qns, spreadsheetID, userSpreadsheetID, answer).then(function (nQns) {
+                    var qnsRef = questionRef.push(nQns);
                     var qid = qnsRef.key;
                     if (answer[qnsKey]) {
                       ref.child('/answerKey/' + qid).set(answer[qnsKey]);
                     }
-                    qnsList.push({ qid: qid, qnsTitle: qns.qnsTitle, qnsType: qns.qnsType });
-                  }
-                });
+                    qnsList.push({ qid: qid, qnsTitle: nQns.qnsTitle, qnsType: nQns.qnsType });
+                    currentQnsCount++;
+                    if (currentQnsCount == totalQnsCount) {
+                      q.resolve(qnsList);
+                    }
+                  });
+                }
               });
-              sequence.cid = cid;
-              sequence.qns = qnsList;
-
-              sequenceRef.child(numChapter).set(sequence);
-              numChapter++;
-
             });
-            q.resolve(true);
-          });
+          } else {
+            q.resolve(qnsList);
+          }
+          return q.promise;
+        }
 
+        function importQuestion(qns, spreadsheetID, userSpreadsheetID, answer) {
+          var q = $q.defer();
+
+          //if excel qns
+          if (qns.qnsType == 'excel') {
+            contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
+              qns.sheetID = response;
+              q.resolve(qns);
+            });
+          } else {
+            q.resolve(qns);
+          }
           return q.promise;
         }
       }
@@ -1355,32 +1465,6 @@
       $mdOpenMenu(ev);
     };
 
-    $scope.exportCourse = function () {
-      //from string to object = angular.fromJson(json);
-      contentMgmtService.getCourseJson().then(function (dbjson) {
-        dbjson.$loaded().then(function () {
-          delete dbjson.$$conf;
-          delete dbjson.$id;
-          delete dbjson.$priority;
-          delete dbjson.auth;
-          delete dbjson.courseSetting;
-          delete dbjson.signinLogs;
-          delete dbjson.userProfiles;
-
-          var json = JSON.stringify(dbjson);
-
-          var url = URL.createObjectURL(new Blob([json]));
-          var a = document.createElement('a');
-          a.href = url;
-          a.download = 'course_json.json';
-          a.target = '_blank';
-          a.click();
-
-          $mdDialog.hide();
-        });
-      });
-    }
-
     $scope.showExportPrompt = function (ev) {
       // Appending dialog to document.body to cover sidenav in docs app
       var parentEl = angular.element(document.body);
@@ -1498,7 +1582,6 @@
         }
       }
     };
-
 
   }
 

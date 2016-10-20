@@ -15,7 +15,7 @@
   };
   
   //Replace with your login google account email
-  var adminEmail = "jianhua.wu.2014@smu.edu.sg";
+  var adminEmail = "jeremy.pek.2014@smu.edu.sg";
   
   //Replace with the name of your course
   var courseName = "Pivotal Expert_Development";

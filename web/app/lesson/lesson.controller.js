@@ -252,6 +252,11 @@
         $scope.submit = function() {
             //track active user
             recordActiveUser();
+            //track attempts
+            recordUserAttempt();
+            //track user who attempted
+            recordUserWhoAttempted();
+
 
             $scope.checkingAns = true;
             //Load answer key of the question
@@ -520,6 +525,8 @@
 	}
 
     function nextQns(chapter, question, loadedQns){
+        //track user who revisit
+        recordUserWhoCompletedRevisit();
 
         //update course progress in firebase db
         var dateTimeNow = new Date().toLocaleString("en-US");
@@ -603,6 +610,65 @@
         var record = {};
         record[user.uid] = true;
         activeUserAnalyticsRef.update(record);
+    }
+
+    function recordUserAttempt() {
+        var userAttemptRef = ref.child('analytics').child('challengeStats').child(qid);
+        var userAttempt = $firebaseObject(userAttemptRef);
+        userAttempt.$loaded().then(function(){
+          var count;
+          if(userAttempt.totalAttempts){
+            count = userAttempt.totalAttempts + 1;
+          }else{
+            count = 1;
+          }
+          userAttemptRef.update({totalAttempts:count});
+        });
+    }
+
+    function recordUserWhoAttempted() {
+        var userAttemptedRecordRef = ref.child('analytics').child('challengeStats').child(qid).child('userAttemptedRecords');
+        var record = {};
+        record[user.uid] = true;
+        userAttemptedRecordRef.update(record);
+    }
+
+    /*function recordUserWhoCompleted() {
+        var userCompletedRecordRef = ref.child('analytics').child('challengeStats').child(qid).child('userCompletedRecords');
+        var record = {};
+        record[user.uid] = true;
+        userCompletedRecordRef.update(record);
+    }*/
+
+    function recordUserWhoCompletedRevisit() {
+        var challengeRecordRef = ref.child('analytics').child('challengeStats').child(qid);
+        var temp = ref.child('analytics').child('challengeStats').child(qid).child('userCompletedRecords').child(user.uid);
+        var userCompletedRecordRef = ref.child('analytics').child('challengeStats').child(qid).child('userCompletedRecords');
+        var challengeRecord = $firebaseObject(challengeRecordRef);
+
+        challengeRecord.$loaded().then(function(){
+          var userId = user.uid;
+
+          if(challengeRecord.userCompletedRecords){
+            if(challengeRecord.userCompletedRecords[userId]){
+              var revisitCount = challengeRecord.revisitRecords;
+              if(revisitCount){
+                revisitCount += 1;
+              }else{
+                revisitCount = 1;
+              }
+            challengeRecordRef.update({revisitRecords:revisitCount});
+            }else{
+              var record = {};
+              record[user.uid] = true;
+              userCompletedRecordRef.update(record);
+            }
+          }else{
+            var record = {};
+            record[user.uid] = true;
+            userCompletedRecordRef.update(record);
+          }
+        });
     }
 
   };

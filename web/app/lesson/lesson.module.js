@@ -29,6 +29,10 @@
     .when('/lesson/form/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/form.html',
     controller: 'LessonController'
+    })
+    .when('/lesson/iframe/:chapter/:qns/:qid', {
+      templateUrl: 'app/lesson/iframe.html',
+    controller: 'LessonController'
     });
   }
   

@@ -35,7 +35,7 @@
             getCourseJson:getCourseJson,
             updateFormQuestion:updateFormQuestion,
             getAdminSpreadsheetID:getAdminSpreadsheetID,
-            copySpreadsheetQns:copySpreadsheetQns
+            copySpreadsheetQns:copySpreadsheetQns,
         };
 
 		return service;
@@ -231,7 +231,7 @@
             });
             return q.promise;
         }
-
+        
         function updateSlideQuestion(question,isNewQuestion) {
             // retrieve courseSeq node
             var questionNode = $firebaseObject(questionNodeRef);

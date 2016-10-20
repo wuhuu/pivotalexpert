@@ -84,18 +84,18 @@
             }
 
         }
-        
+
         //IForm type question
         if(qnsType == 'iframe'){
             $scope.srclink = $sce.trustAsResourceUrl(question.link);
         }
 
-        
+
         //Google Form type question
         if(qnsType == 'form'){
             $scope.srclink = $sce.trustAsResourceUrl(question.link);
             var initLoad = true;
-            
+
             var iframeElem = document.getElementById('iframeId');
             iframeElem.onload  = function(){
                 if(initLoad) {
@@ -104,7 +104,7 @@
                     showCompleteDialog("You have completed the Challenge, go for more!");
                 }
             };
-            
+
         }
         //Slides type question
         if(qnsType == 'slides'){
@@ -160,12 +160,12 @@
                               '</div>' +
                             '</md-toast>',
                             hideDelay: 3000
-                        });                            
-          
+                        });
+
                     }
                });
             }
-            
+
             //initial run
             $scope.mcq = mcq[0];
         }
@@ -250,6 +250,9 @@
 
         //Submit answer and go next qns if correct
         $scope.submit = function() {
+            //track active user
+            recordActiveUser();
+
             $scope.checkingAns = true;
             //Load answer key of the question
             var answerKey = $firebaseObject(ref.child('answerKey/' + qid));
@@ -589,6 +592,17 @@
             "Z" : 26,
         }
         return mapping[col.toUpperCase()]
+    }
+
+    function recordActiveUser() {
+        var preDateNow = new Date().toLocaleString("en-US");
+        preDateNow = preDateNow.substring(0,preDateNow.indexOf(','));
+        var preDateNow2 = preDateNow.replace('\/','');
+        var dateNow = preDateNow2.replace('\/','');
+        var activeUserAnalyticsRef = ref.child('analytics').child('activeUser').child(dateNow);
+        var record = {};
+        record[user.uid] = true;
+        activeUserAnalyticsRef.update(record);
     }
 
   };

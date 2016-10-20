@@ -59,7 +59,7 @@
         function getBookSeqRef() {
             return libraryNodeRef.child(bookID).child("sequence");
         }
-        //add or update book function 
+        //add or update book function
         function updateBook(book,isNewBook) {
             var q = $q.defer();
             var libraryNode = $firebaseObject(libraryNodeRef);
@@ -242,6 +242,27 @@
                     qid = commonService.guid();
                     question.qid = qid;
                 }
+                //set url to temp variable
+                var youtubeUrl = question.link;
+
+                //function to retrive Youtube ID
+                function YouTubeGetID(url){
+                  var ID = '';
+                  url = url.replace(/(>|<)/gi,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+                  if(url[2] !== undefined) {
+                    ID = url[2].split(/[^0-9a-z_\-]/i);
+                    ID = ID[0];
+                  }
+                  else {
+                    ID = url;
+                  }
+                    return ID;
+                }
+
+                //change url to id
+                question.link = YouTubeGetID(youtubeUrl);
+
+
                 // create new question node & fill it up
 
                 var questionNode = {
@@ -300,7 +321,7 @@
             });
             return q.promise;
         }
-        
+
         function updateSlideQuestion(question,isNewQuestion) {
             // retrieve courseSeq node
             var questionNode = $firebaseObject(questionNodeRef);
@@ -820,10 +841,10 @@
                         qnsType:question.qnsType,
                         link:question.link
                     };
-                
+
                     //Update to firebase question node
                     questionNodeRef.child(qid).update(questionContent);
-                    
+
                     //Update course sequence
                     var questionSeqNode = {qid:qid, qnsTitle:question.qnsTitle, qnsType: "form"};
 
@@ -850,7 +871,7 @@
             });
             return q.promise;
         }
-    
+
         function getAdminSpreadsheetID() {
             var q = $q.defer();
             adminSheetRef.once("value", function(snapshot) {
@@ -858,7 +879,7 @@
             });
             return q.promise;
         }
-        
+
         function copySpreadsheetQns(accessToken, IDCopyFrom, sheetID, IDCopyTo) {
             var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
             var deferred = $q.defer();
@@ -871,11 +892,11 @@
                 var title = response.result.title.substring(8);
                 deferred.resolve(response.result.sheetId);
                 updateSheetTitle(IDCopyTo, title, response.result.sheetId);
-              }); 
+              });
             });
             return deferred.promise;
         }
-        
+
         function updateSheetTitle(spreadsheetID, titleName, sheetID) {
             gapi.client.sheets.spreadsheets.batchUpdate({
                 spreadsheetId: spreadsheetID,

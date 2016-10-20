@@ -171,6 +171,9 @@
 
           question.qid = question.$id;
           question.cid = $routeParams.cid;
+
+          //adding youtube url before it youtube id
+          question.link = "http://www.youtube.com/watch?v=" + question.link;
           $scope.qns = question;
         });
       })
@@ -581,7 +584,7 @@
 
     var ref = firebase.database().ref();
 
-    //Load Google Auth 
+    //Load Google Auth
     var adminIDRef = ref.child('auth/admin/admin');
     adminIDRef.once("value", function (adminID) {
       var adminUserRef = ref.child('auth/users/' + adminID.val());
@@ -736,7 +739,7 @@
                       delete chapter.$priority;
                       exportObj["course"]["chapters"] = { chap: chapter };
 
-                      contentMgmtService.getAdminSpreadsheetID().then(function (spreadsheetID) { 
+                      contentMgmtService.getAdminSpreadsheetID().then(function (spreadsheetID) {
 
                         exportObj["spreadsheetID"] = spreadsheetID;
                         var jsonString = JSON.stringify(exportObj);
@@ -958,7 +961,7 @@
 
       function DialogController($scope, $q, $mdDialog, $timeout, chapters) {
         var ref = firebase.database().ref();
-        //Load Google Auth 
+        //Load Google Auth
         var adminIDRef = ref.child('auth/admin/admin');
         adminIDRef.once("value", function (adminID) {
           var adminUserRef = ref.child('auth/users/' + adminID.val());

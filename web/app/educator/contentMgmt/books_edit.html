@@ -14,7 +14,24 @@
     <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 30px;height:auto;">
       <h1>Course Library</h1>
       <md-button class="md-raised" ng-click="addBook($event)">Create a Book</md-button>
-
+      <md-menu>
+                <md-button class="md-raised md-primary" ng-click="courseMenu($mdOpenMenu, $event)">
+                 Course Options
+                </md-button>
+                <md-menu-content width="4">
+                   <md-menu-item>
+                    <md-button ng-click="showExportPrompt($event)">
+                      Export Course
+                    </md-button>
+                  </md-menu-item>
+                  <md-menu-divider></md-menu-divider>
+                   <md-menu-item>
+                    <md-button ng-click="importCourse($event)">
+                      Import Course
+                    </md-button>
+                  </md-menu-item>
+                </md-menu-content>
+              </md-menu>
     </div>
     <div flex="auto"></div>
   </div>

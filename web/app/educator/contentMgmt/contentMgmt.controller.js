@@ -612,41 +612,6 @@
       $mdOpenMenu(ev);
     };
 
-    $scope.courseMenu = function ($mdOpenMenu, ev) {
-      originatorEv = ev;
-      $mdOpenMenu(ev);
-    };
-
-    $scope.exportCourse = function () {
-      //from string to object = angular.fromJson(json);
-      contentMgmtService.getCourseJson().then(function (dbjson) {
-        dbjson.$loaded().then(function () {
-          delete dbjson.$$conf;
-          delete dbjson.$id;
-          delete dbjson.$priority;
-          delete dbjson.auth;
-          delete dbjson.courseSetting;
-          delete dbjson.signinLogs;
-          delete dbjson.userProfiles;
-
-          contentMgmtService.getAdminSpreadsheetID().then(function (spreadsheetID) {
-
-            dbjson["spreadsheetID"] = spreadsheetID;
-            var json = JSON.stringify(dbjson);
-
-            var url = URL.createObjectURL(new Blob([json]));
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'course_json.json';
-            a.target = '_blank';
-            a.click();
-
-            $mdDialog.hide();
-          });
-        });
-      });
-    }
-
     $scope.showExportPrompt = function (ev) {
       // Appending dialog to document.body to cover sidenav in docs app
       var parentEl = angular.element(document.body);
@@ -1505,6 +1470,128 @@
       $location.path('educator/bookMap/' + bid);
     }
 
+    $scope.courseMenu = function ($mdOpenMenu, ev) {
+      originatorEv = ev;
+      $mdOpenMenu(ev);
+    };
+
+    $scope.showExportPrompt = function (ev) {
+      // Appending dialog to document.body to cover sidenav in docs app
+      var parentEl = angular.element(document.body);
+      $mdDialog.show({
+        parent: parentEl,
+        targetEvent: ev,
+        template:
+
+        '<md-dialog style="padding:20px">' +
+        '<form name="qnsForm">' +
+        ' <h3>Export options:</h3><br>' +
+        '  <md-dialog-content>' +
+        '  <md-input-container style="width:500px;height:auto;">' +
+        '    <label>Please select book to export.</label> ' +
+        '    <md-select ng-model="selectedBook" name="book" required>' +
+        '      <md-option ng-repeat="book in library" value="{{book.bid}}">' +
+        '       {{book.bookTitle}}' +
+        '      ' +
+        '    </md-option></md-select>' +
+        '    <ng-messages for="qnsForm.book.$error" md-auto-hide="true">' +
+        '      <div ng-message="required">This is required.</div>' +
+        '    </ng-messages>' +
+        '  </md-input-container><br>' +
+        '  </md-dialog-content>' +
+        '  <md-dialog-actions>' +
+        '    <md-button ng-click="closeDialog()" class="md-primary">' +
+        '      Close' +
+        '    </md-button>' +
+        '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
+        '      Export' +
+        '    </md-button>' +
+        '  </md-dialog-actions>' +
+        '</form>' +
+        '</md-dialog>',
+        locals: {
+          library: $scope.library
+        },
+        controller: DialogController
+      });
+
+      function DialogController($scope, $q, $mdDialog, $firebaseObject, $firebaseArray, library) {
+        $scope.library = library;
+        $scope.selectedBook = '';
+        var ref = firebase.database().ref();
+        var answerKeyNode = $firebaseArray(ref.child('answerKey'));
+        var questionNode = $firebaseArray(ref.child('course/questions'));
+
+        $scope.closeDialog = function () {
+          $mdDialog.hide();
+        }
+
+        $scope.nextStep = function () {
+
+          var exportObj = {};
+          var course = {};
+          var chapters = {};
+          var questions = {};
+          var answerKey = {};
+          var book = $firebaseObject(ref.child('library').child($scope.selectedBook));
+
+          var promises = [book, answerKeyNode, questionNode];
+
+          book.$loaded().then(function () {
+            var courseSeq = book.sequence;
+            angular.forEach(courseSeq, function (chapter, key) {
+              chapters[chapter.cid] = chapter;
+
+              // loop through questions
+
+              angular.forEach(chapter.qns, function (qnsValue, key) {
+                var q = questionNode.$getRecord(qnsValue.qid);
+                if (q != null) {
+                  delete q.$$conf;
+                  delete q.$id;
+                  delete q.$priority;
+                  questions[qnsValue.qid] = q;
+                }
+
+                var ans = answerKeyNode.$getRecord(qnsValue.qid);
+                if (ans != null) {
+                  delete ans.$$conf;
+                  delete ans.$id;
+                  delete ans.$priority;
+                  answerKey[qnsValue.qid] = ans;
+                }
+
+              });
+            });
+          }).then(function () {
+            
+            exportObj["answerKey"] = answerKey;
+            exportObj["course"] = { questions: questions, chapters: chapters };
+            var bookNode = {};
+            delete book.$$conf;
+            delete book.$id;
+            delete book.$priority;
+            bookNode[$scope.selectedBook] = book;
+            exportObj['book'] = bookNode;
+
+            var jsonString = JSON.stringify(exportObj);
+            var url = URL.createObjectURL(new Blob([jsonString]));
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'chapter_json.json';
+            a.target = '_blank';
+            a.click();
+
+            $mdDialog.hide();
+
+          });
+
+
+
+
+        }
+      }
+    };
 
   }
 

@@ -84,16 +84,27 @@
             }
 
         }
+        
+        //IForm type question
+        if(qnsType == 'iframe'){
+            $scope.srclink = $sce.trustAsResourceUrl(question.link);
+        }
 
+        
         //Google Form type question
         if(qnsType == 'form'){
             $scope.srclink = $sce.trustAsResourceUrl(question.link);
+            var initLoad = true;
+            
             var iframeElem = document.getElementById('iframeId');
-
-            $scope.$watch('srclink', function(newValue, oldValue) {
-              console.log("TESTING");
-            });
-
+            iframeElem.onload  = function(){
+                if(initLoad) {
+                    initLoad = false;
+                } else {
+                    showCompleteDialog("You have completed the Challenge, go for more!");
+                }
+            };
+            
         }
         //Slides type question
         if(qnsType == 'slides'){
@@ -245,7 +256,7 @@
             answerKey.$loaded().then(function(){
 
                 //video and slides question type
-                if (qnsType == 'video' || qnsType == 'slides'){
+                if (qnsType == 'video' || qnsType == 'slides' || qnsType == 'iframe'){
                     showCompleteDialog("Time to applied what you have learnt!");
                 }
 

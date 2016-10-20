@@ -39,6 +39,10 @@
       templateUrl: 'app/educator/contentMgmt/form_edit.html',
 	     controller: 'ContentMgmtController'
     })
+    .when('/educator/iframe_edit/:cid/:qid', {
+      templateUrl: 'app/educator/contentMgmt/iframe_edit.html',
+	     controller: 'ContentMgmtController'
+    })
     // for creation
     .when('/educator/video_create/:cid', {
       templateUrl: 'app/educator/contentMgmt/video_edit.html',
@@ -62,6 +66,10 @@
     })
     .when('/educator/google_form_create/:cid', {
       templateUrl: 'app/educator/contentMgmt/form_edit.html',
+	     controller: 'ContentMgmtController'
+    })
+    .when('/educator/iframe_create/:cid', {
+      templateUrl: 'app/educator/contentMgmt/iframe_edit.html',
 	     controller: 'ContentMgmtController'
     });
   }

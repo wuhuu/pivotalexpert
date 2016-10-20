@@ -3,24 +3,23 @@
 <div layout="row" flex>
   <div flex="15"></div>
   <div class="md-whiteframe-z2" layout="column" flex="70">
-  <form name="qnsForm"> 
+  <form name="qnsForm">
     <style>
       ng-messages {display: block;}
     </style>
     <h2 class="pull-left" style="padding:0px 10px">{{qns.qnsTitle}}</h2>
-    <div style="padding:30px">
-      <div class="pull-right" style="padding:30px">
+    <div class="pull-right" style="padding:5px">
         <md-button class="md-raised" type="submit" ng-click='qnsForm.$valid && saveQns($event)'>Save all changes</md-button>
         <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
         <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
       </div>
+    <div style="padding:30px">
     </div>
     <md-divider></md-divider>
-    <div style="padding: 100px 0px">
+    <div style="padding: 30px 0px">
       <div layout="column">
         <div layout="column" layout-align=" center">
-          
-            <div flex style="padding:10px">
+            <div flex style="padding:8px">
               <md-input-container class="md-block">
                 <label>Challenge Title</label>
                 <input ng-model="qns.qnsTitle" name="qnsTitle" required>
@@ -29,14 +28,26 @@
                 </ng-messages>
               </md-input-container>
             </div>
-            <div flex style="padding:10px">
+            <div flex style="padding:8px">
+              <md-input-container class="md-block">
+                <label>Instructions</label>
+                <input ng-model="qns.qnsInstruction" name="qnsInstruction" rows="1">
+              </md-input-container>
+            </div>
+            <div flex style="padding:8px">
               <input type="hidden" ng-model='qns.qid'>
               <md-input-container class="md-block">
-                <label>Google Form link</label>
+                <label>URL Link</label>
                 <input ng-model="qns.link" name="link" required>
                 <ng-messages for="qnsForm.link.$error" md-auto-hide="true">
                   <div ng-message="required">This is required.</div>
                 </ng-messages>
+              </md-input-container>
+            </div>
+            <div flex style="padding:8px">
+              <md-input-container class="md-block">
+                <label>Description</label>
+                <input ng-model="qns.qnsDescription" name="qnsDescription" rows="1" md-select-on-focus >
               </md-input-container>
             </div>
         </div>

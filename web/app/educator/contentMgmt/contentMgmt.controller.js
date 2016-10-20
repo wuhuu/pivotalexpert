@@ -252,6 +252,12 @@
             window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
             commonService.showSimpleToast("Video Challenge Added/Updated.");
           });
+        } else if ($scope.qns.qnsType == "iframe") {
+          contentMgmtService.updateVideoQuestion($scope.qns, $scope.isNewQuestion).then(function () {
+
+            window.location.href = "#/educator/courseMap"
+            commonService.showSimpleToast("IFrame Challenge Added/Updated.");
+          });
         } else if ($scope.qns.qnsType == "slides") {
           contentMgmtService.updateSlideQuestion($scope.qns, $scope.isNewQuestion).then(function () {
 
@@ -565,7 +571,8 @@
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
-    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Excel", "Code", "Google_Form"];
+    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Excel", "Code", "Google_Form", "IFrame"];
+
     $scope.bid = $routeParams.bid;
     contentMgmtService.saveBookID($routeParams.bid);
     $scope.book = contentMgmtService.getBook($routeParams.bid);

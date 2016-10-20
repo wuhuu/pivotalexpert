@@ -11,6 +11,7 @@
 	var ref = firebase.database().ref();
     var user = firebase.auth().currentUser;
 	var chapter = $routeParams.chapter;
+    var bid = $routeParams.bid;
 	var qns = $routeParams.qns;
     var qid = $routeParams.qid;
 
@@ -533,25 +534,22 @@
         chapter = parseInt(chapter) - 1;
         question = parseInt(question);
 
-        var courseSeq = $firebaseObject(ref.child('courseSequence'));
+        var courseSeq = $firebaseObject(ref.child('library').child(bid).child("sequence"));
         courseSeq.$loaded().then(function() {
             var nextQns = courseSeq[chapter].qns[question];
             if(nextQns) {
-				$location.path('/lesson/' + nextQns.qnsType + '/' + (chapter + 1) + '/' + (question + 1)+ '/' + nextQns.qid);
+				$location.path('/lesson/' + nextQns.qnsType + '/' + bid + '/' + (chapter + 1) + '/' + (question + 1)+ '/' + nextQns.qid);
 			} else {
 				//Complete current chapter, go to next chapter
 				nextQns = courseSeq[chapter+1];
 				if(nextQns && courseSeq[chapter+1].qns) {
                     nextQns = courseSeq[chapter+1].qns[0];
-					$location.path('/lesson/' + nextQns.qnsType + '/' + (chapter + 2) + '/1/'+ nextQns.qid );
+					$location.path('/lesson/' + nextQns.qnsType + '/' + bid + '/' + (chapter + 2) + '/1/'+ nextQns.qid );
 				} else {
 					//update last attemp in firebase db
 					ref.child('userProfiles').child(user.uid).child('lastAttempt').set("completed");
 					//Complete whole course
-					var userRef = $firebaseObject(ref.child('auth/users/' + user.uid));
-					userRef.$loaded().then(function(){
-						$location.path('/profile/' + userRef.profileLink);
-					});
+					$location.path('/course/');
 				}
 			}
 

@@ -4,6 +4,7 @@
     .module('app.contentMgmt')
     .controller('ContentMgmtController', ContentMgmtController)
     .controller('CourseMapController', CourseMapController)
+    .controller('BookController', BookController)
     .directive('onFinishRender', function ($timeout) {
       return {
         restrict: 'A',
@@ -107,9 +108,9 @@
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
     var qnsType = path.substr(path.lastIndexOf('/') + 1);
-    if(qnsType == 'google_form'){
-        qnsType = 'form';
-    }else if (qnsType === 'code') {
+    if (qnsType == 'google_form') {
+      qnsType = 'form';
+    } else if (qnsType === 'code') {
       var functionEditor = ace.edit("functionEditor");
       var qnsEditor = ace.edit("qnsEditor");
     }
@@ -161,7 +162,7 @@
           function loadDetails() {
             question.testcases = [];
             angular.forEach(answerKey.testcases, function (value, key) {
-              question.testcases.push({ cellToChange: value.cellToChange, changedTo: value.changedTo, expectCell: value.expectCell, toEqual : value.toEqual, msg : value.msg});
+              question.testcases.push({ cellToChange: value.cellToChange, changedTo: value.changedTo, expectCell: value.expectCell, toEqual: value.toEqual, msg: value.msg });
             });
 
             var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + question.sheetID;
@@ -193,7 +194,7 @@
         $scope.qns['qnsInstruction'] = [];
       } else if (qnsType === "form") {
         $scope.qns['link'] = "";
-      }else if (qnsType === "excel") {
+      } else if (qnsType === "excel") {
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['sheetID'] = "";
         //answer key scope
@@ -233,9 +234,9 @@
     }
 
     $scope.backToCourseMap = function () {
-      window.location.href = "#/educator/courseMap";
+      window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();;
     }
-    
+
     $scope.saveQns = function (ev) {
       var confirm = $mdDialog.confirm()
         .title('Would you want to save all changes?')
@@ -248,7 +249,7 @@
         if ($scope.qns.qnsType == "video") {
           contentMgmtService.updateVideoQuestion($scope.qns, $scope.isNewQuestion).then(function () {
 
-            window.location.href = "#/educator/courseMap"
+            window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
             commonService.showSimpleToast("Video Challenge Added/Updated.");
           });
         } else if ($scope.qns.qnsType == "iframe") {
@@ -260,14 +261,14 @@
         } else if ($scope.qns.qnsType == "slides") {
           contentMgmtService.updateSlideQuestion($scope.qns, $scope.isNewQuestion).then(function () {
 
-            window.location.href = "#/educator/courseMap";
+            window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();;
             commonService.showSimpleToast("Slides Challenge Added/Updated.");
             //$scope.$emit("SuccessPrompt",);
           });
         } else if ($scope.qns.qnsType == "form") {
           contentMgmtService.updateFormQuestion($scope.qns, $scope.isNewQuestion).then(function (result) {
-            if(result) {
-              window.location.href = "#/educator/courseMap";
+            if (result) {
+              window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();;
               commonService.showSimpleToast("Google Form Challenge Added/Updated.");
             } else {
               commonService.showSimpleToast(" Added/Updated Failed! This Challenge Title had been used.");
@@ -330,7 +331,7 @@
         $scope.qns.mcq = listToUpdate;
 
         contentMgmtService.updateMCQ($scope.qns, $scope.isNewQuestion).then(function () {
-          window.location.href = "#/educator/courseMap"
+          window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
           commonService.showSimpleToast("MCQ Challenge Added/Updated.");
         });
       }, function () {
@@ -369,7 +370,7 @@
 
       $mdDialog.show(confirm).then(function () {
         contentMgmtService.deleteQuestion(cid, qid).then(function () {
-          window.location.href = "#/educator/courseMap"
+          window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
           //window.location.reload();
         });
       }, function () {
@@ -387,7 +388,7 @@
 
       $mdDialog.show(confirm).then(function () {
         contentMgmtService.deleteChapter(cid).then(function () {
-          window.location.href = "#/educator/courseMap"
+          window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
         });
       }, function () {
         // cancel function
@@ -402,7 +403,7 @@
       } else {
         $scope.qns.testcases = [];
       }
-      $scope.qns.testcases.push({name:"",expect:"",toEqual:"",hint:""});
+      $scope.qns.testcases.push({ name: "", expect: "", toEqual: "", hint: "" });
     }
     //Create && Update Code box
     $scope.saveCodeBoxChanges = function (ev) {
@@ -422,7 +423,7 @@
         $scope.qns.functionCode = functionEditor.getValue();
 
         contentMgmtService.updateCodebox($scope.qns, $scope.isNewQuestion).then(function (result) {
-          window.location.href = "#/educator/courseMap"
+          window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
           commonService.showSimpleToast("Code Challenge Added/Updated.");
         });
       }, function () {
@@ -437,8 +438,8 @@
       var currentUser = $firebaseObject(ref.child('auth/users/' + user.uid));
       currentUser.$loaded().then(function () {
         //load educator spreadsheets
-        adminRef.once('value', function(snapshot) {
-            $scope.userExcelID = snapshot.child('spreadsheetID').val()
+        adminRef.once('value', function (snapshot) {
+          $scope.userExcelID = snapshot.child('spreadsheetID').val()
         });
         $scope.userToken = currentUser.access_token;
         gapi.auth.setToken({
@@ -470,7 +471,7 @@
       $mdDialog.show(confirm).then(function () {
 
         contentMgmtService.updateExcel($scope.qns, $scope.isNewQuestion).then(function (result) {
-          if(result) {
+          if (result) {
             gapi.client.load(discoveryUrl).then(updateSheetTitle);
             commonService.showSimpleToast("Excel Challenge Added/Updated.");
           } else {
@@ -560,7 +561,7 @@
           }
         ]
       }).then(function (response) {
-        window.location.href = "#/educator/courseMap"
+        window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
       });
     }
 
@@ -571,23 +572,29 @@
     $scope.qnsTBD = [];
     $scope.chapters = [];
     $scope.qnsTypes = ["Video", "Slides", "MCQ", "Excel", "Code", "Google_Form", "IFrame"];
-    
+
+    $scope.bid = $routeParams.bid;
+    contentMgmtService.saveBookID($routeParams.bid);
+    $scope.book = contentMgmtService.getBook($routeParams.bid);
+
+    var courseMap = contentMgmtService.getCourseSeq($routeParams.bid);
+
     var ref = firebase.database().ref();
-    
+
     //Load Google Auth 
     var adminIDRef = ref.child('auth/admin/admin');
-    adminIDRef.once("value", function(adminID) {
-        var adminUserRef = ref.child('auth/users/' + adminID.val());
-        adminUserRef.once("value", function(adminUser) {
-            console.log("gapi auth token");
-            gapi.auth.setToken({
-                access_token: adminUser.child('access_token').val()
-            });
-            $scope.accessToken = adminUser.child('access_token').val();
+    adminIDRef.once("value", function (adminID) {
+      var adminUserRef = ref.child('auth/users/' + adminID.val());
+      adminUserRef.once("value", function (adminUser) {
+        console.log("gapi auth token");
+        gapi.auth.setToken({
+          access_token: adminUser.child('access_token').val()
         });
+        $scope.accessToken = adminUser.child('access_token').val();
+      });
     });
-    
-    var courseMap = contentMgmtService.getCourseSeq();
+
+
     courseMap.$loaded().then(function () {
       var seq = [];
       for (i = 0; i < courseMap.length; i++) {
@@ -597,7 +604,12 @@
       $scope.courseMap = seq;
     });
 
-    $scope.openMenu = function ($mdOpenMenu, ev) {
+    $scope.chapterMenu = function ($mdOpenMenu, ev) {
+      originatorEv = ev;
+      $mdOpenMenu(ev);
+    };
+
+    $scope.courseMenu = function ($mdOpenMenu, ev) {
       originatorEv = ev;
       $mdOpenMenu(ev);
     };
@@ -615,7 +627,7 @@
           delete dbjson.userProfiles;
 
           contentMgmtService.getAdminSpreadsheetID().then(function (spreadsheetID) {
-                        
+
             dbjson["spreadsheetID"] = spreadsheetID;
             var json = JSON.stringify(dbjson);
 
@@ -683,7 +695,7 @@
           var ref = firebase.database().ref();
           var exportObj = {};
           var course = {};
-         
+
           var courseSeq = contentMgmtService.getCourseSeq();
           courseSeq.$loaded().then(function (courseSeq) {
             angular.forEach(courseSeq, function (courseSeqValue, key) {
@@ -723,9 +735,9 @@
                       delete chapter.$id;
                       delete chapter.$priority;
                       exportObj["course"]["chapters"] = { chap: chapter };
-                      
-                      contentMgmtService.getAdminSpreadsheetID().then(function (spreadsheetID) {
-                        
+
+                      contentMgmtService.getAdminSpreadsheetID().then(function (spreadsheetID) { 
+
                         exportObj["spreadsheetID"] = spreadsheetID;
                         var jsonString = JSON.stringify(exportObj);
                         var url = URL.createObjectURL(new Blob([jsonString]));
@@ -829,65 +841,65 @@
                       cid = chapRef.key;
                       ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
                     });
-                    
-                  importQuestions(question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
-                      
-                    sequence.cid = cid;
-                    sequence.qns = qnsList;
-                    // Add to sequence
-                    sequenceRef.once("value", function (snapshot) {
-                      sequenceRef.child(snapshot.numChildren()).set(sequence);
-                      window.location.reload();
+
+                    importQuestions(question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
+
+                      sequence.cid = cid;
+                      sequence.qns = qnsList;
+                      // Add to sequence
+                      sequenceRef.once("value", function (snapshot) {
+                        sequenceRef.child(snapshot.numChildren()).set(sequence);
+                        window.location.reload();
+                      });
                     });
-                  });
-                   
+
                   });
                 } catch (err) {
                   $scope.fileError = "Please upload file in correct JSON format.";
-                   $scope.loading = false;
+                  $scope.loading = false;
                 }
               };
             })(file);
 
             function importQuestions(question, spreadsheetID, userSpreadsheetID, answer) {
-                var q = $q.defer();
-                var qnsList = [];
-                var totalQnsCount = 0;
-                var currentQnsCount = 0
-                //Add to course Question
-                angular.forEach(question, function (qns, key) {
-                  totalQnsCount++;
-                  //if excel qns
-                  if(qns.qnsType == 'excel') {
-                    contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
-                       
-                      qns.sheetID = response;
-                      var qnsRef = questionRef.push(qns);
-                      var qid = qnsRef.key;
-                      if (answer[key]) {
-                        ref.child('/answerKey/' + qid).set(answer[key]);
-                      }
-                      qnsList.push({ qid: qid, qnsTitle: qns.qnsTitle, qnsType: qns.qnsType });
-                      currentQnsCount++;
-                      if(currentQnsCount == totalQnsCount) {
-                         q.resolve(qnsList);
-                      }
-                    });
-                  } else {
-                    currentQnsCount++;
+              var q = $q.defer();
+              var qnsList = [];
+              var totalQnsCount = 0;
+              var currentQnsCount = 0
+              //Add to course Question
+              angular.forEach(question, function (qns, key) {
+                totalQnsCount++;
+                //if excel qns
+                if (qns.qnsType == 'excel') {
+                  contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
+
+                    qns.sheetID = response;
                     var qnsRef = questionRef.push(qns);
                     var qid = qnsRef.key;
                     if (answer[key]) {
-                       ref.child('/answerKey/' + qid).set(answer[key]);
+                      ref.child('/answerKey/' + qid).set(answer[key]);
                     }
                     qnsList.push({ qid: qid, qnsTitle: qns.qnsTitle, qnsType: qns.qnsType });
+                    currentQnsCount++;
+                    if (currentQnsCount == totalQnsCount) {
+                      q.resolve(qnsList);
+                    }
+                  });
+                } else {
+                  currentQnsCount++;
+                  var qnsRef = questionRef.push(qns);
+                  var qid = qnsRef.key;
+                  if (answer[key]) {
+                    ref.child('/answerKey/' + qid).set(answer[key]);
                   }
-                  
-                });
-                
-                return q.promise; 
+                  qnsList.push({ qid: qid, qnsTitle: qns.qnsTitle, qnsType: qns.qnsType });
+                }
+
+              });
+
+              return q.promise;
             }
-            
+
             // Read in the image file as a data URL.
             reader.readAsText(file);
           } else {
@@ -943,21 +955,22 @@
         controller: DialogController
       });
 
-      function DialogController($scope, $q, $mdDialog,$timeout, chapters) {
-         var ref = firebase.database().ref();
+
+      function DialogController($scope, $q, $mdDialog, $timeout, chapters) {
+        var ref = firebase.database().ref();
         //Load Google Auth 
         var adminIDRef = ref.child('auth/admin/admin');
-        adminIDRef.once("value", function(adminID) {
-            var adminUserRef = ref.child('auth/users/' + adminID.val());
-            adminUserRef.once("value", function(adminUser) {
-                console.log("gapi auth token");
-                gapi.auth.setToken({
-                    access_token: adminUser.child('access_token').val()
-                });
-                $scope.accessToken = adminUser.child('access_token').val();
+        adminIDRef.once("value", function (adminID) {
+          var adminUserRef = ref.child('auth/users/' + adminID.val());
+          adminUserRef.once("value", function (adminUser) {
+            console.log("gapi auth token");
+            gapi.auth.setToken({
+              access_token: adminUser.child('access_token').val()
             });
+            $scope.accessToken = adminUser.child('access_token').val();
+          });
         });
-        
+
         $scope.chapters = chapters;
         $scope.selectedChapter = '';
 
@@ -983,7 +996,7 @@
                 // try {
                 $scope.loading = true;
                 importCourse(e).then(function () {
-                  $timeout(function(){window.location.reload();},1000);
+                  $timeout(function () { window.location.reload(); }, 1000);
                 });
 
               };
@@ -1007,86 +1020,86 @@
           var spreadsheetID = JsonObj.spreadsheetID;
 
           contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
-              sequenceRef.once("value", function (snapshot) {
+            sequenceRef.once("value", function (snapshot) {
 
-                var chapterCount = 0;
-                var numChapter = 0;
-                numChapter = snapshot.numChildren();
+              var chapterCount = 0;
+              var numChapter = 0;
+              numChapter = snapshot.numChildren();
 
-                angular.forEach(sequences, function (sequence, key) {
-                  chapterCount++;
-                  var cid = "";
-                  angular.forEach(chapter, function (chap, key) {
-                    if (key == sequence.cid) {
-                      var chapRef = chapterRef.push(chap);
-                      cid = chapRef.key;
-                      ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
-                    }
-                  });
+              angular.forEach(sequences, function (sequence, key) {
+                chapterCount++;
+                var cid = "";
+                angular.forEach(chapter, function (chap, key) {
+                  if (key == sequence.cid) {
+                    var chapRef = chapterRef.push(chap);
+                    cid = chapRef.key;
+                    ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
+                  }
+                });
 
-                  importQuestions(sequence.qns, question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
-                      
-                    sequence.cid = cid;
-                    sequence.qns = qnsList;
-                    // Add to sequence
-                    sequenceRef.child(numChapter).set(sequence);
-                    numChapter++;
-                    if(chapterCount == numChapter){
-                      q.resolve(true);
-                    }
-                  });
+                importQuestions(sequence.qns, question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
+
+                  sequence.cid = cid;
+                  sequence.qns = qnsList;
+                  // Add to sequence
+                  sequenceRef.child(numChapter).set(sequence);
+                  numChapter++;
+                  if (chapterCount == numChapter) {
+                    q.resolve(true);
+                  }
                 });
               });
             });
+          });
           return q.promise;
         }
-        
-        function importQuestions(sequenceQns, questionList, spreadsheetID, userSpreadsheetID, answer){
-            var q = $q.defer();
-            var totalQnsCount = 0;
-            var currentQnsCount = 0;
-            var qnsList = [];
-            
-            console.log("TESTING");
-            if(sequenceQns){
-                angular.forEach(sequenceQns, function (seqQns, seqKey) {
-                    angular.forEach(questionList, function (qns, qnsKey) {
-                        if (seqQns.qid == qnsKey) {
-                          totalQnsCount++
-                          importQuestion(qns, spreadsheetID, userSpreadsheetID, answer).then(function (nQns) {
-                            var qnsRef = questionRef.push(nQns);
-                            var qid = qnsRef.key;
-                            if (answer[qnsKey]) {
-                              ref.child('/answerKey/' + qid).set(answer[qnsKey]);
-                            }
-                            qnsList.push({ qid: qid, qnsTitle: nQns.qnsTitle, qnsType: nQns.qnsType });
-                            currentQnsCount++;
-                            if(currentQnsCount == totalQnsCount) {
-                               q.resolve(qnsList);
-                            }
-                          });
-                        }
-                    });
-                });
-            } else {
-                q.resolve(qnsList);
-            }
-            return q.promise; 
+
+        function importQuestions(sequenceQns, questionList, spreadsheetID, userSpreadsheetID, answer) {
+          var q = $q.defer();
+          var totalQnsCount = 0;
+          var currentQnsCount = 0;
+          var qnsList = [];
+
+          console.log("TESTING");
+          if (sequenceQns) {
+            angular.forEach(sequenceQns, function (seqQns, seqKey) {
+              angular.forEach(questionList, function (qns, qnsKey) {
+                if (seqQns.qid == qnsKey) {
+                  totalQnsCount++
+                  importQuestion(qns, spreadsheetID, userSpreadsheetID, answer).then(function (nQns) {
+                    var qnsRef = questionRef.push(nQns);
+                    var qid = qnsRef.key;
+                    if (answer[qnsKey]) {
+                      ref.child('/answerKey/' + qid).set(answer[qnsKey]);
+                    }
+                    qnsList.push({ qid: qid, qnsTitle: nQns.qnsTitle, qnsType: nQns.qnsType });
+                    currentQnsCount++;
+                    if (currentQnsCount == totalQnsCount) {
+                      q.resolve(qnsList);
+                    }
+                  });
+                }
+              });
+            });
+          } else {
+            q.resolve(qnsList);
+          }
+          return q.promise;
         }
-        
+
         function importQuestion(qns, spreadsheetID, userSpreadsheetID, answer) {
           var q = $q.defer();
 
           //if excel qns
-          if(qns.qnsType == 'excel') {
-            contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {  
+          if (qns.qnsType == 'excel') {
+            contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
               qns.sheetID = response;
               q.resolve(qns);
             });
           } else {
             q.resolve(qns);
           }
-          return q.promise; 
+          return q.promise;
         }
       }
     };
@@ -1170,13 +1183,67 @@
         });
     }
 
-    $scope.addChapter = function () {
-      $scope.courseMap.push({ chapterTitle: "", });
-      $("#text_" + ($scope.courseMap.length - 1)).show();
-      $scope.chapterAdded = true;
-      //window.scrollTo(0,document.body.scrollHeight);
-      $('html, body').animate({ scrollTop: $(document).height() }, 'slow');
-    }
+    $scope.addChapter = function (ev) {
+      // Appending dialog to document.body to cover sidenav in docs app
+      var parentEl = angular.element(document.body);
+      $mdDialog.show({
+        parent: parentEl,
+        targetEvent: ev,
+        template:
+
+        '<md-dialog style="padding:20px">' +
+        '<form name="qnsForm">' +
+        ' <h3>Fill the form to create a new chapter</h3><br>' +
+        '  <md-dialog-content>' +
+        '  <md-input-container style="width:500px;height:auto;">' +
+        '    <label>Chapter Title</label> ' +
+        '    <input ng-model="chapterTitle" name="chapterTitle" required>' +
+        '    <ng-messages for="qnsForm.chapterTitle.$error" md-auto-hide="true">' +
+        '      <div ng-message="required">This is required.</div>' +
+        '    </ng-messages>' +
+        '  </md-input-container><br>' +
+        '  </md-dialog-content>' +
+        '  <md-dialog-actions>' +
+        '    <md-button ng-click="closeDialog()" class="md-primary">' +
+        '      Close' +
+        '    </md-button>' +
+        '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
+        '      Proceed' +
+        '    </md-button>' +
+        '  </md-dialog-actions>' +
+        '</form>' +
+        '</md-dialog>',
+        locals: {
+          courseMap: $scope.courseMap,
+          chapters: $scope.chapters
+        },
+        controller: DialogController
+      });
+
+      function DialogController($scope, $mdDialog, courseMap, chapters, contentMgmtService) {
+        $scope.chapterTitle = '';
+        $scope.closeDialog = function () {
+          $mdDialog.hide();
+        }
+
+        $scope.nextStep = function () {
+
+          courseMap.push({ chapterTitle: $scope.chapterTitle });
+          courseMap.forEach(function (v) { delete v.$id; delete v.$priority; });
+
+          $("#text_" + (courseMap.length - 1)).show();
+          $scope.chapterAdded = true;
+          //window.scrollTo(0,document.body.scrollHeight);
+          $('html, body').animate({ scrollTop: $(document).height() }, 'slow');
+          $mdDialog.hide();
+          $scope.chapterTitle = '';
+          contentMgmtService.updateEntireSeq(courseMap).then(function (courseSeq) {
+            chapters.push(courseSeq[courseSeq.length - 1]);
+          });
+
+        }
+      }
+    };
 
     $scope.saveAllChanges = function (ev) {
 
@@ -1189,7 +1256,6 @@
 
       $mdDialog.show(confirm).then(function () {
         saveCourseSequence();
-        //$location.path('/educator/courseMap');
       });
     }
 
@@ -1249,6 +1315,195 @@
 
   }
 
+  function BookController($timeout, $http, $scope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService) {
+    $scope.library = [];
+    // get library to display
+    var library = contentMgmtService.getLibrary();
+    library.$loaded().then(function () {
+      for (i = 0; i < library.length; i++) {
+        $scope.library.push({ bid: library[i].$id, bookTitle: library[i].bookTitle, bookDescription: library[i].bookDescription });
+      }
+    });
+
+    $scope.addBook = function (ev) {
+      // Appending dialog to document.body to cover sidenav in docs app
+      var parentEl = angular.element(document.body);
+      $mdDialog.show({
+        parent: parentEl,
+        targetEvent: ev,
+        template:
+
+        '<md-dialog style="padding:20px">' +
+        '<form name="qnsForm">' +
+        ' <h3>Fill the form to create a new Book</h3><br>' +
+        '  <md-dialog-content>' +
+        '  <md-input-container style="width:500px;height:auto;">' +
+        '    <label>Book Title Title</label> ' +
+        '    <input ng-model="bookTitle" name="bookTitle" required>' +
+        '    <ng-messages for="qnsForm.bookTitle.$error" md-auto-hide="true">' +
+        '      <div ng-message="required">This is required.</div>' +
+        '    </ng-messages>' +
+        '  </md-input-container><br>' +
+        '  <md-input-container style="width:500px;height:auto;">' +
+        '    <label>Book Description</label> ' +
+        '    <textarea ng-model="bookDescription" name="bookDescription" md-maxlength="150" rows="3" required></textarea>' +
+        '    <ng-messages for="qnsForm.bookDescription.$error" md-auto-hide="true">' +
+        '      <div ng-message="required">This is required.</div>' +
+        '    </ng-messages>' +
+        '  </md-input-container><br>' +
+        '  </md-dialog-content>' +
+        '  <md-dialog-actions>' +
+        '    <md-button ng-click="closeDialog()" class="md-primary">' +
+        '      Close' +
+        '    </md-button>' +
+        '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
+        '      Proceed' +
+        '    </md-button>' +
+        '  </md-dialog-actions>' +
+        '</form>' +
+        '</md-dialog>',
+        locals: {
+          library: $scope.library
+          // courseMap: $scope.courseMap,
+          // chapters: $scope.chapters
+        },
+        controller: DialogController
+      });
+
+      function DialogController($scope, $mdDialog, library, contentMgmtService) {
+
+        $scope.closeDialog = function () {
+          $mdDialog.hide();
+        }
+
+        $scope.nextStep = function () {
+          var newBook = {};
+
+          newBook["bookTitle"] = $scope.bookTitle;
+          newBook["bookDescription"] = $scope.bookDescription;
+
+          contentMgmtService.updateBook(newBook, true).then(function (bookNode) {
+            library.push(bookNode);
+            $mdDialog.hide();
+          });
+          // courseMap.push({ chapterTitle: $scope.chapterTitle });
+          // courseMap.forEach(function (v) { delete v.$id; delete v.$priority; });
+
+          // $("#text_" + (courseMap.length - 1)).show();
+          // $scope.chapterAdded = true;
+
+          // $('html, body').animate({ scrollTop: $(document).height() }, 'slow');
+          // $mdDialog.hide();
+          // $scope.chapterTitle = '';
+          // contentMgmtService.updateEntireSeq(courseMap).then(function (courseSeq) {
+          //   chapters.push(courseSeq[courseSeq.length - 1]);
+          // });
+
+        }
+      }
+    };
+
+    $scope.editBook = function (ev, bookTitle, bookDescription, bid) {
+      // Appending dialog to document.body to cover sidenav in docs app
+      var parentEl = angular.element(document.body);
+      $mdDialog.show({
+        parent: parentEl,
+        targetEvent: ev,
+        template:
+
+        '<md-dialog style="padding:20px">' +
+        '<form name="qnsForm">' +
+        ' <h3>Edit Book Details</h3><br>' +
+        '  <md-dialog-content>' +
+        '  <md-input-container style="width:500px;height:auto;">' +
+        '    <label>Book Title </label> ' +
+        '    <input ng-model="bookTitle" name="bookTitle" required>' +
+        '    <ng-messages for="qnsForm.bookTitle.$error" md-auto-hide="true">' +
+        '      <div ng-message="required">This is required.</div>' +
+        '    </ng-messages>' +
+        '  </md-input-container><br>' +
+        '  <md-input-container style="width:500px;height:auto;">' +
+        '    <label>Book Description</label> ' +
+        '    <textarea ng-model="bookDescription" name="bookDescription" md-maxlength="150" rows="3" required></textarea>' +
+        '    <ng-messages for="qnsForm.bookDescription.$error" md-auto-hide="true">' +
+        '      <div ng-message="required">This is required.</div>' +
+        '    </ng-messages>' +
+        '  </md-input-container><br>' +
+        '  </md-dialog-content>' +
+        '  <md-dialog-actions>' +
+        '    <md-button ng-click="closeDialog()" class="md-primary">' +
+        '      Close' +
+        '    </md-button>' +
+        '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
+        '      Proceed' +
+        '    </md-button>' +
+        '  </md-dialog-actions>' +
+        '</form>' +
+        '</md-dialog>',
+        locals: {
+          bid: bid,
+          bookTitle: bookTitle,
+          bookDescription: bookDescription,
+          library: $scope.library
+          // courseMap: $scope.courseMap,
+          // chapters: $scope.chapters
+        },
+        controller: DialogController
+      });
+
+      function DialogController($scope, $mdDialog, bookTitle, bookDescription, bid, library, contentMgmtService) {
+        $scope.bookDescription = bookDescription;
+        $scope.bookTitle = bookTitle;
+
+        $scope.closeDialog = function () {
+          $mdDialog.hide();
+        }
+
+        $scope.nextStep = function () {
+          var newBook = {};
+          newBook["bid"] = bid;
+          newBook["bookTitle"] = $scope.bookTitle;
+          newBook["bookDescription"] = $scope.bookDescription;
+          contentMgmtService.updateBook(newBook, false);
+          library.forEach(function (v) {
+            if (v.bid == bid) {
+              v.bookTitle = $scope.bookTitle;
+              v.bookDescription = $scope.bookDescription;
+              return false;
+            }
+          });
+          $mdDialog.hide();
+
+        }
+      }
+    };
+
+    $scope.confirmDelete = function (ev, bookTitle, bid) {
+
+      var confirm = $mdDialog.confirm()
+        .title('Delete book titled "' + bookTitle + '"?')
+        .textContent('Everything related to this book will be deleted, is it ok to proceed?')
+        .targetEvent(ev)
+        .ok('Do it!')
+        .cancel('Cancel!');
+
+      $mdDialog.show(confirm).then(function () {
+        contentMgmtService.deleteBook(bid);
+        $scope.library.forEach(function (v, index) {
+          if (v.bid == bid) {
+            $scope.library.splice(index, 1);
+            return false;
+          }
+        });
+      });
+    }
+
+    $scope.viewBook = function (bid) {
+      $location.path('educator/bookMap/' + bid);
+    }
+
+
+  }
 
 
 })();

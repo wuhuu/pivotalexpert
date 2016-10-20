@@ -7,9 +7,13 @@
   function configFunction($routeProvider) {
     $routeProvider.
   // for editing
-	when('/educator/courseMap', {
+	when('/educator/bookMap/:bid', {
       templateUrl: 'app/educator/contentMgmt/courseMap_edit.html',
 	     controller: 'CourseMapController'
+    })
+    .when('/educator/courseLibrary', {
+      templateUrl: 'app/educator/contentMgmt/books_edit.html',
+	     controller: 'BookController'
     })
     .when('/educator/slides_edit/:cid/:qid', {
       templateUrl: 'app/educator/contentMgmt/slides_edit.html',

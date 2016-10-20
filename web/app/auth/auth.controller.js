@@ -11,7 +11,8 @@
 
 	$scope.login = function () {
 	  console.log("Logging in");
-	  authService.login();      
+	  authService.login();
+    $location.path('#/course');      
 	}
     
 	

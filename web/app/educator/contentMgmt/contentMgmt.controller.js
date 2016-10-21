@@ -173,7 +173,20 @@
           question.cid = $routeParams.cid;
 
           //adding youtube url before it youtube id
-          question.link = "http://www.youtube.com/watch?v=" + question.link;
+          if(question.qnsType === 'video') {
+            question.link = "http://www.youtube.com/watch?v=" + question.link;
+          }
+          
+          if(question.qnsType === 'iframe') {
+            if(!question.qnsInstruction) {
+                question.qnsInstruction = "";
+            }
+            if(!question.qnsDescription) {
+                question.qnsDescription = "";
+            }
+          }
+          
+          
           $scope.qns = question;
         });
       })
@@ -187,7 +200,7 @@
       $scope.qns = { qnsTitle: "", qnsType: qnsType, cid: $routeParams.cid }
       if (qnsType === "slides") {
         $scope.qns['slides'] = [];
-      } else if (qnsType === "video") {
+      } else if (qnsType === "video" || qnsType == "iframe") {
         $scope.qns['qnsDescription'] = "";
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['link'] = "";
@@ -256,9 +269,9 @@
             commonService.showSimpleToast("Video Challenge Added/Updated.");
           });
         } else if ($scope.qns.qnsType == "iframe") {
-          contentMgmtService.updateVideoQuestion($scope.qns, $scope.isNewQuestion).then(function () {
-
-            window.location.href = "#/educator/courseMap"
+          contentMgmtService.updateIFrameQuestion($scope.qns, $scope.isNewQuestion).then(function () {
+              
+            window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
             commonService.showSimpleToast("IFrame Challenge Added/Updated.");
           });
         } else if ($scope.qns.qnsType == "slides") {

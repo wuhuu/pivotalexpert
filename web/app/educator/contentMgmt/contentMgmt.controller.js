@@ -221,7 +221,6 @@
 
       } else if (qnsType === "code") {
         $scope.qns['qnsInstruction'] = "";
-        $scope.qns[''] = "";
 
         //Set code box display
         functionEditor.setTheme("ace/theme/chrome");
@@ -400,6 +399,12 @@
 
     // ADDITION PART for code
     // Code box
+
+    //deleteTestCase
+    $scope.deleteCodeTestCase = function (index) {
+      $scope.qns.testcases.splice(index, 1);
+    }
+
     //Add more test cases
     $scope.addTestcase = function () {
       if ($scope.qns.testcases) {
@@ -424,11 +429,14 @@
         var functionEditor = ace.edit("functionEditor")
         $scope.qns.initialCode = qnsEditor.getValue();
         $scope.qns.functionCode = functionEditor.getValue();
-
-        contentMgmtService.updateCodebox($scope.qns, $scope.isNewQuestion).then(function (result) {
-          window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
-          commonService.showSimpleToast("Code Challenge Added/Updated.");
-        });
+        if($scope.qns.testcases.length!=0) {
+          contentMgmtService.updateCodebox($scope.qns, $scope.isNewQuestion).then(function (result) {
+            window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
+            commonService.showSimpleToast("Code Challenge Added/Updated.");
+          });
+        }else {
+          commonService.showSimpleToast("Please add at least 1 test case.");
+        }
       }, function () {
         // cancel function
       });
@@ -801,7 +809,7 @@
                   var chapter = JsonObj.course.chapters;
                   var spreadsheetID = JsonObj.spreadsheetID;
                   var cid = "";
-                  
+
                   contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
                     //Add to course chapter
                     angular.forEach(chapter, function (chap, key) {
@@ -1373,7 +1381,7 @@
               });
             });
           }).then(function () {
-            
+
             exportObj["answerKey"] = answerKey;
             exportObj["course"] = { questions: questions, chapters: chapters };
             var bookNode = {};
@@ -1513,7 +1521,7 @@
           var question = JsonObj.course.questions;
           var chapter = JsonObj.course.chapters;
           var spreadsheetID = JsonObj.spreadsheetID;
-          
+
 
             angular.forEach(book, function (bookContent, bookID) {
 
@@ -1528,11 +1536,11 @@
                     libraryRef.child(bookID).set(nbook);
                     q.resolve(true);
                 });
-                
+
             });
           return q.promise;
         }
-        
+
         function importSequence(sequences, answer, question, chapter, spreadsheetID) {
           var q = $q.defer();
           var seqList = [];
@@ -1540,7 +1548,7 @@
               var numChapter = sequences.length;
 
               angular.forEach(sequences, function (sequence, key) {
-                  
+
                 var cid = "";
                 angular.forEach(chapter, function (chap, key) {
                   if (key == sequence.cid) {

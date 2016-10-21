@@ -683,6 +683,8 @@
                         testcases.push({name:question.testcases[i].name,expect:question.testcases[i].expect,toEqual:question.testcases[i].toEqual,hint:question.testcases[i].hint});
                     }
                     var functionCode = question.functionCode;
+                    console.log(question.initialCode);
+                    console.log(qid);
 
                     delete question.cid;
                     delete question.testcases;
@@ -690,7 +692,7 @@
                     delete question.$$conf;
                     delete question.$priority;
                     delete question.$id;
-
+                    console.log(question);
 
                     //Update to firebase question node
                     questionNodeRef.child(qid).update(question);

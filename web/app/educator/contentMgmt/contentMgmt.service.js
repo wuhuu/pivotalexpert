@@ -24,6 +24,7 @@
             deleteChapter:deleteChapter,
             getQuestion:getQuestion,
             updateVideoQuestion:updateVideoQuestion,
+            updateIFrameQuestion:updateIFrameQuestion,
             updateSlideQuestion:updateSlideQuestion,
             updateQuestionSeq:updateQuestionSeq,
             getChapterIndex:getChapterIndex,
@@ -217,7 +218,7 @@
         function getQuestion(qid) {
             return $firebaseObject(ref.child('course/questions/'+qid));
         }
-
+        
         function updateVideoQuestion(question,isNewQuestion) {
             var q =$q.defer();
             // retrieve courseSeq node
@@ -278,6 +279,101 @@
                 // update database
                 questionNodeRef.child(qid).update(questionNode);
 
+                var courseArray = $firebaseObject(getBookSeqRef());
+                getChapterIndex(cid).then(function(chapIndex){
+                    if(!isNewQuestion) {
+                        getQnsIndex(chapIndex,qid).then(function(qnsIndex){
+                            courseArray.$loaded().then(function(){
+                                if(courseArray[chapIndex]!=null) {
+                                    qnsIndex = ""+qnsIndex;
+                                    courseArray[chapIndex].qns[qnsIndex] = questionSeqNode;
+                                        courseArray.$save(chapIndex).then(function(){
+                                            q.resolve(true);
+                                            if(isNewQuestion) {
+                                                return "Question created!"
+                                            }else {
+                                                return "Question updated!"
+                                            }
+                                        });
+                                }
+                            });
+                        });
+                    }else {
+                        courseArray.$loaded().then(function(){
+                            if(courseArray[chapIndex]!=null) {
+                                if(courseArray[chapIndex].qns) {
+                                    courseArray[chapIndex].qns.push(questionSeqNode);
+                                } else {
+                                    courseArray[chapIndex].qns = [];
+                                    courseArray[chapIndex].qns.push(questionSeqNode);
+                                }
+                                courseArray.$save(chapIndex).then(function(){
+                                    q.resolve(true);
+                                    if(isNewQuestion) {
+                                        return "Question created!"
+                                    }else {
+                                        return "Question updated!"
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+            return q.promise;
+        }
+        
+        function updateIFrameQuestion(question,isNewQuestion) {
+          var q =$q.defer();
+            // retrieve courseSeq node
+            var questionNode = $firebaseObject(questionNodeRef);
+            questionNode.$loaded().then(function(){
+                    // if user wants to create chapter
+                var qid = question.qid;
+                var cid = question.cid;
+
+                if(isNewQuestion) {
+                    // checking if chapterTitle already exist
+                    for(var element in questionNode) {
+                        if(element.qnsTitle === question.qnsTitle) {
+                            //response this chapter is being used now.
+                            return "This Question Title is being used now.";
+                        }
+                    }
+                }
+                
+                console.log("TESTING 123");
+                console.log(question);
+
+                if(!qid) {
+                    //generate new qid
+                    qid = commonService.guid();
+                    question.qid = qid;
+                }
+
+                // create new question node & fill it up
+                
+                var questionNode = {
+                    qnsTitle:question.qnsTitle,
+                    qnsType:question.qnsType,
+                    link:question.link
+                };
+                
+                if(question.qnsDescription) {
+                    console.log(question.qnsDescription);
+                    questionNode.qnsDescription = question.qnsDescription;
+                }
+                
+                if(question.qnsInstruction) {
+                    questionNode.qnsInstruction = question.qnsInstruction;
+                }
+
+                // create courseSeq node & fill it up
+                var questionSeqNode = {qid:question.qid,qnsTitle:question.qnsTitle,qnsType:question.qnsType};
+                console.log("TESTING 456");
+                console.log(questionNode);
+                // update database
+                questionNodeRef.child(qid).set(questionNode);
                 var courseArray = $firebaseObject(getBookSeqRef());
                 getChapterIndex(cid).then(function(chapIndex){
                     if(!isNewQuestion) {

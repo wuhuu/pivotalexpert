@@ -46,7 +46,7 @@
                 
                 userRef.child(user.uid).update({profileLink: newLink});	
 
-                $location.path('/profile/'+newLink);
+                $location.path('/course/');
 
             }else {
                 alert("Sorry!  \'" + newLink + "\' is already in use, try another one.");

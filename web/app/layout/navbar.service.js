@@ -28,8 +28,9 @@
         var user = firebase.auth().currentUser;
         var achievedlist = [];
         var achievements = 0;
-        var courseList = $firebaseArray(ref.child('/courseSequence'));
-        courseList.$loaded().then(function (){
+        var bookList = $firebaseArray(ref.child('/library'));
+        bookList.$loaded().then(function (){
+            
             user = firebase.auth().currentUser;
             var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
             courseProgressRef.once('value', function(snapshot) {
@@ -37,21 +38,29 @@
                 var key = childSnapshot.key;
                 achievedlist.push(key);
               });
-            
-              var totalCourse = courseList.length;
-              for (i = 0; i < totalCourse; i++) { 
-                var chapter = courseList[i];
-                if(chapter.qns) {
-                    var qnsCount = chapter.qns.length;
-                    for (j = 0; j < qnsCount; j++) { 
-                        if(achievedlist.indexOf(chapter.qns[j].qid) != -1){
-                            achievements++;
-                        }
+              var totalBook = bookList.length;
+              
+              for (i = 0; i < totalBook; i++) { 
+                var book = bookList[i];
+                var courseList = book.sequence;
+                
+                var totalCourse = courseList.length;
+                for (j = 0; j < totalCourse; j++) { 
+                  var chapter = courseList[j];
+                  if(chapter.qns) {
+                      var qnsCount = chapter.qns.length;
+                      for (k = 0; k < qnsCount; k++) { 
+                          if(achievedlist.indexOf(chapter.qns[k].qid) != -1){
+                              achievements++;
+                          }
+                      }
                     }
-                }
+                  }
               }
               deferred.resolve(achievements);
             });
+            
+            
         });
         return deferred.promise;
     }

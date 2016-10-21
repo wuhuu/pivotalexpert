@@ -7,18 +7,18 @@
   
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyA1C3DGIpn6zY1p9z4a7qDnE60p28HDgxQ",
-    authDomain: "fyp-development.firebaseapp.com",
-    databaseURL: "https://fyp-development.firebaseio.com",
-    storageBucket: "fyp-development.appspot.com",
-    messagingSenderId: "1024577960550"
+    apiKey: "AIzaSyDqIamDUsdAduBh2eOWFKYZCdVHLmSJv1s",
+    authDomain: "first-firebase-e2ce4.firebaseapp.com",
+    databaseURL: "https://first-firebase-e2ce4.firebaseio.com",
+    storageBucket: "first-firebase-e2ce4.appspot.com",
+    messagingSenderId: "451367003153"
   };
   
   //Replace with your login google account email
-  var adminEmail = "jianhua.wu.2014@smu.edu.sg";
+  var adminEmail = "cboesch@smu.edu.sg";
   
   //Replace with the name of your course
-  var courseName = "Pivotal Expert_Development";
+  var courseName = "Pivotal Expert";
   
   firebase.initializeApp(config);
   

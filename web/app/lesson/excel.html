@@ -8,6 +8,7 @@
       <br/>
       <br/>
       <label ng-if="checkingAns"> Please wait while we check your answer. </label>
+      <md-progress-linear md-mode="query" ng-show="checkingAns"></md-progress-linear>
     </div>
     <!--if ans is incorrect display this-->
     <div style="padding: 20px" ng-show="incorrect">

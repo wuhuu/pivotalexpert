@@ -4,7 +4,7 @@
     .module('app.auth')
     .controller('AuthController', AuthController);
 
-  function AuthController($scope, $location, $firebaseObject, authService) {
+  function AuthController($scope, $location, $firebaseObject, $mdDialog, authService) {
     var ref = firebase.database().ref();
     var userRef = ref.child("auth/users");
 	var user = firebase.auth().currentUser;
@@ -64,7 +64,13 @@
                 $location.path('/course/');
 
             }else {
-                alert("Sorry!  \'" + newLink + "\' is already in use, try another one.");
+                var confirm = $mdDialog.confirm()
+                  .title('Challenge Completed!')
+                  .textContent("Sorry!  \'" + newLink + "\' is already in use, try another one.")
+                  .ok('ok');
+
+                $mdDialog.show(confirm);
+                
             }
         });
 

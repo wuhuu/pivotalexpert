@@ -85,7 +85,7 @@
                 // update/add to db
                 var bookObj ={};
                 bookObj[bid]=bookNode;
-                libraryNodeRef.update(bookObj,function(error){
+                libraryNodeRef.child(bid).update(bookNode,function(error){
                     bookNode["bid"]=bid;
                     q.resolve(bookNode);
                 });

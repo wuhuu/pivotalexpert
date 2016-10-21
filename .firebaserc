@@ -3,7 +3,7 @@
     "default": "firebase-pivotal-expert",
     "staging": "firebase-pivotal-expert",
     "FYP": "firebase-pivotal-expert",
-    "testing": "codevantage-test",
+    "testing": "fyp-development",
     "dev": "fyp-development"
   }
 }

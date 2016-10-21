@@ -262,12 +262,16 @@
             commonService.showSimpleToast("IFrame Challenge Added/Updated.");
           });
         } else if ($scope.qns.qnsType == "slides") {
-          contentMgmtService.updateSlideQuestion($scope.qns, $scope.isNewQuestion).then(function () {
+          if ($scope.qns.slides.length != 0) {
+            contentMgmtService.updateSlideQuestion($scope.qns, $scope.isNewQuestion).then(function () {
 
-            window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();;
-            commonService.showSimpleToast("Slides Challenge Added/Updated.");
-            //$scope.$emit("SuccessPrompt",);
-          });
+              window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();;
+              commonService.showSimpleToast("Slides Challenge Added/Updated.");
+              //$scope.$emit("SuccessPrompt",);
+            });
+          }else {
+            commonService.showSimpleToast("There must at least have one slide.");
+          }
         } else if ($scope.qns.qnsType == "form") {
           contentMgmtService.updateFormQuestion($scope.qns, $scope.isNewQuestion).then(function (result) {
             if (result) {
@@ -287,7 +291,11 @@
     }
 
     $scope.addSlide = function () {
-      $scope.qns.slides.push({ explanation: "", imageLink: "" });
+      if($scope.qns.slides!=null) {
+        $scope.qns.slides.push({ explanation: "", imageLink: "" });
+      }else {
+        $scope.qns[slides] = [{explanation: "", imageLink: "" }];
+      }
     }
 
     $scope.toggleQns = function (id) {
@@ -374,6 +382,7 @@
       $mdDialog.show(confirm).then(function () {
         contentMgmtService.deleteQuestion(cid, qid).then(function () {
           window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
+          commonService.showSimpleToast("Question deleted.");
           //window.location.reload();
         });
       }, function () {
@@ -801,7 +810,7 @@
                   var chapter = JsonObj.course.chapters;
                   var spreadsheetID = JsonObj.spreadsheetID;
                   var cid = "";
-                  
+
                   contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
                     //Add to course chapter
                     angular.forEach(chapter, function (chap, key) {
@@ -862,7 +871,7 @@
                   }
                   qnsList.push({ qid: qid, qnsTitle: qns.qnsTitle, qnsType: qns.qnsType });
                   if (currentQnsCount == totalQnsCount) {
-                      q.resolve(qnsList);
+                    q.resolve(qnsList);
                   }
                 }
               });
@@ -1373,7 +1382,7 @@
               });
             });
           }).then(function () {
-            
+
             exportObj["answerKey"] = answerKey;
             exportObj["course"] = { questions: questions, chapters: chapters };
             var bookNode = {};
@@ -1384,16 +1393,16 @@
             exportObj['book'] = bookNode;
 
             contentMgmtService.getAdminSpreadsheetID().then(function (spreadsheetID) {
-                exportObj["spreadsheetID"] = spreadsheetID;
-                var jsonString = JSON.stringify(exportObj);
-                var url = URL.createObjectURL(new Blob([jsonString]));
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = 'chapter_json.json';
-                a.target = '_blank';
-                a.click();
+              exportObj["spreadsheetID"] = spreadsheetID;
+              var jsonString = JSON.stringify(exportObj);
+              var url = URL.createObjectURL(new Blob([jsonString]));
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = 'chapter_json.json';
+              a.target = '_blank';
+              a.click();
 
-                $mdDialog.hide();
+              $mdDialog.hide();
             });
           });
 
@@ -1513,55 +1522,55 @@
           var question = JsonObj.course.questions;
           var chapter = JsonObj.course.chapters;
           var spreadsheetID = JsonObj.spreadsheetID;
-          
 
-            angular.forEach(book, function (bookContent, bookID) {
 
-              nbook.bookDescription = bookContent.bookDescription;
-              nbook.bookTitle = bookContent.bookTitle;
-              var sequences = bookContent.sequence;
-               console.log("TESTING123");
-               console.log(sequences);
-                importSequence(sequences, answer, question, chapter, spreadsheetID).then(function (seqList) {
-                    nbook.sequence = seqList;
-                    // Add to firebase
-                    libraryRef.child(bookID).set(nbook);
-                    q.resolve(true);
-                });
-                
+          angular.forEach(book, function (bookContent, bookID) {
+
+            nbook.bookDescription = bookContent.bookDescription;
+            nbook.bookTitle = bookContent.bookTitle;
+            var sequences = bookContent.sequence;
+            console.log("TESTING123");
+            console.log(sequences);
+            importSequence(sequences, answer, question, chapter, spreadsheetID).then(function (seqList) {
+              nbook.sequence = seqList;
+              // Add to firebase
+              libraryRef.child(bookID).set(nbook);
+              q.resolve(true);
             });
+
+          });
           return q.promise;
         }
-        
+
         function importSequence(sequences, answer, question, chapter, spreadsheetID) {
           var q = $q.defer();
           var seqList = [];
-            contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
-              var numChapter = sequences.length;
+          contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
+            var numChapter = sequences.length;
 
-              angular.forEach(sequences, function (sequence, key) {
-                  
-                var cid = "";
-                angular.forEach(chapter, function (chap, key) {
-                  if (key == sequence.cid) {
-                    var chapRef = chapterRef.push(chap);
-                    cid = chapRef.key;
-                    ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
-                  }
-                });
+            angular.forEach(sequences, function (sequence, key) {
 
-                importQuestions(sequence.qns, question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
+              var cid = "";
+              angular.forEach(chapter, function (chap, key) {
+                if (key == sequence.cid) {
+                  var chapRef = chapterRef.push(chap);
+                  cid = chapRef.key;
+                  ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
+                }
+              });
 
-                  sequence.cid = cid;
-                  sequence.qns = qnsList;
+              importQuestions(sequence.qns, question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
 
-                  seqList.push(sequence);
-                  if (seqList.length == numChapter) {
-                    q.resolve(seqList);
-                  }
-                });
+                sequence.cid = cid;
+                sequence.qns = qnsList;
+
+                seqList.push(sequence);
+                if (seqList.length == numChapter) {
+                  q.resolve(seqList);
+                }
               });
             });
+          });
           return q.promise;
         }
 

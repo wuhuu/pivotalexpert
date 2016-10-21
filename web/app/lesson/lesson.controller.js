@@ -232,10 +232,13 @@
             editor.setOption("minLines", 10);
 
             var userAch = $firebaseObject(ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid));
+              
             userAch.$loaded().then(function(){
-              if(userAch){
+              if(userAch.userAnswer){
+                  console.log(userAch.userAnswer);
                 editor.insert(userAch.userAnswer);
               }else{
+                   console.log("TESTING123");
                 //insert code to codebox from firebase
                 editor.insert(question.initialCode);
               }
@@ -337,9 +340,11 @@
                                 $scope.codeResult.push(result);
                                 //When end of test case
                                 if($scope.codeResult.length === totalTestNum){
+                                    $scope.checkingAns = false;
                                     if ($scope.codeResult.indexOf(false) === -1) {
                                         showCompleteDialog("FANTASTIC!! You have completed the Challenge, go for more!");
                                     } else {
+
                                         $scope.incorrect = true;
                                         var hint = "";
                                         for (a = 0; a < $scope.hints.length ; a++){

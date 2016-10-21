@@ -39,11 +39,9 @@
 
         <h2 style='padding-left:20px;'>Completed Challenge :</h2>
         <div>
+        <md-list style='padding-left:20px;'>
           <div style='padding-left:20px;' ng-repeat="chapter in achievelist track by $index">
-            <md-divider></md-divider>
-            <md-divider></md-divider>
-            <div>
-              <md-list style='padding-left:20px;'>
+              
                 <md-item  ng-repeat="qns in chapter.qns track by $index">
                   <md-item-content>
                     <p>
@@ -52,9 +50,9 @@
                     </p>
                   </md-item-content>
                 </md-item>
-              </md-list>
-            </div>
+              
           </div>
+          </md-list>
         </div>
       </md-card-content>
     </md-content>

@@ -61,7 +61,7 @@
                 //track new registered users
                 recordNewUser();
 
-                $location.path('/profile/'+newLink);
+                $location.path('/course/');
 
             }else {
                 alert("Sorry!  \'" + newLink + "\' is already in use, try another one.");

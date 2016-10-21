@@ -173,7 +173,20 @@
           question.cid = $routeParams.cid;
 
           //adding youtube url before it youtube id
-          question.link = "http://www.youtube.com/watch?v=" + question.link;
+          if(question.qnsType === 'video') {
+            question.link = "http://www.youtube.com/watch?v=" + question.link;
+          }
+          
+          if(question.qnsType === 'iframe') {
+            if(!question.qnsInstruction) {
+                question.qnsInstruction = "";
+            }
+            if(!question.qnsDescription) {
+                question.qnsDescription = "";
+            }
+          }
+          
+          
           $scope.qns = question;
         });
       })
@@ -187,7 +200,7 @@
       $scope.qns = { qnsTitle: "", qnsType: qnsType, cid: $routeParams.cid }
       if (qnsType === "slides") {
         $scope.qns['slides'] = [];
-      } else if (qnsType === "video") {
+      } else if (qnsType === "video" || qnsType == "iframe") {
         $scope.qns['qnsDescription'] = "";
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['link'] = "";
@@ -255,18 +268,22 @@
             commonService.showSimpleToast("Video Challenge Added/Updated.");
           });
         } else if ($scope.qns.qnsType == "iframe") {
-          contentMgmtService.updateVideoQuestion($scope.qns, $scope.isNewQuestion).then(function () {
-
-            window.location.href = "#/educator/courseMap"
+          contentMgmtService.updateIFrameQuestion($scope.qns, $scope.isNewQuestion).then(function () {
+              
+            window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
             commonService.showSimpleToast("IFrame Challenge Added/Updated.");
           });
         } else if ($scope.qns.qnsType == "slides") {
-          contentMgmtService.updateSlideQuestion($scope.qns, $scope.isNewQuestion).then(function () {
+          if ($scope.qns.slides.length != 0) {
+            contentMgmtService.updateSlideQuestion($scope.qns, $scope.isNewQuestion).then(function () {
 
-            window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();;
-            commonService.showSimpleToast("Slides Challenge Added/Updated.");
-            //$scope.$emit("SuccessPrompt",);
-          });
+              window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();;
+              commonService.showSimpleToast("Slides Challenge Added/Updated.");
+              //$scope.$emit("SuccessPrompt",);
+            });
+          }else {
+            commonService.showSimpleToast("There must at least have one slide.");
+          }
         } else if ($scope.qns.qnsType == "form") {
           contentMgmtService.updateFormQuestion($scope.qns, $scope.isNewQuestion).then(function (result) {
             if (result) {
@@ -286,7 +303,11 @@
     }
 
     $scope.addSlide = function () {
-      $scope.qns.slides.push({ explanation: "", imageLink: "" });
+      if($scope.qns.slides!=null) {
+        $scope.qns.slides.push({ explanation: "", imageLink: "" });
+      }else {
+        $scope.qns[slides] = [{explanation: "", imageLink: "" }];
+      }
     }
 
     $scope.toggleQns = function (id) {
@@ -373,6 +394,7 @@
       $mdDialog.show(confirm).then(function () {
         contentMgmtService.deleteQuestion(cid, qid).then(function () {
           window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
+          commonService.showSimpleToast("Question deleted.");
           //window.location.reload();
         });
       }, function () {
@@ -870,7 +892,7 @@
                   }
                   qnsList.push({ qid: qid, qnsTitle: qns.qnsTitle, qnsType: qns.qnsType });
                   if (currentQnsCount == totalQnsCount) {
-                      q.resolve(qnsList);
+                    q.resolve(qnsList);
                   }
                 }
               });
@@ -1392,16 +1414,16 @@
             exportObj['book'] = bookNode;
 
             contentMgmtService.getAdminSpreadsheetID().then(function (spreadsheetID) {
-                exportObj["spreadsheetID"] = spreadsheetID;
-                var jsonString = JSON.stringify(exportObj);
-                var url = URL.createObjectURL(new Blob([jsonString]));
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = 'chapter_json.json';
-                a.target = '_blank';
-                a.click();
+              exportObj["spreadsheetID"] = spreadsheetID;
+              var jsonString = JSON.stringify(exportObj);
+              var url = URL.createObjectURL(new Blob([jsonString]));
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = 'chapter_json.json';
+              a.target = '_blank';
+              a.click();
 
-                $mdDialog.hide();
+              $mdDialog.hide();
             });
           });
 
@@ -1523,53 +1545,53 @@
           var spreadsheetID = JsonObj.spreadsheetID;
 
 
-            angular.forEach(book, function (bookContent, bookID) {
+          angular.forEach(book, function (bookContent, bookID) {
 
-              nbook.bookDescription = bookContent.bookDescription;
-              nbook.bookTitle = bookContent.bookTitle;
-              var sequences = bookContent.sequence;
-               console.log("TESTING123");
-               console.log(sequences);
-                importSequence(sequences, answer, question, chapter, spreadsheetID).then(function (seqList) {
-                    nbook.sequence = seqList;
-                    // Add to firebase
-                    libraryRef.child(bookID).set(nbook);
-                    q.resolve(true);
-                });
-
+            nbook.bookDescription = bookContent.bookDescription;
+            nbook.bookTitle = bookContent.bookTitle;
+            var sequences = bookContent.sequence;
+            console.log("TESTING123");
+            console.log(sequences);
+            importSequence(sequences, answer, question, chapter, spreadsheetID).then(function (seqList) {
+              nbook.sequence = seqList;
+              // Add to firebase
+              libraryRef.child(bookID).set(nbook);
+              q.resolve(true);
             });
+
+          });
           return q.promise;
         }
 
         function importSequence(sequences, answer, question, chapter, spreadsheetID) {
           var q = $q.defer();
           var seqList = [];
-            contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
-              var numChapter = sequences.length;
+          contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
+            var numChapter = sequences.length;
 
-              angular.forEach(sequences, function (sequence, key) {
+            angular.forEach(sequences, function (sequence, key) {
 
-                var cid = "";
-                angular.forEach(chapter, function (chap, key) {
-                  if (key == sequence.cid) {
-                    var chapRef = chapterRef.push(chap);
-                    cid = chapRef.key;
-                    ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
-                  }
-                });
+              var cid = "";
+              angular.forEach(chapter, function (chap, key) {
+                if (key == sequence.cid) {
+                  var chapRef = chapterRef.push(chap);
+                  cid = chapRef.key;
+                  ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
+                }
+              });
 
-                importQuestions(sequence.qns, question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
+              importQuestions(sequence.qns, question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
 
-                  sequence.cid = cid;
-                  sequence.qns = qnsList;
+                sequence.cid = cid;
+                sequence.qns = qnsList;
 
-                  seqList.push(sequence);
-                  if (seqList.length == numChapter) {
-                    q.resolve(seqList);
-                  }
-                });
+                seqList.push(sequence);
+                if (seqList.length == numChapter) {
+                  q.resolve(seqList);
+                }
               });
             });
+          });
           return q.promise;
         }
 

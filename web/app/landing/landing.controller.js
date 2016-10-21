@@ -19,7 +19,7 @@
               $location.path('/createProfileLink');
             }
             else{
-              $location.path('/profile/' + userData.profileLink);
+              $location.path('/course/');
             }
           });
         } else {

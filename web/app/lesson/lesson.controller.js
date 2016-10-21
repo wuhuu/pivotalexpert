@@ -24,13 +24,18 @@
           .ok('Next Challenge');
 
         $mdDialog.show(confirm).then(function() {
-            nextQns(chapter,qns,question);
+            recordUserWhoCompletedOrRevisit().then(function(){
+              nextQns(chapter,qns,question);
+            });
+
         });
     }
     //Load Question
     var question = $firebaseObject(ref.child('course/questions/' + qid));
     question.$loaded().then(function(){
         //update user last attempt
+        recordUserFirstLoadedTime();
+
         user = firebase.auth().currentUser;
         ref.child('userProfiles').child(user.uid).child('lastAttempt').set(qid);
 
@@ -252,7 +257,7 @@
         $scope.submit = function() {
             //track active user
             recordActiveUser();
-            //track attempts
+            //track attempts and record user start time if first attempt
             recordUserAttempt();
             //track user who attempted
             recordUserWhoAttempted();
@@ -525,8 +530,8 @@
 	}
 
     function nextQns(chapter, question, loadedQns){
-        //track user who revisit
-        recordUserWhoCompletedRevisit();
+        //track user who completed and/or revisit
+        //recordUserWhoCompletedOrRevisit();
 
         //update course progress in firebase db
         var dateTimeNow = new Date().toLocaleString("en-US");
@@ -626,8 +631,33 @@
         });
     }
 
+    function recordUserFirstLoadedTime(){
+      var challengeRecordRef = ref.child('analytics').child('challengeStats').child(qid);
+      var challengeRecord = $firebaseObject(challengeRecordRef);
+      var userChallengeTimeRecordRef = ref.child('analytics').child('challengeStats').child(qid).child('userTimings');
+
+      challengeRecord.$loaded().then(function(){
+        var userId = user.uid;
+        if(challengeRecord.userAttemptedRecords){
+          if(!challengeRecord.userAttemptedRecords.hasOwnProperty(userId)){
+            var record = {};
+            var dateTimeAttempted = new Date().toLocaleString("en-US");
+            record[userId] = {startTime:dateTimeAttempted};
+            userChallengeTimeRecordRef.update(record);
+          }
+        }else{
+          var record = {};
+          var dateTimeAttempted = new Date().toLocaleString("en-US");
+          record[userId] = {startTime:dateTimeAttempted};
+          userChallengeTimeRecordRef.update(record);
+        }
+      });
+
+    }
+
     function recordUserWhoAttempted() {
         var userAttemptedRecordRef = ref.child('analytics').child('challengeStats').child(qid).child('userAttemptedRecords');
+
         var record = {};
         record[user.uid] = true;
         userAttemptedRecordRef.update(record);
@@ -640,10 +670,11 @@
         userCompletedRecordRef.update(record);
     }*/
 
-    function recordUserWhoCompletedRevisit() {
+    function recordUserWhoCompletedOrRevisit() {
+        var q = $q.defer();
         var challengeRecordRef = ref.child('analytics').child('challengeStats').child(qid);
-        var temp = ref.child('analytics').child('challengeStats').child(qid).child('userCompletedRecords').child(user.uid);
         var userCompletedRecordRef = ref.child('analytics').child('challengeStats').child(qid).child('userCompletedRecords');
+        var userChallengeTimeRecordRef = ref.child('analytics').child('challengeStats').child(qid).child('userTimings').child(user.uid);
         var challengeRecord = $firebaseObject(challengeRecordRef);
 
         challengeRecord.$loaded().then(function(){
@@ -662,13 +693,41 @@
               var record = {};
               record[user.uid] = true;
               userCompletedRecordRef.update(record);
+              var firstEndDateTime = new Date();
+              var firstEndDateTimeString = firstEndDateTime.toLocaleString("en-US");
+              userChallengeTimeRecordRef.update({endTime:firstEndDateTimeString});
+              var startTime = new Date(challengeRecord.userTimings[userId].startTime);
+              var difference = firstEndDateTime.getTime() - startTime.getTime();
+              if(challengeRecord.averageTime){
+                var averageTime = challengeRecord.averageTime;
+                var totalUsersCompleted = Object.keys(challengeRecord.userCompletedRecords).length;
+                var newAverageTime = (averageTime * (totalUsersCompleted - 1) + difference)/totalUsersCompleted;
+                challengeRecordRef.update({averageTime:newAverageTime});
+              }else{
+                challengeRecordRef.update({averageTime:difference});
+              }
             }
           }else{
             var record = {};
             record[user.uid] = true;
             userCompletedRecordRef.update(record);
+            var firstEndDateTime = new Date();
+            var firstEndDateTimeString = firstEndDateTime.toLocaleString("en-US");
+            userChallengeTimeRecordRef.update({endTime:firstEndDateTimeString});
+            var startTime = new Date(challengeRecord.userTimings[userId].startTime);
+            var difference = firstEndDateTime.getTime() - startTime.getTime();
+            if(challengeRecord.averageTime){
+              var averageTime = challengeRecord.averageTime;
+              var totalUsersCompleted = Object.keys(challengeRecord.userCompletedRecords).length;
+              var newAverageTime = (averageTime * (totalUsersCompleted - 1) + difference)/totalUsersCompleted;
+              challengeRecordRef.update({averageTime:newAverageTime});
+            }else{
+              challengeRecordRef.update({averageTime:difference});
+            }
           }
+          q.resolve(true);
         });
+        return q.promise;
     }
 
   };

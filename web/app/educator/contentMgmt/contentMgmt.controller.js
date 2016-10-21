@@ -104,7 +104,7 @@
 
   function ContentMgmtController($http, $scope, $sce, $routeParams, $location, $firebaseArray, $mdDialog, $firebaseObject, commonService, contentMgmtService, $timeout, $q) {
     console.log("ContentMgmtController");
-
+    contentMgmtService.saveBookID($routeParams.bid);
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
     var qnsType = path.substr(path.lastIndexOf('/') + 1);
@@ -249,7 +249,7 @@
     }
 
     $scope.backToCourseMap = function () {
-      window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();;
+      window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
     }
 
     $scope.saveQns = function (ev) {
@@ -983,7 +983,7 @@
     $scope.editQuestion = function (qid, cid) {
       var question = contentMgmtService.getQuestion(qid);
       question.$loaded().then(function () {
-        $location.path('educator/' + question.qnsType + '_edit/' + cid + '/' + qid);
+        $location.path('educator/' + question.qnsType + '_edit/' +contentMgmtService.getBookID() + '/' + cid + '/' + qid);
       })
         .catch(function (error) {
           console.error("Error:", error);

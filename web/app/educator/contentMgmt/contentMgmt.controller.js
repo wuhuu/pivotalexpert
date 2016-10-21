@@ -958,12 +958,13 @@
         '</md-dialog>',
         locals: {
           chapters: $scope.chapters,
-          qnsTypes: $scope.qnsTypes
+          qnsTypes: $scope.qnsTypes,
+          bid: $scope.bid
         },
         controller: DialogController
       });
 
-      function DialogController($scope, $mdDialog, chapters, qnsTypes) {
+      function DialogController($scope, $mdDialog, chapters, qnsTypes,bid) {
         $scope.chapters = chapters;
         $scope.selectedChapter = '';
         $scope.selectedQnsType = '';
@@ -974,7 +975,7 @@
         $scope.nextStep = function () {
           $scope.selectedQnsType = $scope.selectedQnsType.toLowerCase();
 
-          $location.path('educator/' + $scope.selectedQnsType + '_create/' + $scope.selectedChapter);
+          $location.path('educator/' + $scope.selectedQnsType + '_create/' +bid+'/'+ $scope.selectedChapter);
           $mdDialog.hide();
         }
       }

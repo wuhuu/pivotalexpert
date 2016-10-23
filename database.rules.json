@@ -1,6 +1,15 @@
 {
   "rules": {
     ".read": "auth != null",
-    ".write": "auth != null"
+    ".write": "auth != null",
+    "auth":{
+      "usedLinks":{
+        ".read":true
+      }
+    },
+    "userProfiles":{
+      ".read":true
+    }
+    
   }
 }

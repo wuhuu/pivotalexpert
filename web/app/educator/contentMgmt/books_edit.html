@@ -1,0 +1,79 @@
+<div layout="column" class="relative" layout-fill role="main">
+  <script>
+  $( function() {
+
+  } );
+  </script>
+  <style>
+    ng-messages {
+      display: block;
+    }
+  </style>
+  <div layout="row" flex>
+    <div flex="auto"></div>
+    <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 30px;height:auto;">
+      <h1>Course Library</h1>
+      <md-button class="md-raised" ng-click="addBook($event)">Create a Book</md-button>
+      <md-menu>
+                <md-button class="md-raised md-primary" ng-click="courseMenu($mdOpenMenu, $event)">
+                 Course Options
+                </md-button>
+                <md-menu-content width="4">
+                   <md-menu-item>
+                    <md-button ng-click="showExportPrompt($event)">
+                      Export Course
+                    </md-button>
+                  </md-menu-item>
+                  <md-menu-divider></md-menu-divider>
+                   <md-menu-item>
+                    <md-button ng-click="importCourse($event)">
+                      Import Course
+                    </md-button>
+                  </md-menu-item>
+                </md-menu-content>
+              </md-menu>
+    </div>
+    <div flex="auto"></div>
+  </div>
+  <div layout="row" flex>
+    <div flex="auto"></div>
+    <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: 0px;padding: 20px 20px;">
+      <md-content>
+        <md-list style="background-color:white;">
+          <md-list-item class="md-2-line" ng-repeat="book in library track by $index">
+            <div class="md-tile-left inset" hide-sm>
+              <img ng-src="content/images/book-flat.png" style='height:50px;'>
+            </div>
+            <div class="md-list-item-text">
+              <h3 style='font-weight: bold;'>{{book.bookTitle}}</h3>
+              <p>{{book.bookDescription}}</p>
+            </div>
+            <div class="md-tile-right inset" hide-sm>
+              <md-button ng-click="viewBook(book.bid)" class="md-primary md-icon-button" aria-label="Settings">
+                <i style="font-size:1.5em;" class="material-icons">book</i>
+                <md-tooltip md-delay="200">
+                  View Book Content
+                </md-tooltip>
+              </md-button>
+              <md-button ng-click="editBook($event,book.bookTitle,book.bookDescription,book.bid)" class="md-icon-button" aria-label="Settings">
+                <i style="font-size:1.5em" class="fa fa-pencil"></i>
+                <md-tooltip md-delay="200">
+                  Edit Book Details
+                </md-tooltip>
+              </md-button>
+              <md-button class="md-warn md-icon-button" ng-click="confirmDelete($event,'Book 1',book.bid)">
+                <i class="fa fa-trash" aria-hidden="true" style="font-size:1.5em"></i>
+                <md-tooltip md-delay="200">
+                  Delete chapter
+                </md-tooltip>
+              </md-button>
+            </div>
+            <md-divider></md-divider>
+          </md-list-item>
+          <md-divider></md-divider>
+        </md-list>
+      </md-content>
+    </div>
+    <div flex="auto"></div>
+  </div>
+</div>

@@ -25,46 +25,57 @@
             $scope.displayPic = profile.pic;
         });
     });
-    
-    
-
+   
     function getUserAchievements(uid) {
         var achievedlist = [];
         var achievements = [];
         var achievementsNum = 0;
-          
-        var courseList = $firebaseArray(ref.child('/courseSequence'));
-        courseList.$loaded().then(function (){
+        
+        var bookList = $firebaseArray(ref.child('/library'));
+        bookList.$loaded().then(function (){
+            
             var courseProgressRef = ref.child('/userProfiles/' + uid + '/courseProgress/');
             courseProgressRef.once('value', function(snapshot) {
               snapshot.forEach(function(childSnapshot) {
                 var key = childSnapshot.key;
                 achievedlist.push(key);
               });   
-              var totalCourse = courseList.length;
-              for (i = 0; i < totalCourse; i++) { 
-                var chapter = courseList[i];
+              
+              var totalBook = bookList.length;
+              
+              for (i = 0; i < totalBook; i++) { 
+                var book = bookList[i];
+                var courseList = book.sequence;
+             
+                  
+                  var totalCourse = courseList.length;
+                  for (j = 0; j < totalCourse; j++) { 
+                    var chapter = courseList[j];
 
-                if(chapter.qns) {
-                    var qnsCount = chapter.qns.length;
-                    var currentPos = 0;
+                    if(chapter.qns) {
+                        var qnsCount = chapter.qns.length;
+                        var currentPos = 0;
 
-                    for (j = 0; j < qnsCount; j++) { 
-                        if(chapter.qns[j]) {
-                            if(achievedlist.indexOf(chapter.qns[j].qid) == -1){
-                                chapter.qns.splice(currentPos, 1);
+                        for (k = 0; k < qnsCount; k++) {
+                      
+                            if(chapter.qns[k]) {
+                                if(achievedlist.indexOf(chapter.qns[k].qid) == -1){
+                                    chapter.qns.splice(currentPos, 1);
+                                } else {
+                                    achievementsNum++;
+                                    currentPos++;
+
+                                }
                             } else {
-                                achievementsNum++;
-                                currentPos++;
+                                chapter.qns.splice(currentPos, 1);
                             }
-                        } else {
-                            chapter.qns.splice(currentPos, 1);
+                        }
+                        if(chapter.qns.length > 0) {
+                            achievements.push(chapter);
                         }
                     }
-                    if(chapter.qns.length > 0) {
-                        achievements.push(chapter);
-                    }
-                }
+                  }
+                  
               }
               $scope.numAchievement = achievementsNum;
               $scope.achievelist = achievements;

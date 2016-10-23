@@ -2,7 +2,7 @@
     <div layout="row" flex>
         <div flex="auto"></div>
         <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 0px 10px;height: 70px;">
-              <h1>{{courseTitle}} Course Map</h1>
+              <h1>{{book.bookTitle}} Course Map</h1>
         </div>
         <div flex="auto">
           
@@ -29,7 +29,7 @@
                       
                       <div flex=90>
                         <i class="material-icons">label</i>
-                        <a style="font-size:1.3em" ng-href="#/lesson/{{qns.qnsType}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}">{{qns.qnsTitle}}</a>
+                        <a style="font-size:1.3em" ng-href="#/lesson/{{qns.qnsType}}/{{bid}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}">{{qns.qnsTitle}}</a>
                       </div>
                       <div ng-show="qns.complete" flex>
                         <md-icon style="font-size:1.5em" class="material-icons green" flex>check_box</md-icon>

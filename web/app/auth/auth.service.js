@@ -83,7 +83,6 @@
                   });   
                 });
             }
-            
             //load drive API to create if have not created before. Excute once only
             if(!userData.driveExcel) {
                 //Create Google Folder upon login
@@ -94,7 +93,7 @@
             if(userData.profileLink == null) {
               $location.path('/createProfileLink');
             } else if($rootScope.isAdmin || $rootScope.mainAdmin){
-                $location.path('/educator/courseMap/');
+                $location.path('/educator/courseLibrary/');
             }
             else{
               $location.path('/course/');
@@ -146,7 +145,7 @@
         
         courseSetting.$loaded().then(function(){
             
-            var courseName = courseSetting.courseName;
+            var courseName = commonService.getCouseName();
             var folderName = courseName + " Folder";
             var studSheetName = courseName + " Sheet";
             var eduSheetName = courseName + "_Educator_Sheet";
@@ -234,7 +233,6 @@
                 role: "reader",
                 type: "anyone"
             }).then(function(response) {
-                console.log(response);
             });
             
         });

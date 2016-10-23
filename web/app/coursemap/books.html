@@ -1,0 +1,38 @@
+<div layout="column" class="relative" layout-fill role="main">
+  <div layout="row" flex>
+    <div flex="auto"></div>
+    <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 30px;height:auto;">
+      <h1>Course Library</h1>
+    </div>
+    <div flex="auto"></div>
+  </div>
+  <div layout="row" flex>
+    <div flex="auto"></div>
+    <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: 0px;padding: 20px 20px;">
+      <md-content>
+        <md-list style="background-color:white;">
+          <md-list-item class="md-2-line" ng-repeat="book in library track by $index">
+            <div class="md-tile-left inset" hide-sm>
+              <img ng-src="content/images/book-flat.png" style='height:50px;'>
+            </div>
+            <div class="md-list-item-text">
+              <h3 style='font-weight: bold;'>{{book.bookTitle}}</h3>
+              <p>{{book.bookDescription}}</p>
+            </div>
+            <div class="md-tile-right inset" hide-sm>
+              <md-button ng-click="viewBook(book.$id)" class="md-primary md-icon-button" aria-label="viewBook">
+                <i style="font-size:1.5em;" class="material-icons">book</i>
+                <md-tooltip md-delay="200">
+                  View Book Content
+                </md-tooltip>
+              </md-button>
+            </div>
+            <md-divider></md-divider>
+          </md-list-item>
+          <md-divider></md-divider>
+        </md-list>
+      </md-content>
+    </div>
+    <div flex="auto"></div>
+  </div>
+</div>

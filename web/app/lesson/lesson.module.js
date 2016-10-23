@@ -6,28 +6,32 @@
   
   function configFunction($routeProvider) {
     $routeProvider.
-	when('/lesson/mcq/:chapter/:qns/:qid', {
+	when('/lesson/mcq/:bid/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/mcq.html',
 	  controller: 'LessonController'
     })
-    .when('/lesson/slides/:chapter/:qns/:qid', {
+    .when('/lesson/slides/:bid/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/slides.html',
 	  controller: 'LessonController'
     })
-	.when('/lesson/video/:chapter/:qns/:qid', {
+	.when('/lesson/video/:bid/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/video.html',
 	  controller: 'LessonController'
     })
-	.when('/lesson/excel/:chapter/:qns/:qid', {
+	.when('/lesson/excel/:bid/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/excel.html',
 	  controller: 'LessonController'
     })
-    .when('/lesson/code/:chapter/:qns/:qid', {
+    .when('/lesson/code/:bid/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/codebox.html',
     controller: 'LessonController'
     })
-    .when('/lesson/form/:chapter/:qns/:qid', {
+    .when('/lesson/form/:bid/:chapter/:qns/:qid', {
       templateUrl: 'app/lesson/form.html',
+    controller: 'LessonController'
+    })
+    .when('/lesson/iframe/:bid/:chapter/:qns/:qid', {
+      templateUrl: 'app/lesson/iframe.html',
     controller: 'LessonController'
     });
   }

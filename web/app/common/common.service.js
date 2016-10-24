@@ -7,11 +7,11 @@
   
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyDqIamDUsdAduBh2eOWFKYZCdVHLmSJv1s",
-    authDomain: "first-firebase-e2ce4.firebaseapp.com",
-    databaseURL: "https://first-firebase-e2ce4.firebaseio.com",
-    storageBucket: "first-firebase-e2ce4.appspot.com",
-    messagingSenderId: "451367003153"
+    apiKey: "AIzaSyDt22-VriobDs7cNfkmY8yxHur9IQBewWo",
+    authDomain: "pivotal-expert.firebaseapp.com",
+    databaseURL: "https://pivotal-expert.firebaseio.com",
+    storageBucket: "firebase-pivotal-expert.appspot.com",
+    messagingSenderId: "841641391530"
   };
   
   //Replace with your login google account email

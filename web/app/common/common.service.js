@@ -7,18 +7,18 @@
   
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyDt22-VriobDs7cNfkmY8yxHur9IQBewWo",
-    authDomain: "pivotal-expert.firebaseapp.com",
-    databaseURL: "https://pivotal-expert.firebaseio.com",
-    storageBucket: "firebase-pivotal-expert.appspot.com",
-    messagingSenderId: "841641391530"
+    apiKey: "AIzaSyCDgu5bi1D56h52N55Ygcld_HXP6ZvvVoc",
+    authDomain: "ui-mobile.firebaseapp.com",
+    databaseURL: "https://ui-mobile.firebaseio.com",
+    storageBucket: "ui-mobile.appspot.com",
+    messagingSenderId: "702393052675"
   };
   
   //Replace with your login google account email
-  var adminEmail = "cboesch@smu.edu.sg";
+  var adminEmail = "waclevas@gmail.com";
   
   //Replace with the name of your course
-  var courseName = "Pivotal Expert";
+  var courseName = "Mobile PE";
   
   firebase.initializeApp(config);
   

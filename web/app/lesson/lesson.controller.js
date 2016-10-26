@@ -72,8 +72,6 @@
 
             function onYouTubePlayer() {
               player = new YT.Player('player', {
-                height: '390',
-                width: '640',
                 videoId: question.link,
                 events: {
                   'onStateChange': onPlayerStateChange
@@ -232,7 +230,7 @@
             editor.setOption("minLines", 10);
 
             var userAch = $firebaseObject(ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid));
-              
+
             userAch.$loaded().then(function(){
               if(userAch.userAnswer){
                   console.log(userAch.userAnswer);

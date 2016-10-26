@@ -28,6 +28,7 @@
             //track users who have completed and/or revisit and recording timing
             recordUserWhoCompletedOrRevisit().then(function(){
               nextQns(chapter,qns,question);
+              navBarService.updateNavBar();
             });
 
         });

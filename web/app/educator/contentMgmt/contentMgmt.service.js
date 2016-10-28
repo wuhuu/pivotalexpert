@@ -65,6 +65,7 @@
             var q = $q.defer();
             var libraryNode = $firebaseObject(libraryNodeRef);
             libraryNode.$loaded().then(function(){
+                
                 var bid = book.bid;
                 if(isNewBook) {
                     // checking if bookTitle already exist
@@ -78,7 +79,12 @@
 
                 if(!book.bid) {
                     //generate new bid
-                    bid = commonService.guid();
+                    var length =1;
+                    angular.forEach(libraryNode, function(value, key) {
+                        length++;
+                    });
+
+                    bid = ""+length+'-'+commonService.guid();
                     book.bid= bid;
                 }
 
@@ -267,7 +273,6 @@
                 // create new question node & fill it up
 
                 var questionNode = {
-                    qnsDescription:question.qnsDescription,
                     qnsInstruction:question.qnsInstruction,
                     qnsTitle:question.qnsTitle,
                     qnsType:question.qnsType,
@@ -358,11 +363,6 @@
                     qnsType:question.qnsType,
                     link:question.link
                 };
-                
-                if(question.qnsDescription) {
-                    console.log(question.qnsDescription);
-                    questionNode.qnsDescription = question.qnsDescription;
-                }
                 
                 if(question.qnsInstruction) {
                     questionNode.qnsInstruction = question.qnsInstruction;

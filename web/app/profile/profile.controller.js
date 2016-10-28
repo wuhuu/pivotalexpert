@@ -23,6 +23,7 @@
                 $scope.displayPencil = false;
             }
             $scope.displayPic = profile.pic;
+
         });
     });
    
@@ -75,8 +76,11 @@
                   }
                 }
               }
-              $scope.numAchievement = achievementsNum;
-              $scope.achievelist = achievements;
+              
+              $scope.$apply(function() {
+                $scope.numAchievement = achievementsNum;
+                $scope.achievelist = achievements;
+              });
             })
         });
     }

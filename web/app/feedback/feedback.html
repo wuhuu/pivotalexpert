@@ -1,0 +1,30 @@
+<div layout="row" flex>
+  <div flex="15"></div>
+  <div class="md-whiteframe-z2" layout="column" flex="70">
+    <div style="padding: 0px 20px">
+      <h2 class="pull-left">Feedback</h2>
+        <div style="padding: 10px" class="pull-right" ng-show="feedbackForm && (isAdmin || mainAdmin)">
+            <md-button class="md-raised md-primary pull-right" ng-click="addFeedback()"> Add / Update Feedback Form </md-button>
+        </div>
+    </div>
+    <md-divider></md-divider>
+    <div style="padding: 10px; padding-top: 0px">
+      <div layout="column">
+      
+        <div style="padding:20px" ng-if="(isAdmin || mainAdmin)">
+            <h5>Create Google Form to collect feedback from students. Copy the google form link and enter on the text field below.</h5>
+        </div>
+        <div style="padding-left:20px; padding-top:0px" ng-if="(isAdmin || mainAdmin)">
+          <md-input-container class="md-block">
+            <label>Enter the Google Form link to collect feedback</label>
+            <input ng-model="feedbackForm" name="feedbackForm">
+        </div>
+        <div style="padding-bottom: 20px; padding-top:-20px"  ng-if="feedbackLink || !(isAdmin || mainAdmin)">
+             <h5 style="padding:20px" ng-if="(isAdmin || mainAdmin)">Student view of Google Form</h5>
+            <iframe ng-src="{{feedbackLink}}" width="100%" height="450px" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>

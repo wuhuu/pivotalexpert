@@ -18,6 +18,7 @@
       var ref = firebase.database().ref();
       var usersRef = ref.child('auth/users');
       var adminRef = ref.child('auth/admin');
+      var feedbackRef =  ref.child('settings/feedback');
       
       $scope.login = function () {
           console.log("Logging in");
@@ -30,6 +31,15 @@
           navBarService.updateNavBar();
           $scope.displayPic = user.photoURL;
           $rootScope.logined = true;
+          
+          //Check if feedbackLink already exist
+            var feedback = $firebaseObject(feedbackRef);
+            feedback.$loaded().then(function(){
+                if(feedback.$value) {
+                    $rootScope.haveFeedback = true;
+                }
+                
+            });
           
           //Check whether login user email belong to admin account email
           var adminEmail = commonService.getAdminEmail().toUpperCase();

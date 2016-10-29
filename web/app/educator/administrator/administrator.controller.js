@@ -6,10 +6,12 @@
 
   function AdministratorController($scope, $firebaseObject,$timeout, $q) {
 	  console.log("AdministratorController");
+      
       var ref = firebase.database().ref().child('auth');
       var adminRef = ref.child('admin');
       var subAdminRef = ref.child('admin/subAdmins');
       var userRef = ref.child('users');
+      
       $scope.admins = [];
       
       adminRef.once('value', function(snapshot) {
@@ -35,30 +37,52 @@
       
       $scope.removeAdmin = function(index){
         var user = $scope.admins[index];
-        removePermission(user.permissionID);
+        if(user.permissionID != -1) {
+          removePermission(user.permissionID);
+        }
         subAdminRef.child(user.userID).set(null);
         $scope.admins.splice(index, 1);
       }
     
+      //$scope.invalid = false;
+     
       $scope.addAdmin = function() {
-        $scope.invalid = false;
-        var userID = $firebaseObject(ref.child('usedLinks/' + $scope.newAdmin));
-        userID.$loaded().then(function(){
-            if(userID.$value) {
-                //retrieve email and grant permission for excel spreadsheet
-                var user = $firebaseObject(userRef.child(userID.$value));
-                user.$loaded().then(function(){
-                    var userEmail = user.email;
-                    addPermission(userEmail, $scope.adminShet, userID.$value);
+        
+        var promise = searchForEmail();
+        promise.then(function(userID) {
+            if(userID){
+                //Update Firsebase
+                subAdminRef.child(userID).set(-1);
+                
+                //check if spreadsheetID exist, if so add permission
+                adminRef.child("spreadsheetID").once('value', function(snapshot) {
+                   if(snapshot.val()) {
+                     addPermission($scope.newAdmin, snapshot.val(), userID)
+                   } else {
+                     window.location.reload();
+                   }
                 });
-                $scope.newAdmin = "";
-                $scope.invalid = false;
             } else {
                 $scope.invalid = true;
             }
-           
-        });
+        })
       }
+      
+    function searchForEmail() {
+        var defer = $q.defer();
+        userRef.once('value', function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                var userID = childSnapshot.key;
+                var email = childSnapshot.child("email").val().toUpperCase();
+                if($scope.newAdmin.toUpperCase() === email) {
+                    defer.resolve(userID);
+                    return defer.promise;
+                }
+            });
+             defer.resolve(false);
+        });
+        return defer.promise;
+    }
             
     function addPermission(email, spreadsheet, userID) {
         gapi.client.load('drive', 'v3', function () {

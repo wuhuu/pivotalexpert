@@ -4,9 +4,12 @@
     .module('app.administrator')
     .controller('AdministratorController', AdministratorController);
 
-  function AdministratorController($scope, $firebaseObject,$timeout, $q) {
+  function AdministratorController($scope, $rootScope, $location, $firebaseObject,$timeout, $q) {
 	  console.log("AdministratorController");
-      
+      if(!($rootScope.mainAdmin)){
+        $location.path('/course/');
+      }
+    
       var ref = firebase.database().ref().child('auth');
       var adminRef = ref.child('admin');
       var subAdminRef = ref.child('admin/subAdmins');

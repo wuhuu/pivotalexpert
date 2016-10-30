@@ -56,6 +56,7 @@
         var userData = $firebaseObject(usersRef.child(user.uid));
         //navBarService.updateNavBar(user.displayName);
         userData.$loaded().then(function(){
+            
             //load drive API to create if have not created before. Excute once only
             if(!userData.driveExcel || !userData.driveFolder) {
                 //Create Google Folder upon login

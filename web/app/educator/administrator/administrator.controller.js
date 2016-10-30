@@ -57,7 +57,7 @@
                 //check if spreadsheetID exist, if so add permission
                 adminRef.child("spreadsheetID").once('value', function(snapshot) {
                    if(snapshot.val()) {
-                     addPermission($scope.newAdmin, snapshot.val(), userID)
+                     addPermission($scope.newAdmin, snapshot.val(), userID);
                    } else {
                      window.location.reload();
                    }

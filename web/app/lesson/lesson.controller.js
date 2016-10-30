@@ -28,6 +28,7 @@
             //track users who have completed and/or revisit and recording timing
             recordUserWhoCompletedOrRevisit().then(function(){
               nextQns(chapter,qns,question);
+              navBarService.updateNavBar();
             });
 
         });
@@ -73,7 +74,7 @@
             function onYouTubePlayer() {
               player = new YT.Player('player', {
                 height: '150%',
-                width: '100%',
+                width: '100%',  
                 videoId: question.link,
                 events: {
                   'onStateChange': onPlayerStateChange
@@ -232,7 +233,7 @@
             editor.setOption("minLines", 10);
 
             var userAch = $firebaseObject(ref.child('userProfiles').child(user.uid).child('courseProgress').child(qid));
-              
+
             userAch.$loaded().then(function(){
               if(userAch.userAnswer){
                   console.log(userAch.userAnswer);

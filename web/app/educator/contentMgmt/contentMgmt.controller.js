@@ -102,8 +102,13 @@
     });
 
 
-  function ContentMgmtController($http, $scope, $sce, $routeParams, $location, $firebaseArray, $mdDialog, $firebaseObject, commonService, contentMgmtService, $timeout, $q) {
+  function ContentMgmtController($http, $scope, $rootScope, $sce, $routeParams, $location, $firebaseArray, $mdDialog, $firebaseObject, commonService, contentMgmtService, $timeout, $q) {
+      
+      
     console.log("ContentMgmtController");
+    if(!($rootScope.isAdmin || $rootScope.mainAdmin)){
+        $location.path('/course/');
+    }
     contentMgmtService.saveBookID($routeParams.bid);
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
@@ -600,7 +605,11 @@
 
   }
 
-  function CourseMapController($timeout, $http, $scope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService, $q) {
+  function CourseMapController($timeout, $http, $rootScope, $scope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService, $q) {
+    if(!($rootScope.isAdmin || $rootScope.mainAdmin)){
+        $location.path('/course/');
+    }
+    
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
@@ -1123,7 +1132,10 @@
 
   }
 
-  function BookController($timeout, $http, $scope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService) {
+  function BookController($timeout, $http, $scope, $rootScope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService) {
+    if(!($rootScope.isAdmin || $rootScope.mainAdmin)){
+        $location.path('/course/');
+    }
     $scope.library = [];
     // get library to display
     var library = contentMgmtService.getLibrary();

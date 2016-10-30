@@ -12,7 +12,7 @@
       <div layout="row" flex>
         <div flex="auto"></div>
         <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 30px;height:auto;">
-              <h1>{{book.bookTitle}} Course Map</h1>
+              <h1>{{book.bookTitle}} Content Map</h1>
               <md-button class="md-raised" ng-click="saveAllChanges($event)">Save all changes</md-button>
               <md-button class="md-raised" ng-click="showPrompt($event)">Add a challenge</md-button>
 
@@ -53,7 +53,7 @@
                 <!--chapterTitle div-->
                 <div layout=row id="chapterHeader">
                   <h2 class='cid' cid='{{item.cid}}'>
-                    {{item.chapterTitle}}
+                    Chapter {{$index+1}}:   {{item.chapterTitle}}
                     <md-tooltip md-delay="200">
                       Click to toggle Chapter details. Click & Drag to change chapter order.
                     </md-tooltip>
@@ -104,7 +104,7 @@
                               </md-tooltip>
                             </md-button>
                             <div flex="70" class="md-tile-content">
-                              <h4 class="question" ng-model="item.qns[$index].qnsTitle" id='{{question.qid}}' qnsType="{{question.qnsType}}">{{question.qnsTitle}}</h4>
+                              <h4 class="question" ng-model="item.qns[$index].qnsTitle" id='{{question.qid}}' qnsType="{{question.qnsType}}">Challenge {{$index+1}}:  {{question.qnsTitle}}</h4>
                             </div>
                             <div class="md-tile-right inset" hide-sm>
                               <md-button class="md-icon-button" ng-click="editQuestion(question.qid,item.cid)">

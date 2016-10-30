@@ -3,8 +3,8 @@
   angular
     .module('app.auth')
     .factory('authService', authService);
+  function authService($firebaseObject, $firebaseAuth, $location, $rootScope, $http, commonService) {
 
-  function authService($firebaseObject, $firebaseAuth, $location, $rootScope, commonService) {
       
     // create an instance of the authentication service
     var ref = firebase.database().ref();
@@ -27,6 +27,7 @@
       provider.addScope('https://www.googleapis.com/auth/userinfo.email');
       provider.addScope('https://www.googleapis.com/auth/drive.file');
       provider.addScope('https://www.googleapis.com/auth/spreadsheets');
+      provider.addScope('https://www.googleapis.com/auth/cloud-platform');
       
       firebase.auth().signInWithPopup(provider).then(function(result) {
 
@@ -56,38 +57,63 @@
         var userData = $firebaseObject(usersRef.child(user.uid));
         //navBarService.updateNavBar(user.displayName);
         userData.$loaded().then(function(){
-            
-            //Check whether login user email belong to admin account email
-            var adminEmail = commonService.getAdminEmail().toUpperCase();
-            
-            //update admin role
-            if(adminEmail.toUpperCase() === userData.email.toUpperCase()) {
-                $rootScope.mainAdmin = true;
-                ref.child('auth/admin/admin').set(user.uid);
-                
-                //console.log($rootScope.folderID)
-                adminRef.once('value', function(snapshot) {
-                  if (!snapshot.hasChild('spreadsheetID') && userData.driveExcel) {
-                    //create edu sheet
-                    $rootScope.folderID = userData.driveFolder;
-                    createEduSheetAPI();
-                  }
-                });
-            } else {
-                //Retrieve subAdmin from firebase
-                adminRef.child('subAdmins').once('value', function(snapshot) {
-                  snapshot.forEach(function(childSnapshot) {
-                    if(childSnapshot.key == userData.$id) {
-                      $rootScope.isAdmin = true;
-                    }
-                  });   
-                });
-            }
+                        
             //load drive API to create if have not created before. Excute once only
-            if(!userData.driveExcel) {
+            if(!userData.driveExcel || !userData.driveFolder) {
                 //Create Google Folder upon login
                 loadDriveApi();   
             }
+            
+            
+            //Check whether login is an admin or sub-admin
+            adminRef.once('value', function(snapshot) {
+              if(!snapshot.child('admin').val()) { //if admin ID have not been set yet. Set the owner of the firebase as the main admin
+                var firebaseDomain = firebase.database().app.options.authDomain;
+                firebaseDomain = firebaseDomain.split(".");
+                var projectName = firebaseDomain[0];
+                var discoveryUrl = 'https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1';
+                gapi.client.load(discoveryUrl).then(function() {
+                    gapi.client.cloudresourcemanager.projects.getIamPolicy({
+                        resource: projectName
+                    }).then(function(response) {
+                        for(var i = 0; i < response.result.bindings.length; i++){
+                            var roles = response.result.bindings[i].role;
+                            if(roles === "roles/owner") {
+                                var ownerEmail = response.result.bindings[i].members[0].substring(5);
+                                var currentEmail = userData.email;
+                                if(ownerEmail.toUpperCase() === currentEmail.toUpperCase()) {
+                                    usersRef.child(user.uid).update({
+                                      isAdmin: true
+                                    }).then(function() {
+                                        adminRef.child('admin').set(userData.$id);
+                                    });
+                                    
+                                }
+                            }
+                        }
+                    });
+                });
+              } else {
+
+                //check whether login user is main admin
+                if(snapshot.child('admin').val() === userData.$id) {
+                    
+                    $rootScope.mainAdmin = true;
+                    if(!snapshot.child('spreadsheetID').val()) {
+                        //create edu sheet
+                        $rootScope.folderID = userData.driveFolder;
+                        createEduSheetAPI();
+                    }
+                } else if(snapshot.child('subAdmins').val()) {
+                    var subadmins = snapshot.child('subAdmins').val();
+                    for (var subadmin in subadmins) {
+                       if(subadmin == userData.$id) {
+                            $rootScope.isAdmin = true;
+                        }
+                    }
+                }
+              }
+            });
             
             $rootScope.logined = true;
             if(userData.profileLink == null) {

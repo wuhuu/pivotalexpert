@@ -43,19 +43,20 @@
               for (i = 0; i < totalBook; i++) { 
                 var book = bookList[i];
                 var courseList = book.sequence;
-                
-                var totalCourse = courseList.length;
-                for (j = 0; j < totalCourse; j++) { 
-                  var chapter = courseList[j];
-                  if(chapter.qns) {
-                      var qnsCount = chapter.qns.length;
-                      for (k = 0; k < qnsCount; k++) { 
-                          if(achievedlist.indexOf(chapter.qns[k].qid) != -1){
-                              achievements++;
+                if(courseList){
+                    var totalCourse = courseList.length;
+                    for (j = 0; j < totalCourse; j++) { 
+                      var chapter = courseList[j];
+                      if(chapter.qns) {
+                          var qnsCount = chapter.qns.length;
+                          for (k = 0; k < qnsCount; k++) { 
+                              if(achievedlist.indexOf(chapter.qns[k].qid) != -1){
+                                  achievements++;
+                              }
                           }
+                        }
                       }
-                    }
-                  }
+                }
               }
               deferred.resolve(achievements);
             });

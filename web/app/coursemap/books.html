@@ -4,7 +4,6 @@
       <h1>Library</h1>
     </div>
   </div>
-  hello
   <div layout="row" flex layout-align="center">
     <div class="md-whiteframe-z2" layout="column" flex="70" flex-xs="100">
       <md-content>
@@ -14,7 +13,7 @@
               <img ng-src="content/images/book-flat.png" style='height:50px;'>
             </div>
             <div class="md-list-item-text">
-              <h3 style='font-weight: bold;'>{{book.bookTitle}}</h3>
+              <h3 style='font-weight: bold;'>Book {{$index+1}} :  {{book.bookTitle}}</h3>
               <p>{{book.bookDescription}}</p>
             </div>
             <div class="md-tile-right inset" hide-sm>

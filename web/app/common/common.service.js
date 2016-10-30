@@ -7,18 +7,15 @@
   
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyCDgu5bi1D56h52N55Ygcld_HXP6ZvvVoc",
-    authDomain: "ui-mobile.firebaseapp.com",
-    databaseURL: "https://ui-mobile.firebaseio.com",
-    storageBucket: "ui-mobile.appspot.com",
-    messagingSenderId: "702393052675"
+    apiKey: "AIzaSyA1C3DGIpn6zY1p9z4a7qDnE60p28HDgxQ",
+    authDomain: "fyp-development.firebaseapp.com",
+    databaseURL: "https://fyp-development.firebaseio.com",
+    storageBucket: "fyp-development.appspot.com",
+    messagingSenderId: "1024577960550"
   };
   
-  //Replace with your login google account email
-  var adminEmail = "waclevas@gmail.com";
-  
   //Replace with the name of your course
-  var courseName = "Mobile PE";
+  var courseName = "PIVOET EXPERT DEVELOPMENT";
   
   firebase.initializeApp(config);
   

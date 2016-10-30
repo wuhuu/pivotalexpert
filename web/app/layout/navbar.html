@@ -1,34 +1,39 @@
 
 <md-toolbar ng-hide="logined">
-<div class="md-toolbar-tools">
-  <h2>
-    <span>{{courseTitle}}</span>
-  </h2>
-  <span flex></span>
-  <md-button style="margin-right:10px" ng-click="login()" >Sign In</md-button>
-</div>
-</md-toolbar>
-
-
-<md-toolbar class="md-hue-1" ng-show="logined">
   <div class="md-toolbar-tools">
-    <md-button class="md-icon-button" aria-label="Settings" ng-disabled="true">
-      <md-icon md-svg-icon="menu.svg"></md-icon>
-    </md-button>
     <h2>
       <span>{{courseTitle}}</span>
     </h2>
     <span flex></span>
-    <md-button style="margin-right:10px" href="#/educator/administrator" ng-show="mainAdmin" >Manage Admin</md-button>
-    <md-button style="margin-right:10px" href="#/feedback" ng-show="isAdmin || mainAdmin || haveFeedback">Feedback</md-button>
-    <md-button style="margin-right:10px" href="#/educator/courseLibrary" ng-show="isAdmin || mainAdmin" >Educator Library</md-button>
-    <md-button style="margin-right:10px" href="#/course" >Library</md-button>
-    <!-- <md-button style="margin-right:10px">chat</md-button> -->
-    <md-button style="margin-right:10px"  href="#/profile/{{profileLink}}" >[ {{ownNumAchievement}} ]</md-button>
-    <md-button style="margin-right:10px" class="md-fab md-primary md-hue-2" aria-label="Profile" href="#/profile/{{profileLink}}">
-      <img ng-src="{{displayPic}}" alt="Profile Photo" width="40px" height="40px">
-    </md-button>
-    <md-button style="margin-right:10px" ng-click="logout()">Logout</md-button>
+    <md-button style="margin-right:10px" ng-click="login()" >Sign In</md-button>
   </div>
 </md-toolbar>
 
+
+<md-toolbar class="md-hue-1" ng-show="logined" flex="100" style="width: 100%;">
+  <div class="md-toolbar-tools">
+    <!-- <md-button class="md-icon-button" aria-label="Settings" ng-disabled="true">
+      <md-icon md-svg-icon="menu.svg"></md-icon>
+    </md-button>
+    -->
+    <h2 hide-xs >
+		  <span>{{courseTitle}}</span>
+	  </h2>
+    <span flex></span>
+    <md-button style="margin-right:10px" href="#/educator/administrator" ng-show="mainAdmin" >Manage Admin</md-button>
+    <md-button style="margin-right:10px" href="#/feedback" ng-show="isAdmin || mainAdmin || haveFeedback">Feedback</md-button>
+    <md-button style="margin-right:10px" href="#/educator/courseLibrary" ng-show="isAdmin || mainAdmin" >Educator Library</md-button>
+    <md-button hide show-xs href="#/course">
+      <i class="fa fa-sitemap" aria-hidden="true"></i>
+    </md-button>
+    <md-button style="margin-right:10px" href="#/course" >Library</md-button>
+    <md-button style="margin-right:10px" href="#/profile/{{profileLink}}" >[ {{ownNumAchievement}} ]</md-button>
+
+    <md-button style="margin-right:10px" hide-xs class="md-fab md-primary md-hue-2" aria-label="Profile" href="#/profile/{{profileLink}}">
+      <img ng-src="{{displayPic}}" alt="Profile Photo" width="40px" height="40px">
+    </md-button>
+
+    <md-button hide show-xs ng-click="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i></md-button>
+    <md-button style="margin-right:10px" hide-xs ng-click="logout()">Logout</md-button>
+  </div>
+</md-toolbar>

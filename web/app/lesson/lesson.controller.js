@@ -73,6 +73,8 @@
 
             function onYouTubePlayer() {
               player = new YT.Player('player', {
+                height: '150%',
+                width: '100%',  
                 videoId: question.link,
                 events: {
                   'onStateChange': onPlayerStateChange

@@ -1,7 +1,7 @@
 
    <script>
   $( function() {
-    
+
   });
   </script>
 <div layout="row" flex>
@@ -13,7 +13,7 @@
         </style>
         <h2 class="pull-left" ng-model="qns.qnsTitle" style="padding:0px 10px">{{qns.qnsTitle}}</h2>
         <div style="padding:30px">
-          
+
           <div class="pull-right" style="padding:30px">
             <md-button class="md-raised " type="submit" ng-click='qnsForm.$valid && saveMCQChanges($event)'>Save all changes</md-button>
             <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
@@ -27,7 +27,7 @@
 
               <div flex style="padding:0 20px">
                 <md-input-container class="md-block">
-                  <label>Question Title</label>
+                  <label>Challenge Title</label>
                   <input ng-model="qns.qnsTitle" name="qnsTitle" required>
                   <ng-messages for="qnsForm.qnsTitle.$error" md-auto-hide="true">
                     <div ng-message="required">This is required.</div>
@@ -46,7 +46,7 @@
 
               <div flex style="padding:0 20px">
                 <md-input-container class="md-block">
-                  <label>Instructions</label>
+                  <label>Accompanying Text(will be shown at the top)</label>
                   <input ng-model="qns.qnsInstruction" name="qnsInstruction" required>
                   <ng-messages for="qnsForm.qnsInstruction.$error" md-auto-hide="true">
                     <div ng-message="required">This is required.</div>
@@ -56,7 +56,7 @@
 
               <div flex style="padding:0 20px" layout="column" id='mcq'>
                 <!-- Question 1 -->
-                
+
                 <div layout="row" ng-repeat="mcqObj in qns.mcq track by $index"  toggle-button="done" >
                   <div flex>
                     <p >
@@ -67,7 +67,7 @@
                       <md-button ng-click='deleteMcq($index)' class="md-icon-button" aria-label="Settings">
                         <i class="fa fa-times"></i>
                       </md-button>
-                    
+
                     </p>
                     <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}'>
                       <label>Question:</label>
@@ -77,7 +77,7 @@
                       </ng-messages>
                     </md-input-container>
 
-                    
+
                       <md-radio-group name='answer_{{mcqObj.qnsID}}' ng-model='mcqObj.answer' id='answer_{{mcqObj.qnsID}}'>
                         <div layout="row"  style="margin: -15px 0" ng-repeat="option in mcqObj.options track by $index">
                           <div layout="row" layout-align="center center">
@@ -123,4 +123,3 @@
       </form>
     </div>
    </div>
-

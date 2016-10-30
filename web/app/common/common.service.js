@@ -15,7 +15,7 @@
   };
   
   //Replace with the name of your course
-  var courseName = "Pivotal Expert";
+  var courseName = "PIVOET EXPERT DEVELOPMENT";
   
   firebase.initializeApp(config);
   

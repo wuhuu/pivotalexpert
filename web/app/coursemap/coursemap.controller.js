@@ -62,11 +62,11 @@
                     }
                 }
               }
-              
+          $scope.$apply(function(){
+            $scope.courseMaterial = courseList;
+          });                
         });
 
-        $scope.courseMaterial = courseList;
-        
     }
   }
   

@@ -1,8 +1,9 @@
+
 <div layout="column" class="relative" layout-fill role="main">
     <div layout="row" flex>
         <div flex="auto"></div>
         <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 0px 10px;height: 70px;">
-              <h1>{{book.bookTitle}} Course Map</h1>
+              <h1>{{book.bookTitle}} Content Map</h1>
         </div>
         <div flex="auto">
           
@@ -16,9 +17,8 @@
       }
       .material-icons.green { color: 	#008000; }
     </style>
-    <div layout="row" flex>
-    <div flex="auto"></div>
-    <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: 0px;padding: 20px 20px;">
+    <div layout="row" layout-align="center" flex>
+    <div class="md-whiteframe-z2" layout="column" flex="70" flex-xs="100" flex-sm="100" style="margin-top: 0px;padding: 20px 20px;">
       <md-content flex md-scroll-y>
       <md-card-content>
         <div id="accordion1" style='background-color:white'>
@@ -29,19 +29,18 @@
                       
                       <div flex=90>
                         <i class="material-icons">label</i>
-                        <a style="font-size:1.3em" ng-href="#/lesson/{{qns.qnsType}}/{{bid}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}">{{qns.qnsTitle}}</a>
+                        <a style="font-size:1.3em" ng-href="#/lesson/{{qns.qnsType}}/{{bid}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}">
+                        Challenge {{$index+1}}: {{qns.qnsTitle}}</a>
                       </div>
                       <div ng-show="qns.complete" flex>
                         <md-icon style="font-size:1.5em" class="material-icons green" flex>check_box</md-icon>
                       </div>
                  </div>
               </div>
-              <md-divider></md-divider>
-          </div>
-        </div>
-      </md-card-content>
-    </md-content>
+            </div>
+          </md-card-content>
+        </md-content>
+      </div>
     </div>
-    <div flex="auto"></div>
-    </div>
-</div>    
+  </div>
+</meta>

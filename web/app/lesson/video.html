@@ -1,22 +1,21 @@
-<div layout="row" flex>
-  <div flex="15"></div>
-  <div class="md-whiteframe-z2" layout="column" flex="70">
+<div layout="row" flex layout-align="center">
+  <div class="md-whiteframe-z2" layout="column" flex="70" flex-xs="100">
     <div style="padding: 0px 20px">
       <h2 class="pull-left">{{qnsTitle}}</h2>
     </div>
     <md-divider></md-divider>
     <div style="padding: 10px 50px">
       <!--<iframe width="100%" height="355" ng-src="{{srclink}}" frameborder="0" allowfullscreen></iframe>-->
-      <center><div id="player"></div></center>
+      <div class="video-container">
+        <div id="player"></div>
+      </div>
       <md-content style="max-height: 100px; background-color:white">
-        <p>{{qnsDescription}}</p>
+        <p>{{qnsInstruction}}</p>
       </md-content>
       <div style="padding: 20px 0px"layout="row">
         <center flex="80"></center>
         <md-button ng-show="completed" flex="20" class="md-raised md-primary pull-right" ng-click="submit()">Complete</md-button>
       </div>
     </div>
-
-
   </div>
-</div>
+</meta>

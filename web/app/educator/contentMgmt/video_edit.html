@@ -31,16 +31,7 @@
             </div>
             <div flex style="padding:10px">
               <md-input-container class="md-block">
-                <label>Description</label>
-                <input ng-model="qns.qnsDescription" name="qnsDescription" rows="1" md-select-on-focus required>
-                <ng-messages for="qnsForm.qnsDescription.$error" md-auto-hide="true">
-                  <div ng-message="required">This is required.</div>
-                </ng-messages>
-              </md-input-container>
-            </div>
-            <div flex style="padding:10px">
-              <md-input-container class="md-block">
-                <label>Instructions</label>
+                <label>Accompanying Text(will be shown at the bottom of the video)</label>
                 <input ng-model="qns.qnsInstruction" name="qnsInstruction" rows="1" md-select-on-focus required>
                 <ng-messages for="qnsForm.qnsInstruction.$error" md-auto-hide="true">
                   <div ng-message="required">This is required.</div>

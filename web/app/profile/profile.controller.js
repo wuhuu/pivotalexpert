@@ -23,6 +23,7 @@
                 $scope.displayPencil = false;
             }
             $scope.displayPic = profile.pic;
+
         });
     });
    
@@ -46,12 +47,10 @@
               for (i = 0; i < totalBook; i++) { 
                 var book = bookList[i];
                 var courseList = book.sequence;
-             
-                  
+                if(courseList){
                   var totalCourse = courseList.length;
                   for (j = 0; j < totalCourse; j++) { 
                     var chapter = courseList[j];
-
                     if(chapter.qns) {
                         var qnsCount = chapter.qns.length;
                         var currentPos = 0;
@@ -75,10 +74,13 @@
                         }
                     }
                   }
-                  
+                }
               }
-              $scope.numAchievement = achievementsNum;
-              $scope.achievelist = achievements;
+              
+              $scope.$apply(function() {
+                $scope.numAchievement = achievementsNum;
+                $scope.achievelist = achievements;
+              });
             })
         });
     }

@@ -16,18 +16,18 @@
       <md-button class="md-raised" ng-click="addBook($event)">Create a Book</md-button>
       <md-menu>
                 <md-button class="md-raised md-primary" ng-click="courseMenu($mdOpenMenu, $event)">
-                 Course Options
+                 Book Options
                 </md-button>
                 <md-menu-content width="4">
                    <md-menu-item>
                     <md-button ng-click="showExportPrompt($event)">
-                      Export Course
+                      Export Book
                     </md-button>
                   </md-menu-item>
                   <md-menu-divider></md-menu-divider>
                    <md-menu-item>
                     <md-button ng-click="importCourse($event)">
-                      Import Course
+                      Import Book
                     </md-button>
                   </md-menu-item>
                 </md-menu-content>
@@ -45,7 +45,7 @@
               <img ng-src="content/images/book-flat.png" style='height:50px;'>
             </div>
             <div class="md-list-item-text">
-              <h3 style='font-weight: bold;'>{{book.bookTitle}}</h3>
+              <h3 style='font-weight: bold;'>Book {{$index+1}} :  {{book.bookTitle}}</h3>
               <p>{{book.bookDescription}}</p>
             </div>
             <div class="md-tile-right inset" hide-sm>
@@ -64,7 +64,7 @@
               <md-button class="md-warn md-icon-button" ng-click="confirmDelete($event,'Book 1',book.bid)">
                 <i class="fa fa-trash" aria-hidden="true" style="font-size:1.5em"></i>
                 <md-tooltip md-delay="200">
-                  Delete chapter
+                  Delete Book
                 </md-tooltip>
               </md-button>
             </div>

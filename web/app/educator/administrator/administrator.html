@@ -8,8 +8,8 @@
     <div style="padding: 10px 0px">
       <div layout="column">
         <div layout="column" layout-align=" center">
-            <div flex style="padding:20px">
-                <h3>Current Administrators</h3>
+            <div flex style="padding:20px" ng-if="admins.length != 0">
+                <h3>List of Administrators</h3>
                 <div ng-repeat="user in admins">
                 </br>
                     <label>Name : {{user.name}}</label>
@@ -21,20 +21,16 @@
                     </md-button>
                     </br>
                     <label>Email : {{user.email}}</label>
-                    
                 </div>
             </div>
             
             <div flex style="padding:20px">
             
               <md-input-container class="md-block">
-                <label>Enter their profile username to add as administrators</label>
-                <input ng-model="newAdmin" name="newAdmin" required>
-                <ng-messages for="qnsForm.qnsTitle.$error" md-auto-hide="true">
-                  <div ng-message="required">This is required.</div>
-                </ng-messages>
+                <label>Enter their email address to add as administrators</label>
+                <input ng-model="newAdmin" name="newAdmin">
               </md-input-container> 
-              <label style="color:red" ng-show="newAdmin && invalid"> The username entered is invalid. </label>
+              <label style="color:red" ng-show="invalid" > Failed to Add. The email entered is invalid. </label>
             </div>
         </div>
         <div style="padding: 20px 0px" layout="row" ng-show="newAdmin">

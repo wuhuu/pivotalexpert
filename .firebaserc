@@ -4,6 +4,7 @@
     "staging": "firebase-pivotal-expert",
     "FYP": "firebase-pivotal-expert",
     "testing": "fyp-development",
-    "dev": "fyp-development"
+    "dev": "fyp-development",
+    "dev2": "fyp-development2"
   }
 }

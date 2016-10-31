@@ -87,7 +87,8 @@
                                     }).then(function() {
                                         adminRef.child('admin').set(userData.$id);
                                     });
-                                    
+                                    $rootScope.mainAdmin = true;
+                                    createEduSheetAPI();
                                 }
                             }
                         }

@@ -3,7 +3,7 @@
   angular
     .module('app', [
       // Angular modules.
-      'ngRoute', 'ngMdIcons', 'ngMessages', 
+      'ngRoute', 'ngMdIcons', 'ngMessages',
       'ngMaterial',
 
       // Firebase modules.
@@ -12,25 +12,25 @@
       // Custom modules.
       'app.common',
       'app.layout',
-	  'app.landing',
-	  'app.auth',
-	  'app.profile',
-	  'app.lesson',
-	  'app.coursemap',
+      'app.landing',
+      'app.auth',
+      'app.profile',
+      'app.lesson',
+      'app.coursemap',
       'app.contentMgmt',
       'app.administrator',
       'app.feedback'
 
     ])
     .config(configFunction);
-    
-    
+
+
   function configFunction($locationProvider, $routeProvider) {
     $locationProvider.hashPrefix('');
-	$routeProvider.otherwise({
+    $routeProvider.otherwise({
       redirectTo: '/'
     });
   }
-  
+
 
 })();

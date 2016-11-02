@@ -5,9 +5,9 @@
     .factory('navBarService', navBarService);
 
 
-  function navBarService($rootScope, $firebaseObject, $firebaseArray, authService, commonService, $q) {
+  function navBarService($rootScope, $firebaseObject, $firebaseArray, authService, $q) {
     var ref = firebase.database().ref();
-    
+    var adminRef = ref.child('auth/admin');
 
     var service = {
       updateNavBar: updateNavBar,
@@ -19,7 +19,26 @@
     function updateNavBar() {
         updateAchievementCount().then(function(result){
             $rootScope.ownNumAchievement = result;
-        })      
+        });
+        //Check whether login is an admin or sub-admin
+        var userData = firebase.auth().currentUser;
+        console.log(userData);
+        adminRef.once('value', function(snapshot) {
+          if(snapshot.child('admin').val()) { 
+            if(snapshot.child('admin').val() === userData.uid) {
+                //check whether login user is main admin
+                $rootScope.mainAdmin = true;
+            }
+          }
+          if(snapshot.child('subAdmins').val()) {
+            var subadmins = snapshot.child('subAdmins').val();
+            for (var subadmin in subadmins) {
+               if(subadmin == userData.uid) {
+                    $rootScope.isAdmin = true;
+                }
+            }
+          }
+        });
         
     }
     

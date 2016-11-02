@@ -5,30 +5,30 @@
     .factory('authService', authService);
   function authService($firebaseObject, $firebaseAuth, $location, $rootScope, $http, commonService) {
 
-      
+
     // create an instance of the authentication service
     var ref = firebase.database().ref();
     var auth = $firebaseAuth();
     var usersRef = ref.child('auth/users');
     var adminRef = ref.child('auth/admin');
-    
+
     var service = {
       login: login,
       logout: logout,
       fetchAuthData: fetchAuthData,
     };
-    
+
     return service;
-    
+
     //Different function of the auth service
     function login() {
-      
+
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/userinfo.email');
       provider.addScope('https://www.googleapis.com/auth/drive.file');
       provider.addScope('https://www.googleapis.com/auth/spreadsheets');
       provider.addScope('https://www.googleapis.com/auth/cloud-platform');
-      
+
       firebase.auth().signInWithPopup(provider).then(function(result) {
 
         console.log("login success");
@@ -44,27 +44,27 @@
           displayName: user.displayName,
           access_token: token
         });
-        
+
         // set the authentication token
         gapi.auth.setToken({
             access_token: token
         });
-        
+
         //Create signin log
-        var dateTimeNow = new Date().toISOString().slice(0,10); 
+        var dateTimeNow = new Date().toISOString().slice(0,10);
         ref.child('/signinLogs/' + user.uid + '/' + dateTimeNow).set(true);
-        
+
         var userData = $firebaseObject(usersRef.child(user.uid));
         //navBarService.updateNavBar(user.displayName);
         userData.$loaded().then(function(){
-                        
+
             //load drive API to create if have not created before. Excute once only
             if(!userData.driveExcel || !userData.driveFolder) {
                 //Create Google Folder upon login
-                loadDriveApi();   
+                loadDriveApi();
             }
-            
-            
+
+
             //Check whether login is an admin or sub-admin
             adminRef.once('value', function(snapshot) {
               if(!snapshot.child('admin').val()) { //if admin ID have not been set yet. Set the owner of the firebase as the main admin
@@ -113,7 +113,7 @@
                 }
               }
             });
-            
+
             $rootScope.logined = true;
             if(userData.profileLink == null) {
               $location.path('/createProfileLink');
@@ -138,7 +138,7 @@
             // User is signed in.
             console.log("Fetching fetchAuthData " + user.uid);
             return firebase.auth().currentUser;
-            
+
           } else {
             // No user is signed in.
             console.log("not login, auth.service");
@@ -156,25 +156,24 @@
         gapi.client.load(discoveryUrl);
         gapi.client.load('drive', 'v3', createDriveFolder);
     }
-    
+
     function createEduSheetAPI() {
         var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
         gapi.client.load(discoveryUrl);
         gapi.client.load('drive', 'v3', createEduSheet);
     }
-    
+
     function createDriveFolder() {
         var spreadsheetID ;
-        
+
         var courseSetting = $firebaseObject(ref.child('/courseSetting'));
-        
+
         courseSetting.$loaded().then(function(){
-            
-            var courseName = commonService.getCouseName();
+
             var folderName = courseName + " Folder";
             var studSheetName = courseName + " Sheet";
             var eduSheetName = courseName + "_Educator_Sheet";
-            
+
             var folderRequest = gapi.client.drive.files.create({
               mimeType: "application/vnd.google-apps.folder",
               name: folderName
@@ -184,7 +183,7 @@
               $rootScope.folderID = response.id;
               //Update Firebase with folderID
               usersRef.child($rootScope.userID).update({ driveFolder: $rootScope.folderID });
-              
+
               //Create Sheet for student
               var studSheetRequest = gapi.client.drive.files.create({
                   mimeType: "application/vnd.google-apps.spreadsheet",
@@ -195,7 +194,7 @@
                     spreadsheetID = response.id;
                     //Update Firebase with folderID
                     usersRef.child($rootScope.userID).update({ driveExcel: spreadsheetID });
-                    
+
                     gapi.client.sheets.spreadsheets.batchUpdate({
                       spreadsheetId: spreadsheetID,
                       requests:[{
@@ -212,7 +211,7 @@
                       ]
                     });
                 });
-                
+
                 //if educator, create educator sheet
                 if($rootScope.mainAdmin) {
                     createEduSheet();
@@ -220,9 +219,9 @@
             });
         });
       }
-      
+
     function createEduSheet() {
-          
+
         var eduSheetName = "Educator_Question_Sheet";
 
         var eduSheetRequest = gapi.client.drive.files.create({
@@ -233,10 +232,10 @@
         });
         eduSheetRequest.execute(function(response){
             var spreadsheetID = response.id;
-            
+
             //Update Firebase with admin spreadsheetID
             adminRef.update({ spreadsheetID: spreadsheetID });
-            
+
             gapi.client.sheets.spreadsheets.batchUpdate({
               spreadsheetId: spreadsheetID,
               requests:[{
@@ -252,14 +251,14 @@
                 }
               ]
             });
-            
+
             gapi.client.drive.permissions.create({
                 fileId: spreadsheetID,
                 role: "reader",
                 type: "anyone"
             }).then(function(response) {
             });
-            
+
         });
       }
   }

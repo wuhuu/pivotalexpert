@@ -73,6 +73,7 @@
                 var projectName = firebaseDomain[0];
                 var discoveryUrl = 'https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1';
                 gapi.client.load(discoveryUrl).then(function() {
+                    console.log("TESTING123");
                     gapi.client.cloudresourcemanager.projects.getIamPolicy({
                         resource: projectName
                     }).then(function(response) {
@@ -94,23 +95,20 @@
                         }
                     });
                 });
-              } else {
-
+              } else if(snapshot.child('admin').val() === userData.$id) {
                 //check whether login user is main admin
-                if(snapshot.child('admin').val() === userData.$id) {
-                    
-                    $rootScope.mainAdmin = true;
-                    if(!snapshot.child('spreadsheetID').val()) {
-                        //create edu sheet
-                        $rootScope.folderID = userData.driveFolder;
-                        createEduSheetAPI();
-                    }
-                } else if(snapshot.child('subAdmins').val()) {
-                    var subadmins = snapshot.child('subAdmins').val();
-                    for (var subadmin in subadmins) {
-                       if(subadmin == userData.$id) {
-                            $rootScope.isAdmin = true;
-                        }
+                $rootScope.mainAdmin = true;
+                if(!snapshot.child('spreadsheetID').val()) {
+                    //create edu sheet
+                    $rootScope.folderID = userData.driveFolder;
+                    createEduSheetAPI();
+                }
+              }
+              if(snapshot.child('subAdmins').val()) {
+                var subadmins = snapshot.child('subAdmins').val();
+                for (var subadmin in subadmins) {
+                   if(subadmin == userData.$id) {
+                        $rootScope.isAdmin = true;
                     }
                 }
               }

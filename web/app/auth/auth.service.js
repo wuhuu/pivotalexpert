@@ -116,12 +116,12 @@
 
             $rootScope.logined = true;
             if(userData.profileLink == null) {
-              //$location.path('/createProfileLink');
+              $location.path('/createProfileLink');
             } else if($rootScope.isAdmin || $rootScope.mainAdmin){
-                //$location.path('/educator/courseLibrary/');
+                $location.path('/educator/courseLibrary/');
             }
             else{
-              //$location.path('/course/');
+              $location.path('/course/');
             }
         });
       });

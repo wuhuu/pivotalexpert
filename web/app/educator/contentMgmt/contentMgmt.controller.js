@@ -99,6 +99,17 @@
           });
         }
       };
+    }).directive('onBookFinishRender', function ($timeout) {
+      return {
+        restrict: 'A',
+        link: function (scope, element, attr) {
+          if (scope.$last === true) {
+            $timeout(function () {
+              $("#accordion1").sortable({handle: "#bid"});
+            });
+          }
+        }
+      }
     });
 
 
@@ -1132,7 +1143,7 @@
 
   }
 
-  function BookController($timeout, $http, $scope, $rootScope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService) {
+  function BookController($timeout, $http, $scope, $rootScope, $routeParams, $mdDialog, $location, $firebaseObject,$window, contentMgmtService) {
     if(!($rootScope.isAdmin || $rootScope.mainAdmin)){
         $location.path('/course/');
     }
@@ -1144,6 +1155,20 @@
         $scope.library.push({ bid: library[i].$id, bookTitle: library[i].bookTitle, bookDescription: library[i].bookDescription });
       }
     });
+
+    $scope.saveBooksOrder = function(ev) {
+        var books=[];
+        $("div.books").each(function (index, value) {
+          var b = $(this).find('div#bid');
+          var bid = b.attr('bid');
+          books.push(bid);
+        });
+        contentMgmtService.updateBookOrder(books).then(function(){
+          $rootScope.isAdmin = true;
+          $window.location.reload();
+          //$window.location.href = '/#/educator/courseLibrary';
+        });
+      }
 
     $scope.addBook = function (ev) {
       // Appending dialog to document.body to cover sidenav in docs app
@@ -1654,6 +1679,8 @@
           }
           return q.promise;
         }
+
+        
       }
     };
   }

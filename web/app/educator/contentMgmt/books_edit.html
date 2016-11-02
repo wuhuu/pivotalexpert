@@ -13,6 +13,7 @@
     <div flex="auto"></div>
     <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 30px;height:auto;">
       <h1>Library</h1>
+      <md-button class="md-raised" ng-click="saveBooksOrder($event)">Save Books Order</md-button>
       <md-button class="md-raised" ng-click="addBook($event)">Create a Book</md-button>
       <md-menu>
                 <md-button class="md-raised md-primary" ng-click="courseMenu($mdOpenMenu, $event)">
@@ -39,41 +40,43 @@
     <div flex="auto"></div>
     <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: 0px;padding: 20px 20px;">
       <md-content>
-        <md-list style="background-color:white;">
-          <md-list-item class="md-2-line" ng-repeat="book in library track by $index">
-            <div class="md-tile-left inset" hide-sm>
-              <img ng-src="content/images/book-flat.png" style='height:50px;'>
+        <md-card-content >
+            <div id="accordion1" style='background-color:white' layout='column'>
+              <div class="books" ng-repeat="book in library track by $index" layout='column' on-book-finish-render="ngRepeatFinished">
+                <div layout='row' id='bid' bid='{{book.bid}}'>
+                  <div class="md-tile-left inset" hide-sm flex='10'>
+                    <img ng-src="content/images/book-flat.png" style='height:50px;'>
+                  </div>
+                  <div flex>
+                    <h3 style='font-weight: bold;'>Book {{$index+1}} :  {{book.bookTitle}}</h3>
+                    <p>{{book.bookDescription}}</p>
+                  </div>
+                  <div flex='20'>
+                    <md-button ng-click="viewBook(book.bid)" class="md-primary md-icon-button" aria-label="Settings">
+                      <i style="font-size:1.5em;" class="material-icons">book</i>
+                      <md-tooltip md-delay="200">
+                        View Book Content
+                      </md-tooltip>
+                    </md-button>
+                    <md-button ng-click="editBook($event,book.bookTitle,book.bookDescription,book.bid)" class="md-icon-button" aria-label="Settings">
+                      <i style="font-size:1.5em" class="fa fa-pencil"></i>
+                      <md-tooltip md-delay="200">
+                        Edit Book Details
+                      </md-tooltip>
+                    </md-button>
+                    <md-button class="md-warn md-icon-button" ng-click="confirmDelete($event,'Book 1',book.bid)">
+                      <i class="fa fa-trash" aria-hidden="true" style="font-size:1.5em"></i>
+                      <md-tooltip md-delay="200">
+                        Delete Book
+                      </md-tooltip>
+                    </md-button>
+                  </div>
+                </div>
+                <md-divider></md-divider>
             </div>
-            <div class="md-list-item-text" id="chapterHeader">
-              <h3 style='font-weight: bold;'>Book {{$index+1}} :  {{book.bookTitle}}</h3>
-              <p>{{book.bookDescription}}</p>
-            </div>
-            <div class="md-tile-right inset" hide-sm>
-              <md-button ng-click="viewBook(book.bid)" class="md-primary md-icon-button" aria-label="Settings">
-                <i style="font-size:1.5em;" class="material-icons">book</i>
-                <md-tooltip md-delay="200">
-                  View Book Content
-                </md-tooltip>
-              </md-button>
-              <md-button ng-click="editBook($event,book.bookTitle,book.bookDescription,book.bid)" class="md-icon-button" aria-label="Settings">
-                <i style="font-size:1.5em" class="fa fa-pencil"></i>
-                <md-tooltip md-delay="200">
-                  Edit Book Details
-                </md-tooltip>
-              </md-button>
-              <md-button class="md-warn md-icon-button" ng-click="confirmDelete($event,'Book 1',book.bid)">
-                <i class="fa fa-trash" aria-hidden="true" style="font-size:1.5em"></i>
-                <md-tooltip md-delay="200">
-                  Delete Book
-                </md-tooltip>
-              </md-button>
-            </div>
-            <md-divider></md-divider>
-          </md-list-item>
-          <md-divider></md-divider>
-        </md-list>
+          </div>
+        <md-card-content >
       </md-content>
     </div>
     <div flex="auto"></div>
-  </div>
 </div>

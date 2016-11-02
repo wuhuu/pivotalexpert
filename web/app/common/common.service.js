@@ -6,6 +6,13 @@
 	
   
   // Initialize Firebase
+  // var config = {
+  //   apiKey: "AIzaSyDt22-VriobDs7cNfkmY8yxHur9IQBewWo",
+  //   authDomain: "pivotal-expert.firebaseapp.com",
+  //   databaseURL: "https://pivotal-expert.firebaseio.com",
+  //   storageBucket: "firebase-pivotal-expert.appspot.com",
+  //   messagingSenderId: "841641391530"
+  // };
   var config = {
     apiKey: "AIzaSyA1C3DGIpn6zY1p9z4a7qDnE60p28HDgxQ",
     authDomain: "fyp-development.firebaseapp.com",
@@ -15,7 +22,7 @@
   };
   
   //Replace with the name of your course
-  var courseName = "PIVOET EXPERT";
+  var courseName = "Pivotal Expert";
   
   firebase.initializeApp(config);
   

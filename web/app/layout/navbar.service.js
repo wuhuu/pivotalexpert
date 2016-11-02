@@ -5,7 +5,7 @@
     .factory('navBarService', navBarService);
 
 
-  function navBarService($rootScope, $firebaseObject, $firebaseArray, authService, $q) {
+  function navBarService($rootScope, $firebaseObject, $firebaseArray, authService, $q,commonService) {
     var ref = firebase.database().ref();
     var adminRef = ref.child('auth/admin');
 
@@ -37,6 +37,11 @@
                     $rootScope.isAdmin = true;
                 }
             }
+          }
+          
+          // check if user is admin, if not go to student side.
+          if(!($rootScope.isAdmin || $rootScope.mainAdmin)){
+              $location.path('/course/');
           }
         });
         

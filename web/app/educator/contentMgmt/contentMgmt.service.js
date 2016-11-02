@@ -4,7 +4,7 @@
     .module('app.contentMgmt')
     .factory('contentMgmtService', contentMgmtService);
 
-    function contentMgmtService($q,$firebaseObject,$firebaseArray, $firebaseAuth,$location, commonService) {
+    function contentMgmtService($q,$firebaseObject,$firebaseArray, $firebaseAuth,$location,$timeout, commonService) {
 
         var ref = firebase.database().ref();
         var libraryNodeRef = ref.child('library');
@@ -45,6 +45,7 @@
             getBook:getBook,
             getAdminSpreadsheetID:getAdminSpreadsheetID,
             copySpreadsheetQns:copySpreadsheetQns,
+            updateBookOrder:updateBookOrder
         };
 
 		return service;
@@ -60,6 +61,37 @@
         function getBookSeqRef() {
             return libraryNodeRef.child(bookID).child("sequence");
         }
+        
+        function updateBookOrder(books){
+            var q = $q.defer();
+            var library = getLibrary();
+            var temp = {};
+            library.$loaded().then(function(){
+                angular.forEach(books, function(value, index) {
+                    var book = library.$getRecord(value);
+                    var key = value.substring(1);
+                    
+                    key = (1+index) + key;
+                    delete book.$id;
+                    delete book.$priority;
+                    
+                    var b = {};
+                    b[key]=book;
+                    temp[key] =book;
+                    
+                });
+                $timeout(function () {
+                    angular.forEach(temp, function(value, index) {
+                        library[index] = value;
+                        
+                    });
+                    libraryNodeRef.set(temp);
+                    q.resolve(true);
+                }, 1000);
+            });
+            return q.promise;
+        }
+
         //add or update book function
         function updateBook(book,isNewBook) {
             var q = $q.defer();

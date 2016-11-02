@@ -69,30 +69,21 @@
             library.$loaded().then(function(){
                 angular.forEach(books, function(value, index) {
                     var book = library.$getRecord(value);
-                    
-
                     var key = value.substring(1);
                     
                     key = (1+index) + key;
                     delete book.$id;
                     delete book.$priority;
-                    //book.$id = key;
+                    
                     var b = {};
                     b[key]=book;
                     temp[key] =book;
-                    //library.$remove(index);
-                    //library[index]=book;
                     
-                    // var child = libraryNodeRef.child(value);
-                    // child.once('value', function(snapshot) {
-                    //     libraryNodeRef.child(key).set(snapshot.val());
-                    //     $timeout(function () { child.remove(); }, 1000);
-                    // });
                 });
                 $timeout(function () {
                     angular.forEach(temp, function(value, index) {
                         library[index] = value;
-                        // library.$save(index);
+                        
                     });
                     libraryNodeRef.set(temp);
                     q.resolve(true);

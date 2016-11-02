@@ -117,9 +117,7 @@
       
       
     console.log("ContentMgmtController");
-    if(!($rootScope.isAdmin || $rootScope.mainAdmin)){
-        $location.path('/course/');
-    }
+    
     contentMgmtService.saveBookID($routeParams.bid);
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
@@ -617,9 +615,6 @@
   }
 
   function CourseMapController($timeout, $http, $rootScope, $scope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService, $q) {
-    if(!($rootScope.isAdmin || $rootScope.mainAdmin)){
-        $location.path('/course/');
-    }
     
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
@@ -1143,10 +1138,8 @@
 
   }
 
-  function BookController($timeout, $http, $scope, $rootScope, $routeParams, $mdDialog, $location, $firebaseObject,$window, contentMgmtService) {
-    if(!($rootScope.isAdmin || $rootScope.mainAdmin)){
-        $location.path('/course/');
-    }
+  function BookController($timeout, $http, $scope, $rootScope, $routeParams, $mdDialog, $location, $firebaseObject,$window,commonService, contentMgmtService) {
+    
     $scope.library = [];
     // get library to display
     var library = contentMgmtService.getLibrary();
@@ -1157,18 +1150,26 @@
     });
 
     $scope.saveBooksOrder = function(ev) {
-        var books=[];
-        $("div.books").each(function (index, value) {
-          var b = $(this).find('div#bid');
-          var bid = b.attr('bid');
-          books.push(bid);
+      var confirm = $mdDialog.confirm()
+        .title('Would you want to save the order of the books?')
+        .textContent('System will be saved to what you configured, is it ok to proceed?')
+        .targetEvent(ev)
+        .ok('Save!')
+        .cancel('Cancel!');
+
+        $mdDialog.show(confirm).then(function () {
+          var books=[];
+          $("div.books").each(function (index, value) {
+            var b = $(this).find('div#bid');
+            var bid = b.attr('bid');
+            books.push(bid);
+          });
+
+          contentMgmtService.updateBookOrder(books).then(function(){
+            $window.location.reload();
+          });
         });
-        contentMgmtService.updateBookOrder(books).then(function(){
-          $rootScope.isAdmin = true;
-          $window.location.reload();
-          //$window.location.href = '/#/educator/courseLibrary';
-        });
-      }
+    }
 
     $scope.addBook = function (ev) {
       // Appending dialog to document.body to cover sidenav in docs app

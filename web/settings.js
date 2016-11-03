@@ -3,11 +3,11 @@
   // Initialize Firebase
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyDEIrUQ4bMt-LfLmj8Xs9RMpq0BY49gIUo",
-    authDomain: "fyp-development2.firebaseapp.com",
-    databaseURL: "https://fyp-development2.firebaseio.com",
-    storageBucket: "fyp-development2.appspot.com",
-    messagingSenderId: "343583923192"
+    apiKey: "AIzaSyA1C3DGIpn6zY1p9z4a7qDnE60p28HDgxQ",
+    authDomain: "fyp-development.firebaseapp.com",
+    databaseURL: "https://fyp-development.firebaseio.com",
+    storageBucket: "fyp-development.appspot.com",
+    messagingSenderId: "1024577960550"
   };
 
   firebase.initializeApp(config);

@@ -1005,7 +1005,12 @@
         function getAdminSpreadsheetID() {
             var q = $q.defer();
             adminSheetRef.once("value", function(snapshot) {
-                q.resolve(snapshot.val());
+                if(snapshot.val()) {
+                    q.resolve(snapshot.val());
+                } else {
+                    q.resolve(-1);
+                }
+                
             });
             return q.promise;
         }

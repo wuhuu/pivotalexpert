@@ -114,10 +114,10 @@
 
 
   function ContentMgmtController($http, $scope, $rootScope, $sce, $routeParams, $location, $firebaseArray, $mdDialog, $firebaseObject, commonService, contentMgmtService, $timeout, $q) {
-      
-      
+
+
     console.log("ContentMgmtController");
-    
+
     contentMgmtService.saveBookID($routeParams.bid);
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
@@ -190,7 +190,7 @@
           if(question.qnsType === 'video') {
             question.link = "http://www.youtube.com/watch?v=" + question.link;
           }
-          
+
           if(question.qnsType === 'iframe') {
             if(!question.qnsInstruction) {
                 question.qnsInstruction = "";
@@ -199,8 +199,8 @@
                 question.qnsDescription = "";
             }
           }
-          
-          
+
+
           $scope.qns = question;
         });
       })
@@ -283,7 +283,7 @@
           });
         } else if ($scope.qns.qnsType == "iframe") {
           contentMgmtService.updateIFrameQuestion($scope.qns, $scope.isNewQuestion).then(function () {
-              
+
             window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
             commonService.showSimpleToast("IFrame Challenge Added/Updated.");
           });
@@ -615,7 +615,7 @@
   }
 
   function CourseMapController($timeout, $http, $rootScope, $scope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService, $q) {
-    
+
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
@@ -709,11 +709,12 @@
           var exportObj = {};
           var course = {};
 
-          var courseSeq = contentMgmtService.getCourseSeq();
+          var courseSeq = contentMgmtService.getCourseSeq($routeParams.bid);
           courseSeq.$loaded().then(function (courseSeq) {
             angular.forEach(courseSeq, function (courseSeqValue, key) {
 
               if (courseSeqValue.cid === $scope.selectedChapter) {
+                $scope.selectedChapterTitle = courseSeqValue.chapterTitle;
                 var answerKeyNodeRef = ref.child('answerKey');
                 answerKeyNodeRef.once("value", function (answerSnapshot) {
                   var questionNodeRef = ref.child('course/questions');
@@ -756,7 +757,7 @@
                         var url = URL.createObjectURL(new Blob([jsonString]));
                         var a = document.createElement('a');
                         a.href = url;
-                        a.download = 'chapter_json.json';
+                        a.download = $scope.selectedChapterTitle + '_chapter_json.json';
                         a.target = '_blank';
                         a.click();
 
@@ -1139,7 +1140,7 @@
   }
 
   function BookController($timeout, $http, $scope, $rootScope, $routeParams, $mdDialog, $location, $firebaseObject,$window,commonService, contentMgmtService) {
-    
+
     $scope.library = [];
     // get library to display
     var library = contentMgmtService.getLibrary();
@@ -1416,6 +1417,7 @@
           var promises = [book, answerKeyNode, questionNode];
 
           book.$loaded().then(function () {
+            $scope.bookTitle = book.bookTitle;
             var courseSeq = book.sequence;
             angular.forEach(courseSeq, function (chapter, key) {
               chapters[chapter.cid] = chapter;
@@ -1458,17 +1460,13 @@
               var url = URL.createObjectURL(new Blob([jsonString]));
               var a = document.createElement('a');
               a.href = url;
-              a.download = 'chapter_json.json';
+              a.download = $scope.bookTitle + '_json.json';
               a.target = '_blank';
               a.click();
 
               $mdDialog.hide();
             });
           });
-
-
-
-
         }
       }
     };
@@ -1583,18 +1581,17 @@
           var chapter = JsonObj.course.chapters;
           var spreadsheetID = JsonObj.spreadsheetID;
 
-
           angular.forEach(book, function (bookContent, bookID) {
 
             nbook.bookDescription = bookContent.bookDescription;
             nbook.bookTitle = bookContent.bookTitle;
             var sequences = bookContent.sequence;
-            console.log("TESTING123");
-            console.log(sequences);
+
             importSequence(sequences, answer, question, chapter, spreadsheetID).then(function (seqList) {
               nbook.sequence = seqList;
+
               // Add to firebase
-              libraryRef.child(bookID).set(nbook);
+              libraryRef.push(nbook);
               q.resolve(true);
             });
 
@@ -1670,7 +1667,7 @@
           var q = $q.defer();
 
           //if excel qns
-          if (qns.qnsType == 'excel') {
+          if (qns.qnsType == 'excel' && spreadsheetID != -1 && userSpreadsheetID != -1) {
             contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
               qns.sheetID = response;
               q.resolve(qns);
@@ -1681,7 +1678,7 @@
           return q.promise;
         }
 
-        
+
       }
     };
   }

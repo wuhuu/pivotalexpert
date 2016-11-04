@@ -35,15 +35,15 @@ Instructions to install can be found at https://git-scm.com/book/en/v2/Getting-S
   };
   ```
   5. At the Auth Tab on the left, click on "Sign-In Method" tab, then enable Google Login and click "Save".
-  6. Return to your preferred directory folder, navigate to web > app > common and open "common.service.js" with a text editor(e.g notepad,text editor).
-  7. Replace the "config" object(line 9 to line 15) with the one you have copied in Step 3.
-  8. Replace the "adminEmail" object with your Google Account email which you planned to use as an educator.
-  9. Replace the "courseName" object with your preferred application name.
-  10. After which, save the file and exit the text editor.
+  6. Return to your preferred directory folder, navigate to web and open "settings.js" with a text editor(e.g notepad,text editor).
+  7. Replace the "config" object(line 5 to line 11) with the one you have copied in Step 3.
+  8. Replace the "courseName" object with your preferred application name.
+  9. After which, save the file and exit the text editor.
 3. Configure Google API
   1. Sign in to https://console.developers.google.com
   2. Click on the "Library" tab on the left and look for Google Apps API section and click on "Drive API". Click on "Enable" button on the top to activate this API.
   3. Click on the "Library" tab on the left and look for Google Apps API section and click on "Sheets API". Click on "Enable" button on the top to activate this API.
+  4. Click on the "Library" tab on the left and look for Google Apps API section and click on "Google Cloud Resource Manage API". Click on "Enable" button on the top to activate this API.
 
 
 

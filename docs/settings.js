@@ -3,11 +3,11 @@
   // Initialize Firebase
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyA1C3DGIpn6zY1p9z4a7qDnE60p28HDgxQ",
-    authDomain: "fyp-development.firebaseapp.com",
-    databaseURL: "https://fyp-development.firebaseio.com",
-    storageBucket: "fyp-development.appspot.com",
-    messagingSenderId: "1024577960550"
+    apiKey: "AIzaSyDlUzXNIFMWT9uf82nfhjrQNTF5pafVe0I",
+    authDomain: "codevantage-test.firebaseapp.com",
+    databaseURL: "https://codevantage-test.firebaseio.com",
+    storageBucket: "codevantage-test.appspot.com",
+    messagingSenderId: "665849361254"
   };
 
   firebase.initializeApp(config);

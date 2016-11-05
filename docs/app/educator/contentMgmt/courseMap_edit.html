@@ -15,17 +15,12 @@
               <h1>{{book.bookTitle}} Content Map</h1>
               <md-button class="md-raised" ng-click="saveAllChanges($event)">Save all changes</md-button>
               <md-button class="md-raised" ng-click="showPrompt($event)">Add a challenge</md-button>
-
+              <md-button class="md-raised" ng-click="addChapter($event)">Create a Chapter</md-button>
               <md-menu>
                 <md-button class="md-raised md-primary" ng-click="chapterMenu($mdOpenMenu, $event)">
                  Chapter Options
                 </md-button>
                 <md-menu-content width="4">
-                  <md-menu-item>
-                    <md-button ng-click="addChapter($event)">
-                      Create a Chapter
-                    </md-button>
-                  </md-menu-item>
                   <md-menu-item>
                     <md-button ng-click="showExportPrompt($event)">
                       Export a Chapter
@@ -60,9 +55,9 @@
                   </h2>
                 </div>
                 <!--end of chapterTitle div-->
-                <div layout="column" style="height:auto;">
+                <div layout="column" style='border-width: 2px; border-top: 1px #E0E0E0 solid;'>
                   <!--chapter buttons-->
-                  <div layout="row">
+                  <div layout="row" >
                     <div flex="70">
                       <md-input-container class="md-block" id='text_{{$index}}'>
                         <label>Chapter Title:</label>
@@ -91,35 +86,31 @@
                     </div>
                   </div>
                    <!--end of chapter buttons-->
-                  <md-list>
+                  
                     <div class="accordion2">
-                    <div ng-repeat="question in item.qns track by $index">
-                      <md-item>
-                        <md-item-content>
-                          <div layout="row" flex>
-                            <md-button style="padding-top:15px" class="md-icon-button" ng-click="deleteQuestion($parent.$index,$index,question.qid)">
-                              <i class="fa fa-times fa-lg"></i>
-                              <md-tooltip md-direction="left" md-delay="200">
-                                    Delete challenge
-                              </md-tooltip>
-                            </md-button>
-                            <div flex="70" class="md-tile-content">
+                    <div ng-repeat="question in item.qns track by $index" style='margin-top:-30px;'>
+                      <div layout="row" flex style='padding:10px 20px'>
+                            <div flex="70" >
                               <h4 class="question" ng-model="item.qns[$index].qnsTitle" id='{{question.qid}}' qnsType="{{question.qnsType}}">Challenge {{$index+1}}:  {{question.qnsTitle}}</h4>
                             </div>
-                            <div class="md-tile-right inset" hide-sm>
+                            <div flex>
                               <md-button class="md-icon-button" ng-click="editQuestion(question.qid,item.cid)">
                                 <i class="fa fa-pencil fa-lg"></i>
                                   <md-tooltip md-direction="right" md-delay="200">
                                     Edit challenge
                                   </md-tooltip>
                               </md-button>
+                              <md-button class="md-warn md-icon-button" ng-click="deleteQuestion($parent.$index,$index,question.qid)">
+                                <i class="fa fa-trash" aria-hidden="true" style="font-size:1.5em"></i>
+                                <md-tooltip md-delay="200">
+                                  Delete challenge
+                                </md-tooltip>
+                              </md-button>
                             </div>
-                          </div>
-                        </md-item-content>
-                      </md-item>
+                      </div>
                     </div>
                     </div>
-                  </md-list>
+                  
                 </div>
                 <md-divider></md-divider>
               </div>

@@ -378,6 +378,11 @@
     };
 
     $scope.deleteChoice = function (mcq_id, index) {
+      
+      if($scope.qns.mcq[mcq_id].answer === $scope.qns.mcq[mcq_id].options[index]) {
+        $scope.qns.mcq[mcq_id].answer ="";
+      }
+      
       $scope.qns.mcq[mcq_id].options.splice(index, 1);
     }
 
@@ -393,7 +398,7 @@
         var qnsID = "Q1";
       }
 
-      $scope.qns.mcq.push({ options: [], qns: "", qnsID: qnsID });
+      $scope.qns.mcq.push({ options: ['Choice 1', 'Choice 2'], qns: "", qnsID: qnsID, answer:'Choice 1' });
       $scope.qnsAdded = true;
     }
 

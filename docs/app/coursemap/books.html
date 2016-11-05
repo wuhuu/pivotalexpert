@@ -1,6 +1,6 @@
 <meta name="viewport" content="width=device-width">
-  <div layout="row" flex layout-align="center">
-    <div class="md-whiteframe-z2" layout="row" flex="70" flex-xs="100" layout-align="center">
+  <div layout="row"  layout-align="center">
+    <div class="md-whiteframe-z2" style='padding-bottom:40px;' layout="row" flex="70" flex-xs="100" layout-align="center">
       <h1>Library</h1>
     </div>
   </div>
@@ -8,11 +8,11 @@
     <div class="md-whiteframe-z2" layout="column" flex="70" flex-xs="100">
       <md-content>
         <md-list style="background-color:white;">
-          <md-list-item class="md-2-line" ng-repeat="book in library track by $index">
-            <div class="md-tile-left inset" hide-sm>
+          <md-list-item class="md-2-line" ng-repeat="book in library track by $index" >
+            <div class="md-tile-left inset" hide-sm ng-click="viewBook(book.$id)" style="cursor: pointer;">
               <img ng-src="content/images/book-flat.png" style='height:50px;'>
             </div>
-            <div class="md-list-item-text">
+            <div class="md-list-item-text" ng-click="viewBook(book.$id)" style="cursor: pointer;">
               <h3 style='font-weight: bold;'>Book {{$index+1}} :  {{book.bookTitle}}</h3>
               <p>{{book.bookDescription}}</p>
             </div>

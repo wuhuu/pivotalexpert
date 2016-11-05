@@ -3,11 +3,20 @@
     <div class="md-whiteframe-z2" layout="column" flex="70" flex-xs="100">
       <div style="padding: 0px 20px">
         <h2 class="pull-left">{{qnsTitle}}</h2>
+        
         <h2 class="pull-right">({{currentMCQ}}/{{totalMCQ}})</h2>
       </div>
       <md-divider></md-divider>
-      <div layout-align="center" flex="70" flex-xs="80">
-        <p><strong>Q{{currentMCQ}}.</strong> {{mcq.qns}}</p>
+      <div layout-align="center" style='margin:5% 0% 0% 5%;'>
+        <div  layout='row'><strong>Q{{currentMCQ}}.</strong> {{mcq.qns}}
+            <div style='width:20px;display:inline-block;padding-left:10px'>
+            <i class="material-icons" style="font-size:1.1em">help</i>
+            <md-tooltip md-delay="200">
+              {{qnsHint}}
+            </md-tooltip>
+            </div>
+       </div>
+        
         <div layout="row" style="margin-top:30px">
 
           <md-radio-group ng-model="mcq.qnsID" style="border: none;">
@@ -15,7 +24,7 @@
           </md-radio-group>
         </div>
         <br>
-        <div style="padding: 20px 0px"layout="row">
+        <div style="padding: 20px 0px" layout="row">
           <div flex="20"></div>
           <md-button style="width:50%" class="md-raised md-primary" ng-show="currentMCQ != totalMCQ" ng-click="changeMCQ(1)">next</md-button>
           <md-button style="width:50%" class="md-raised md-primary" ng-show="currentMCQ == totalMCQ" ng-click="changeMCQ(1)">complete</md-button>

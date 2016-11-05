@@ -43,11 +43,11 @@
         <md-card-content >
             <div id="accordion1" style='background-color:white' layout='column'>
               <div class="books" ng-repeat="book in library track by $index" layout='column' on-book-finish-render="ngRepeatFinished">
-                <div layout='row' id='bid' bid='{{book.bid}}'>
-                  <div class="md-tile-left inset" hide-sm flex='10'>
+                <div layout='row' id='bid' bid='{{book.bid}}' >
+                  <div class="md-tile-left inset" hide-sm flex='10' ng-click="viewBook(book.bid)" style="cursor: pointer;">
                     <img ng-src="content/images/book-flat.png" style='height:50px;'>
                   </div>
-                  <div flex>
+                  <div flex ng-click="viewBook(book.bid)" style="cursor: pointer;">
                     <h3 style='font-weight: bold;'>Book {{$index+1}} :  {{book.bookTitle}}</h3>
                     <p>{{book.bookDescription}}</p>
                   </div>

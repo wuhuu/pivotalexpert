@@ -15,7 +15,7 @@
         <div style="padding:30px">
 
           <div class="pull-right" style="padding:30px">
-            <md-button class="md-raised " type="submit" ng-click='qnsForm.$valid && saveMCQChanges($event)'>Save all changes</md-button>
+            <md-button class="md-raised " type="submit" ng-disabled="qnsForm.$invalid" ng-click='qnsForm.$valid && saveMCQChanges($event)'>Save all changes</md-button>
             <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
             <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
           </div>
@@ -70,7 +70,7 @@
 
                     </p>
                     <md-input-container class="md-block" id='text_{{mcqObj.qnsID}}'>
-                      <label>Question:</label>
+                      <label>Put your question here</label>
                       <input ng-model="mcqObj.qns" name='text_{{mcqObj.qnsID}}' required>
                       <ng-messages for="qnsForm.text_mcqObj.qnsID.$error" md-auto-hide="true">
                         <div ng-message="required">This is required.</div>
@@ -78,7 +78,7 @@
                     </md-input-container>
 
 
-                      <md-radio-group name='answer_{{mcqObj.qnsID}}' ng-model='mcqObj.answer' id='answer_{{mcqObj.qnsID}}'>
+                      <md-radio-group name='answer_{{mcqObj.qnsID}}' ng-model='mcqObj.answer' id='answer_{{mcqObj.qnsID}}' required>
                         <div layout="row"  style="margin: -15px 0" ng-repeat="option in mcqObj.options track by $index">
                           <div layout="row" layout-align="center center">
                             <md-button ng-click="toggleChoice(mcqObj.qnsID,$index)"class="md-icon-button" aria-label="Settings">
@@ -99,7 +99,7 @@
                           </md-input-container>
                         </div>
                       </md-radio-group>
-                      <ng-messages for="qnsForm.choice_mcqObj.qnsID.$error" md-auto-hide="true">
+                      <ng-messages for="qnsForm.answer_mcqObj.qnsID.$error" md-auto-hide="true">
                               <div ng-message="required">This is required.</div>
                       </ng-messages>
 

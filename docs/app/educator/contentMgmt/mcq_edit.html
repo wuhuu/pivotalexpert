@@ -34,15 +34,6 @@
                   </ng-messages>
                 </md-input-container>
               </div>
-              <div flex style="padding:0 20px">
-                <md-input-container class="md-block">
-                  <label>Hints</label>
-                  <input ng-model="qns.hint" name="hint" required>
-                  <ng-messages for="qnsForm.hint.$error" md-auto-hide="true">
-                    <div ng-message="required">This is required.</div>
-                  </ng-messages>
-                </md-input-container>
-              </div>
 
               <div flex style="padding:0 20px">
                 <md-input-container class="md-block">
@@ -59,7 +50,7 @@
 
                 <div layout="row" ng-repeat="mcqObj in qns.mcq track by $index"  toggle-button="done" >
                   <div flex>
-                    <p >
+                    <p>
                       <strong>Q{{$index+1}}.</strong> {{mcqObj.qns}}
                       <md-button ng-click="toggleQns(mcqObj.qnsID)" class="md-icon-button" aria-label="Settings" >
                         <i class="fa fa-pencil" ></i>
@@ -76,7 +67,13 @@
                         <div ng-message="required">This is required.</div>
                       </ng-messages>
                     </md-input-container>
-
+                    <md-input-container class="md-block">
+                      <label>Hints for this question</label>
+                      <input ng-model="mcqObj.hint" name="hint_{{mcqObj.qnsID}}" required>
+                      <ng-messages for="qnsForm.hint_mcqObj.qnsID.$error" md-auto-hide="true">
+                        <div ng-message="required">This is required.</div>
+                      </ng-messages>
+                    </md-input-container>
 
                       <md-radio-group name='answer_{{mcqObj.qnsID}}' ng-model='mcqObj.answer' id='answer_{{mcqObj.qnsID}}' required>
                         <div layout="row"  style="margin: -15px 0" ng-repeat="option in mcqObj.options track by $index">

@@ -46,7 +46,7 @@
         $scope.qnsTitle = question.qnsTitle;
 		$scope.qnsInstruction = question.qnsInstruction;
 		$scope.qnsDescription = question.qnsDescription;
-        $scope.qnsHint = question.hint;
+        
         var qnsType = question.qnsType;
 
         //Video type question
@@ -136,10 +136,11 @@
             $scope.questions = question.mcq;
             $scope.currentScore = 0;
             $scope.totalScore = $scope.questions.length;
-
+            
             var mcq = question.mcq;
 
             $scope.currentMCQ = 1;
+            $scope.hint = question.mcq[0].hint;
             $scope.totalMCQ = mcq.length
             var answerKey = $firebaseObject(ref.child('answerKey/' + qid));
 
@@ -152,6 +153,7 @@
                         }else {
                             $scope.currentMCQ += changeBy;
                             $scope.mcq = mcq[$scope.currentMCQ - 1];
+                            $scope.hint = question.mcq[$scope.currentMCQ - 1].hint;
                         }
                     }else {
                         angular.forEach($scope.questions, function (qns, key) {

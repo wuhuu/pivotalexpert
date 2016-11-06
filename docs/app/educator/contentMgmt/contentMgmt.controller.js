@@ -115,13 +115,33 @@
 
   function ContentMgmtController($http, $scope, $rootScope, $sce, $routeParams, $location, $firebaseArray, $mdDialog, $firebaseObject, commonService, contentMgmtService, $timeout, $q) {
 
-
     console.log("ContentMgmtController");
 
+    function showErrorDialog(msg) {
+      var confirm = $mdDialog.confirm()
+          .title('Error Loading Spreadsheet Challenge')
+          .textContent(msg)
+          .ok('Cancel');
+
+        $mdDialog.show(confirm).then(function() {
+            //auth user again
+            var user = firebase.auth().currentUser.getToken(true)
+            .then(function(idToken) {
+                gapi.auth.setToken({
+                    access_token: idToken
+                });
+            });
+            $location.path('educator/courseLibrary');
+        });
+    }
+    
     contentMgmtService.saveBookID($routeParams.bid);
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
     var qnsType = path.substr(path.lastIndexOf('/') + 1);
+    if (qnsType == 'spreadsheet') {
+        qnsType = 'excel';
+    }
     if (qnsType == 'google_form') {
       qnsType = 'form';
     } else if (qnsType === 'code') {
@@ -230,7 +250,7 @@
         //answer key scope
         $scope.qns['testcases'] = [];
 
-        $timeout(delayedTime, 3000);
+        $timeout(delayedTime, 2000);
         function delayedTime() {
           console.log("TESTING 1");
           gapi.client.load(discoveryUrl).then(function () {
@@ -239,7 +259,10 @@
               console.log("TESTING 3");
               deleteSheet(toBeDelete).then(function () {
                 console.log("TESTING 4");
-                createQuestionSheet();
+                createQuestionSheet().then(function () {
+                    var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + $scope.qns.sheetID;
+                    $scope.srclink = $sce.trustAsResourceUrl(excelLink);
+                });
               });
             });
           });
@@ -378,11 +401,11 @@
     };
 
     $scope.deleteChoice = function (mcq_id, index) {
-      
+
       if($scope.qns.mcq[mcq_id].answer === $scope.qns.mcq[mcq_id].options[index]) {
         $scope.qns.mcq[mcq_id].answer ="";
       }
-      
+
       $scope.qns.mcq[mcq_id].options.splice(index, 1);
     }
 
@@ -554,6 +577,13 @@
         }
 
 
+      }, function(response) {
+        var errorCode = response.result.error.code;
+        if (errorCode == 404) {
+            showErrorDialog("Could not find the spreadsheet. If this keep occur, manually delete the spreadsheet from firebase and re-login.");
+        } else {
+            showErrorDialog("Failed to load. Please try again. If this occur again, please logout and signin again." );
+        }
       });
       return deferred.promise;
     }
@@ -580,6 +610,7 @@
     }
 
     function createQuestionSheet() {
+      var deferred = $q.defer();
       gapi.client.sheets.spreadsheets.batchUpdate({
         spreadsheetId: $scope.userExcelID,
         requests: [
@@ -593,9 +624,9 @@
         ]
       }).then(function (response) {
         $scope.qns.sheetID = (response.result.replies[0].addSheet.properties.sheetId);
-        var excelLink = "https://docs.google.com/spreadsheets/d/" + $scope.userExcelID + "/edit#gid=" + $scope.qns.sheetID;
-        $scope.srclink = $sce.trustAsResourceUrl(excelLink);
+        deferred.resolve($scope.qns.sheetID);
       });
+      return deferred.promise;
     }
 
     function updateSheetTitle() {
@@ -624,7 +655,7 @@
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
-    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Excel", "Code", "Google_Form", "IFrame"];
+    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Spreadsheet", "Code", "Google_Form", "IFrame"];
 
     $scope.bid = $routeParams.bid;
     contentMgmtService.saveBookID($routeParams.bid);
@@ -1095,7 +1126,7 @@
       var qns = {};
       $("div#chapter").each(function (index, value) {
         var c = $(this).find('h2.cid');
-        
+
         console.log(index + ":" + $(this).attr('id'));
         var cid = c.attr('cid');
         var title = c.find('span').text().trim();

@@ -5,7 +5,7 @@
     .factory('navBarService', navBarService);
 
 
-  function navBarService($rootScope, $firebaseObject, $firebaseArray, authService, $q,commonService) {
+  function navBarService($rootScope, $firebaseObject, $firebaseArray, authService, $q, $location, commonService) {
     var ref = firebase.database().ref();
     var adminRef = ref.child('auth/admin');
 
@@ -24,7 +24,7 @@
         var userData = firebase.auth().currentUser;
         console.log(userData);
         adminRef.once('value', function(snapshot) {
-          if(snapshot.child('admin').val()) { 
+          if(snapshot.child('admin').val()) {
             if(snapshot.child('admin').val() === userData.uid) {
                 //check whether login user is main admin
                 $rootScope.mainAdmin = true;
@@ -38,15 +38,15 @@
                 }
             }
           }
-          
+
           // check if user is admin, if not go to student side.
           if(!($rootScope.isAdmin || $rootScope.mainAdmin)){
               $location.path('/course/');
           }
         });
-        
+
     }
-    
+
     function updateAchievementCount() {
         var deferred = $q.defer();
         var user = firebase.auth().currentUser;
@@ -54,7 +54,7 @@
         var achievements = 0;
         var bookList = $firebaseArray(ref.child('/library'));
         bookList.$loaded().then(function (){
-            
+
             user = firebase.auth().currentUser;
             var courseProgressRef = ref.child('/userProfiles/' + user.uid + '/courseProgress/');
             courseProgressRef.once('value', function(snapshot) {
@@ -63,17 +63,17 @@
                 achievedlist.push(key);
               });
               var totalBook = bookList.length;
-              
-              for (i = 0; i < totalBook; i++) { 
+
+              for (i = 0; i < totalBook; i++) {
                 var book = bookList[i];
                 var courseList = book.sequence;
                 if(courseList){
                     var totalCourse = courseList.length;
-                    for (j = 0; j < totalCourse; j++) { 
+                    for (j = 0; j < totalCourse; j++) {
                       var chapter = courseList[j];
                       if(chapter.qns) {
                           var qnsCount = chapter.qns.length;
-                          for (k = 0; k < qnsCount; k++) { 
+                          for (k = 0; k < qnsCount; k++) {
                               if(achievedlist.indexOf(chapter.qns[k].qid) != -1){
                                   achievements++;
                               }
@@ -84,12 +84,12 @@
               }
               deferred.resolve(achievements);
             });
-            
-            
+
+
         });
         return deferred.promise;
     }
-    
+
     function getCourseTitle() {
         var courseTitleRef = ref.child('/courseSetting/courseName');
         return courseTitleRef;

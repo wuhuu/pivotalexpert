@@ -8,6 +8,24 @@
 
     console.log("LessonController");
 
+    function showErrorDialog(msg) {
+      var confirm = $mdDialog.confirm()
+          .title('Error Loading Spreadsheet Challenge')
+          .textContent(msg)
+          .ok('Cancel');
+
+        $mdDialog.show(confirm).then(function() {
+            //auth user again
+            var user = firebase.auth().currentUser.getToken(true)
+            .then(function(idToken) {
+                gapi.auth.setToken({
+                    access_token: idToken
+                });
+            });
+            $location.path('course');
+        });
+    }
+    
 	var ref = firebase.database().ref();
     var user = firebase.auth().currentUser;
 	var chapter = $routeParams.chapter;
@@ -405,7 +423,14 @@
                 deferred.resolve(sheetsToBeDelete);
             }
           }
-        });
+        }, function(response) {
+            var errorCode = response.result.error.code;
+            if (errorCode == 404) {
+                showErrorDialog("Could not find the spreadsheet. If this keep occur, manually delete the spreadsheet from firebase and re-login.");
+            } else {
+                showErrorDialog("Failed to load. Please try again. If this occur again, please logout and signin again." );
+            }
+          });
         return deferred.promise;
     }
 
@@ -451,7 +476,14 @@
           $scope.curSheet = response.result.sheetId;
           deferred.resolve(true);
 
-        });
+        }, function(response) {
+            var errorCode = response.result.error.code;
+            if (errorCode == 404) {
+                showErrorDialog("Could not find the spreadsheet. If this keep occur, manually delete the spreadsheet from firebase and re-login.");
+            } else {
+                showErrorDialog("Failed to load. Please try again. If this occur again, please logout and signin again." );
+            }
+          });
         return deferred.promise;
     }
 

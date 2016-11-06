@@ -142,6 +142,10 @@
     if (qnsType == 'spreadsheet') {
         qnsType = 'excel';
     }
+    if (qnsType == 'codebox') {
+        qnsType = 'code';
+    }
+    
     if (qnsType == 'google_form') {
       qnsType = 'form';
     } else if (qnsType === 'code') {
@@ -655,7 +659,7 @@
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
-    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Spreadsheet", "Code", "Google_Form", "IFrame"];
+    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Spreadsheet", "Codebox", "Google_Form", "IFrame"];
 
     $scope.bid = $routeParams.bid;
     contentMgmtService.saveBookID($routeParams.bid);

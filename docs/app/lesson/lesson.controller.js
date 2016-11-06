@@ -22,7 +22,7 @@
                     access_token: idToken
                 });
             });
-            $location.path('educator/courseLibrary');
+            $location.path('course');
         });
     }
     

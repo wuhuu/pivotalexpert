@@ -60,7 +60,7 @@
       templateUrl: 'app/educator/contentMgmt/excel_edit.html',
 	     controller: 'ContentMgmtController'
     })
-    .when('/educator/code_create/:bid/:cid', {
+    .when('/educator/codebox_create/:bid/:cid', {
       templateUrl: 'app/educator/contentMgmt/code_edit.html',
 	     controller: 'ContentMgmtController'
     })

@@ -8,10 +8,6 @@
         </textarea>
     </md-input-container>
 
-    <div style="padding: 20px">
-      <md-button class="md-raised md-primary" ng-disabled="true" style="width: 100%">Submit</md-button>
-
-    </div>
   </div>
   <div flex="70" layout="column">
     <div style="padding: 0 20px">
@@ -36,10 +32,33 @@
     </br>
     <label>Pre-Loaded Codes in Question</label>
     <div id="qnsEditor" style="padding: 20px" flex ></div>
-
+        <div>
+        <div layout="row">
+        <br/>
+          <md-input-container class="md-block">
+            <label>Test Case - Name</label>
+            <input value = "Demo Test Case" disabled>
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Test Case - Expect</label>
+            <input  value = "sum(2,3)" disabled>
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Test Case - To Equal</label>
+            <input  value = "5" disabled>
+          </md-input-container>
+           </div>
+          <md-input-container class="md-block">
+            <label>Test Case - Hint</label>
+            <input value = "Hint to be display for student if they failed this test case" disabled>
+          </md-input-container>
+        </div>
+    
         <div style="padding: 10px 0px">
           <label>Test Case</label>
-          <div ng-repeat="test in qns.testcases" layout="row">
+          <div ng-repeat="test in qns.testcases" >
+            <div layout="row">
+            <br/>
               <md-input-container class="md-block">
                 <label>Test Case - Name</label>
                 <input ng-model="test.name">
@@ -52,14 +71,16 @@
                 <label>Test Case - To Equal</label>
                 <input ng-model="test.toEqual">
               </md-input-container>
+              
+              <md-button ng-click='deleteCodeTestCase($index)' class="md-icon-button" aria-label="Settings">
+                <i class="fa fa-times"></i>
+              </md-button>
+               </div>
               <md-input-container class="md-block">
                 <label>Test Case - Hint</label>
                 <input ng-model="test.hint">
               </md-input-container>
-              <md-button ng-click='deleteCodeTestCase($index)' class="md-icon-button" aria-label="Settings">
-                <i class="fa fa-times"></i>
-              </md-button>
-          </div>
+            </div>
           <div style="width: 50%">
             <md-button style="width: 100%; margin: 40px 0px" ng-click="addTestcase()" class="md-primary md-raised">add test case</md-button>
            </div>

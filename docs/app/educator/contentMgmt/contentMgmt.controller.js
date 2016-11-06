@@ -1095,9 +1095,10 @@
       var qns = {};
       $("div#chapter").each(function (index, value) {
         var c = $(this).find('h2.cid');
+        
         console.log(index + ":" + $(this).attr('id'));
         var cid = c.attr('cid');
-        var title = c.text().trim();
+        var title = c.find('span').text().trim();
         chap['cid'] = cid;
         chap['chapterTitle'] = title;
         var qElements = $(this).find('h4.question');
@@ -1105,9 +1106,10 @@
         // all question here
         for (i = 0; i < qElements.length; i++) {
           var obj = qElements[i];
+          var qnsTitle = obj.childNodes[1].textContent;
           //console.log("questionid: "+ obj.id);
           qns['qid'] = obj.id;
-          qns['qnsTitle'] = obj.textContent;
+          qns['qnsTitle'] = qnsTitle;
           qns['qnsType'] = obj.getAttribute("qnsType");
           qlist.push(qns);
           qns = {};

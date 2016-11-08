@@ -1,0 +1,78 @@
+<style>
+    .card {
+        margin-top:-15px;
+        align:center;
+        font-weight:bold;
+        font-size:x-large;
+        text-align:center;
+    }
+</style>
+
+<div layout="row" flex>
+    <div flex="15"></div>
+    <div class="md-whiteframe-z2" layout="column" flex="70">
+        <div style="padding: 0px 20px">
+            <h2 class="pull-left">Analytics Dashboard</h2>
+        </div>
+        <md-divider></md-divider>
+        <div style="padding: 10px 0px">
+            <div layout="column">
+                <div layout="column" layout-align="center">
+                    <md-card layout="row" md-theme="{{ showDarkTheme ? 'dark-orange' : 'default' }}" md-theme-watch style='padding:20px;'>
+                        <md-card-title-text>
+                            <span class="md-headline" style='font-weight:bold;'>Active Users:</span>
+                        </md-card-title-text>
+                        <div flex style="padding:20px">
+                            <md-card md-theme="{{ showDarkTheme ? 'dark-orange' : 'default' }}" md-theme-watch style='padding:20px;text-align: center;'>
+                                <h3 style='text-decoration: underline;'>Today</h3>
+                                <p class='card'> 10</p>
+                            </md-card>
+                        </div>
+                        <div flex style="padding:20px">
+                            <md-card md-theme="{{ showDarkTheme ? 'dark-orange' : 'default' }}" md-theme-watch style='padding:20px;text-align: center;'>
+                                <h3 style='text-decoration: underline;'>Last 7 days</h3>
+                                <p class='card'> 110</p>
+                            </md-card>
+                        </div>
+                        <div flex style="padding:20px">
+                            <md-card md-theme="{{ showDarkTheme ? 'dark-orange' : 'default' }}" md-theme-watch style='padding:20px;text-align: center;'>
+                                <h3 style='text-decoration: underline;'>Last 30 days</h3>
+                                <p class='card'>300</p>
+                            </md-card>
+                        </div>
+                    </md-card>
+                </div>
+                <!--Table -->
+                <div layout-align="center" flex="70" flex-xs='100'>
+                    <table style='text-align:center;width:100%;' cellpadding="5">
+                        <th>
+                            <tr style='font-weight:bold;font-size:large;'>
+                                <td>Rank</td>
+                                <td>Book title</td>
+                                <td>Average Progress</td>
+                                <td></td>
+                            </tr>
+                        </th>
+                        <tr ng-click="bookPage()" style="">
+                            <td>1</td>
+                            <td>Book 2</td>
+                            <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="80"></md-progress-linear></td>
+                            <td><b>80%</b></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Book 3</td>
+                            <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="70"></md-progress-linear></td>
+                            <td><b>70%</b></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Book 1</td>
+                            <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="65"></md-progress-linear></td>
+                            <td><b>65%</b></td>
+                        </tr>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

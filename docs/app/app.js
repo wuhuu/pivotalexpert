@@ -19,7 +19,8 @@
       'app.coursemap',
       'app.contentMgmt',
       'app.administrator',
-      'app.feedback'
+      'app.feedback',
+      'app.analytics'
 
     ])
     .config(configFunction);

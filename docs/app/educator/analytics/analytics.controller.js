@@ -5,7 +5,11 @@
     .controller('AnalyticsController', AnalyticsController);
 
     function AnalyticsController ($scope) {
-        var asd = "asd";
+        $scope.bookPage = function () {
+          window.location.href = '/#/educator/analytics/bid/stats';
+        }
+
+        
      }
   
 })();

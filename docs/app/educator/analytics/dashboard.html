@@ -6,6 +6,9 @@
         font-size:x-large;
         text-align:center;
     }
+    table tr {
+        cursor: pointer;
+    }
 </style>
 
 <div layout="row" flex>
@@ -44,6 +47,7 @@
                 </div>
                 <!--Table -->
                 <div layout-align="center" flex="70" flex-xs='100'>
+                    <p style='padding-left:30px;font-style: italic;font-size:small'>*Click for more information</p>
                     <table style='text-align:center;width:100%;' cellpadding="5">
                         <th>
                             <tr style='font-weight:bold;font-size:large;'>
@@ -53,19 +57,21 @@
                                 <td></td>
                             </tr>
                         </th>
-                        <tr ng-click="bookPage()" style="">
+
+                        <tr ng-click="bookPage()">
                             <td>1</td>
                             <td>Book 2</td>
                             <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="80"></md-progress-linear></td>
                             <td><b>80%</b></td>
                         </tr>
-                        <tr>
+                        <tr ng-click="bookPage()">
                             <td>2</td>
                             <td>Book 3</td>
                             <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="70"></md-progress-linear></td>
                             <td><b>70%</b></td>
+                            
                         </tr>
-                        <tr>
+                        <tr ng-click="bookPage()">
                             <td>3</td>
                             <td>Book 1</td>
                             <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="65"></md-progress-linear></td>

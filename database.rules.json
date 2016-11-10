@@ -1,6 +1,42 @@
 {
   "rules": {
+    // Public read access for those data needed to display user profile
+    // Auth user have read access to all
+    // Auth user have write access to their own profile, log and analytics node
+    // admin have write access to all
+    "analytics" : {
+      ".write" : "auth != null"
+    },
+    "auth": {
+      "admin" : {
+        //need to be changed to main admin only
+        ".write" : "auth != null"
+      },
+      "users" : {
+        "$uid" : {
+          ".read": true,
+        	".write": "$uid === auth.uid"
+        }
+      },
+      "usedLinks" : {
+      	".read": true
+      }
+    },
+    "library" : {
+      ".read" : true
+    },
+    "signinLogs" : {
+      "$uid" : {
+        ".write" : "$uid == auth.uid"
+      }
+    },
+    "userProfiles" : {
+      ".read" : true,
+      "$uid" : {
+        ".write" : "$uid == auth.uid "
+      }
+    },
     ".read": "auth != null",
-    ".write": "auth != null"
+    ".write": "auth != null && (auth.uid == root.child('auth/admin/admin').val() || root.child('auth/admin/subAdmins/' + auth.uid).exists())"
   }
 }

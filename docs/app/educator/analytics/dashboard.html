@@ -28,19 +28,19 @@
                         <div flex style="padding:20px">
                             <md-card md-theme="{{ showDarkTheme ? 'dark-orange' : 'default' }}" md-theme-watch style='padding:20px;text-align: center;'>
                                 <h3 style='text-decoration: underline;'>Today</h3>
-                                <p class='card'> 10</p>
+                                <p class='card'>{{today}}</p>
                             </md-card>
                         </div>
                         <div flex style="padding:20px">
                             <md-card md-theme="{{ showDarkTheme ? 'dark-orange' : 'default' }}" md-theme-watch style='padding:20px;text-align: center;'>
                                 <h3 style='text-decoration: underline;'>Last 7 days</h3>
-                                <p class='card'> 110</p>
+                                <p class='card'>{{sevenDays}}</p>
                             </md-card>
                         </div>
                         <div flex style="padding:20px">
                             <md-card md-theme="{{ showDarkTheme ? 'dark-orange' : 'default' }}" md-theme-watch style='padding:20px;text-align: center;'>
                                 <h3 style='text-decoration: underline;'>Last 30 days</h3>
-                                <p class='card'>300</p>
+                                <p class='card'>{{thirtyDays}}</p>
                             </md-card>
                         </div>
                     </md-card>
@@ -57,26 +57,13 @@
                                 <td></td>
                             </tr>
                         </th>
-
-                        <tr ng-click="bookPage()">
-                            <td>1</td>
-                            <td>Book 2</td>
-                            <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="80"></md-progress-linear></td>
-                            <td><b>80%</b></td>
+                        <tr ng-repeat="book in books" ng-click="bookPage()">
+                            <td>{{$index + 1}}</td>
+                            <td>{{book.title}}</td>
+                            <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="{{book.avgProgress}}"}></md-progress-linear></td>
+                            <td><b>{{book.avgProgress}}%</b></td>
                         </tr>
-                        <tr ng-click="bookPage()">
-                            <td>2</td>
-                            <td>Book 3</td>
-                            <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="70"></md-progress-linear></td>
-                            <td><b>70%</b></td>
-                            
-                        </tr>
-                        <tr ng-click="bookPage()">
-                            <td>3</td>
-                            <td>Book 1</td>
-                            <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="65"></md-progress-linear></td>
-                            <td><b>65%</b></td>
-                        </tr>
+                    </table>
                 </div>
             </div>
         </div>

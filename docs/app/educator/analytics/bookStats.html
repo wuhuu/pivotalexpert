@@ -2,7 +2,7 @@
     .chapter {
         cursor: pointer;
         font-weight:bold;
-        
+
     }
     .chapter td {
         border-bottom:1pt solid black;
@@ -29,12 +29,12 @@
     <div flex="15"></div>
     <div class="md-whiteframe-z2" layout="column" flex="70">
         <div style="padding: 0px 20px">
-            <h2 class="pull-left">Book 2 Statistics</h2>
+            <h2 class="pull-left">{{bookTitle}}</h2>
         </div>
         <md-divider></md-divider>
         <div style="padding: 10px 0px">
             <div layout="column">
-                
+
                 <!--Table -->
                 <div layout-align="center" flex="70" flex-xs='100'>
                     <table style='text-align:center;width:100%;' cellpadding="5" class='accordion'>
@@ -42,64 +42,39 @@
                             <tr style='font-weight:bold;font-size:large;'>
                                 <td>Chapter/Challenge</td>
                                 <td>Student completed/<br>attempted</td>
+                                <td>Avg Duration</td>
                                 <td># Revisit</td>
                                 <td>Avg Progress</td>
                                 <td></td>
                             </tr>
                         </thead>
-                        <tbody class='chapter'>
-                            <tr>
-                                <td class='firstRow'><div>Chapter 1: NodeJS
+                        <tbody ng-repeat="chapter in bookStats">
+                            <tr class='chapter'>
+                                <td class='firstRow'><div>{{chapter.title}}
                                     <md-tooltip md-delay="200">
                                         Click to expand
                                     </md-tooltip></div>
                                 </td>
-                                <td>20/100</td>
+                                <td>{{chapter.totalUserCompleted}}/{{chapter.totalUserAttempted}}</td>
+                                <td>{{chapter.avgDuration}}</td>
                                 <td>-</td>
-                                <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="50"></md-progress-linear></td>
-                                <td>50%</td>
+                                <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="{{chapter.avgProgress}}"></md-progress-linear></td>
+                                <td>{{chapter.avgProgress}}%</td>
                             </tr>
-                            
-                        </tbody>
-                        <tbody class='challenge'>
-                            <tr>
-                                <td class='challengeRow'>Challenge 1: Setup</td>
-                                <td>30/100</td>
-                                <td>2</td>
-                                <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="50"></md-progress-linear></td>
-                                <td>50%</td>
-                            </tr>
-                        </tbody>
-                        <tbody class='chapter'>
-                            <tr>
-                                <td class='firstRow'><div>Chapter 2: Firebase
-                                    <md-tooltip md-delay="200">
-                                        Click to expand
-                                    </md-tooltip></div>
-                                </td>
-                                <td>30/100</td>
+                            <tr class='challenge' ng-repeat="qns in chapter.qns">
+                                <td class='challengeRow'>{{qns.title}}</td>
+                                <td>{{qns.totalUserCompleted}}/{{qns.totalUserAttempted}}</td>
+                                <td>{{qns.avgDuration}}</td>
+                                <td>{{qns.revisitCount}}</td>
                                 <td>-</td>
-                                <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="50"></md-progress-linear></td>
-                                <td>50%</td>
+                                <td>-</td>
                             </tr>
+
+
                         </tbody>
-                        <tbody class='challenge'>
-                            <tr>
-                                <td class='challengeRow'>Challenge 1: Setup FB</td>
-                                <td>50/50</td>
-                                <td>0</td>
-                                <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="100"></md-progress-linear></td>
-                                <td>100%</td>
-                            </tr>
-                            <tr>
-                                <td class='challengeRow'>Challenge 2: Paste Configuration code</td>
-                                <td>30/100</td>
-                                <td>5</td>
-                                <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="80"></md-progress-linear></td>
-                                <td>80%</td>
-                            </tr>
-                        </tbody>
-                        
+
+
+                      </table>
                 </div>
             </div>
         </div>

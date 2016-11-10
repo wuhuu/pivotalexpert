@@ -57,9 +57,9 @@
                                 <td></td>
                             </tr>
                         </th>
-                        <tr ng-repeat="book in books" ng-click="bookPage()">
+                        <tr ng-repeat="book in books">
                             <td>{{$index + 1}}</td>
-                            <td>{{book.title}}</td>
+                            <td ng-click="bookPage(book.id)">{{book.title}}</td>
                             <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="{{book.avgProgress}}"}></md-progress-linear></td>
                             <td><b>{{book.avgProgress}}%</b></td>
                         </tr>

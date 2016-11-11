@@ -116,7 +116,7 @@
               if(totalTimeForFullComplete != 0){
                 var avgDuration = totalTimeForFullComplete / toBeSavedChapter.totalUserCompleted;
                 var min = (avgDuration/1000/60) << 0;
-                var sec = (ms/1000) % 60;
+                var sec = (avgDuration/1000) % 60;
                 toBeSavedChapter.avgDuration = min+":"+sec;
               }else{
                 toBeSavedChapter.avgDuration = "-";

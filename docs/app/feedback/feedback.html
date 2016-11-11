@@ -3,7 +3,7 @@
   <div class="md-whiteframe-z2" layout="column" flex="70">
     <div style="padding: 0px 20px">
       <h2 class="pull-left">Feedback</h2>
-        <div style="padding: 10px" class="pull-right">
+        <div style="padding: 10px" class="pull-right" ng-if="(isAdmin || mainAdmin)">
             <md-button class="md-raised md-primary pull-right" ng-click="addFeedback()"> Add / Update Feedback Form </md-button>
             <md-button class="md-warn md-raised md-primary pull-right" ng-click="delFeedback()" ng-show="feedbackLink"> Remove Feedback Form </md-button>
         </div>

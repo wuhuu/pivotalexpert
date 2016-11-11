@@ -170,10 +170,16 @@
                 }
               }
               var totalCompletedProgress = 0;
+              var totalCompletedFully = 0;
               for(var user in uniqueUsersCompleted){
                 totalCompletedProgress+= (uniqueUsersCompleted[user]/totalQns);
+                if(uniqueUsersCompleted[user] == totalQns){
+                  totalCompletedFully++;
+                }
               }
               var totalUserAttempted = Object.keys(uniqueUsersAttempted).length;
+              book.totalCompleted = totalCompletedFully;
+              book.totalUserAttempted = totalUserAttempted;
               book.avgProgress= parseFloat(Math.round((totalCompletedProgress / totalUserAttempted * 100) * 100) / 100).toFixed(2);;
               bookOrder.push(book);
               bookOrder.sort(function(a,b){return parseFloat(b.avgProgress) - parseFloat(a.avgProgress);})

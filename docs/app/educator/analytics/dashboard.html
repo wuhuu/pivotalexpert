@@ -53,6 +53,7 @@
                             <tr style='font-weight:bold;font-size:large;'>
                                 <td>Rank</td>
                                 <td>Book title</td>
+                                <td>Student completed/<br>attempted</td>
                                 <td>Average Progress</td>
                                 <td></td>
                             </tr>
@@ -60,6 +61,7 @@
                         <tr ng-repeat="book in books">
                             <td>{{$index + 1}}</td>
                             <td ng-click="bookPage(book.id)">{{book.title}}</td>
+                            <td>{{book.totalCompleted}}/{{book.totalUserAttempted}}</td>
                             <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="{{book.avgProgress}}"}></md-progress-linear></td>
                             <td><b>{{book.avgProgress}}%</b></td>
                         </tr>

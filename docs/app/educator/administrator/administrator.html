@@ -12,7 +12,7 @@
                 <h3>List of Administrators</h3>
                 <div ng-repeat="user in admins">
                 </br>
-                    <label>Name : {{user.name}}</label>
+                    <label>Display Name : {{user.name}}</label>
                     <md-button ng-click='removeAdmin($index)' class="md-icon-button" aria-label="removeAdmin">
                         <i class="fa fa-times"></i>
                         <md-tooltip md-direction="right" md-delay="200" >
@@ -23,14 +23,14 @@
                     <label>Email : {{user.email}}</label>
                 </div>
             </div>
-            
+
             <div flex style="padding:20px">
-            
+
               <md-input-container class="md-block">
-                <label>Enter their email address to add as administrators</label>
+                <label>Enter their public profile usernames to add as administrators</label>
                 <input ng-model="newAdmin" name="newAdmin">
-              </md-input-container> 
-              <label style="color:red" ng-show="invalid" > Failed to Add. The email entered is invalid. </label>
+              </md-input-container>
+              <label style="color:red" ng-show="invalid" > Failed to Add. The username entered is invalid. </label>
             </div>
         </div>
         <div style="padding: 20px 0px" layout="row" ng-show="newAdmin">

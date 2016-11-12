@@ -9,13 +9,13 @@
         var ref = firebase.database().ref();
         var libraryNodeRef = ref.child('library');
         var courseSeqNodeRef = ref.child('courseSequence');
-		var chapterNodeRef = ref.child('course/chapters');
-		var questionNodeRef = ref.child('course/questions');
-		var answerKeyNodeRef = ref.child('answerKey');
+    		var chapterNodeRef = ref.child('course/chapters');
+    		var questionNodeRef = ref.child('course/questions');
+    		var answerKeyNodeRef = ref.child('answerKey');
         var bookID = "";
 
         var adminSheetRef = ref.child('auth/admin/spreadsheetID');
-		var service = {
+		    var service = {
             updateChapter: updateChapter,
             getAllChapters: getAllChapters,
             getCourseSeq:getCourseSeq,
@@ -61,7 +61,7 @@
         function getBookSeqRef() {
             return libraryNodeRef.child(bookID).child("sequence");
         }
-        
+
         function updateBookOrder(books){
             var q = $q.defer();
             var library = getLibrary();
@@ -70,20 +70,20 @@
                 angular.forEach(books, function(value, index) {
                     var book = library.$getRecord(value);
                     var key = value.substring(1);
-                    
+
                     key = (1+index) + key;
                     delete book.$id;
                     delete book.$priority;
-                    
+
                     var b = {};
                     b[key]=book;
                     temp[key] =book;
-                    
+
                 });
                 $timeout(function () {
                     angular.forEach(temp, function(value, index) {
                         library[index] = value;
-                        
+
                     });
                     libraryNodeRef.set(temp);
                     q.resolve(true);
@@ -97,7 +97,7 @@
             var q = $q.defer();
             var libraryNode = $firebaseObject(libraryNodeRef);
             libraryNode.$loaded().then(function(){
-                
+
                 var bid = book.bid;
                 if(isNewBook) {
                     // checking if bookTitle already exist
@@ -256,7 +256,7 @@
         function getQuestion(qid) {
             return $firebaseObject(ref.child('course/questions/'+qid));
         }
-        
+
         function updateVideoQuestion(question,isNewQuestion) {
             var q =$q.defer();
             // retrieve courseSeq node
@@ -359,7 +359,7 @@
             });
             return q.promise;
         }
-        
+
         function updateIFrameQuestion(question,isNewQuestion) {
           var q =$q.defer();
             // retrieve courseSeq node
@@ -378,7 +378,7 @@
                         }
                     }
                 }
-                
+
                 console.log("TESTING 123");
                 console.log(question);
 
@@ -389,13 +389,13 @@
                 }
 
                 // create new question node & fill it up
-                
+
                 var questionNode = {
                     qnsTitle:question.qnsTitle,
                     qnsType:question.qnsType,
                     link:question.link
                 };
-                
+
                 if(question.qnsInstruction) {
                     questionNode.qnsInstruction = question.qnsInstruction;
                 }
@@ -1010,7 +1010,7 @@
                 } else {
                     q.resolve(-1);
                 }
-                
+
             });
             return q.promise;
         }

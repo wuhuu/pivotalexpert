@@ -14,7 +14,7 @@
     };
   }
 
-  function NavbarController($firebaseObject, $scope, $rootScope, $location, authService, navBarService, commonService) {
+  function NavbarController($firebaseObject, $scope, $rootScope, $location, $sce, authService, navBarService, commonService) {
       var ref = firebase.database().ref();
       var usersRef = ref.child('auth/users');
       var adminRef = ref.child('auth/admin');
@@ -41,7 +41,7 @@
             });
           var userData = $firebaseObject(usersRef.child(user.uid));
           userData.$loaded().then(function(){
-            $scope.profileLink = userData.profileLink;
+            $scope.profileLink =  $sce.trustAsResourceUrl(userData.profileLink);
           });
         }
       });

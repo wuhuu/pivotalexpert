@@ -69,6 +69,43 @@ md-sidenav {
 }
 
 /*******************************************
+|            Toolbar Nav Menu              |
+*******************************************/
+.profilePic {
+  width: 57px;
+  height: 57px;
+  border-radius: 50%;
+  margin-left: -6px;
+}
+
+/*******************************************
+|         Educator Content Map             |
+*******************************************/
+.chapterHead {
+  font-weight: 400;
+  font-size: 24px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.accordion1 .md-icon-button {
+  margin: 15px 10px 0px 10px;
+}
+
+.chapterHeadIcon {
+  float: right;
+}
+
+.chptDDL md-select-menu {
+  margin-top: 50px;
+}
+
+.typeDDL md-select-menu {
+  margin-top: 50px;
+}
+
+
+/*******************************************
 |           Youtube CHALLENGE              |
 *******************************************/
 

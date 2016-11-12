@@ -56,15 +56,15 @@
       templateUrl: 'app/educator/contentMgmt/mcq_edit.html',
 	     controller: 'ContentMgmtController'
     })
-    .when('/educator/spreadsheet_create/:bid/:cid', {
+    .when('/educator/excel_create/:bid/:cid', {
       templateUrl: 'app/educator/contentMgmt/excel_edit.html',
 	     controller: 'ContentMgmtController'
     })
-    .when('/educator/codebox_create/:bid/:cid', {
+    .when('/educator/code_create/:bid/:cid', {
       templateUrl: 'app/educator/contentMgmt/code_edit.html',
 	     controller: 'ContentMgmtController'
     })
-    .when('/educator/google_form_create/:bid/:cid', {
+    .when('/educator/form_create/:bid/:cid', {
       templateUrl: 'app/educator/contentMgmt/form_edit.html',
 	     controller: 'ContentMgmtController'
     })

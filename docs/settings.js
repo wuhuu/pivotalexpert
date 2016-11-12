@@ -1,7 +1,6 @@
 (function() {
 
   // Initialize Firebase
-  // Initialize Firebase
   var config = {
     apiKey: "AIzaSyA1C3DGIpn6zY1p9z4a7qDnE60p28HDgxQ",
     authDomain: "fyp-development.firebaseapp.com",

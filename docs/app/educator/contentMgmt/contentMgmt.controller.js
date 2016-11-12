@@ -13,7 +13,7 @@
             $timeout(function () {
               $(".accordion1")
                 .accordion({
-                  header: "> div > #chapterHeader",
+                  header: " #chapterHeader",
                   collapsible: true,
                   heightStyle: "content"
                 })
@@ -33,6 +33,11 @@
 
               $(".accordion2").sortable();
 
+
+            });
+            $( "span.chapterHeadIcon" ).click(function(e){
+                e.stopPropagation(); // this is
+                e.preventDefault(); // the magic
 
             });
           }
@@ -56,6 +61,9 @@
           var id = scope.mcqObj.qnsID;
           $timeout(function () {
 
+            $("#title_" + id).focusout(function () {
+              $(this).show();
+            });
             $("#text_" + id).focusout(function () {
               $(this).hide();
             });
@@ -134,21 +142,13 @@
             $location.path('educator/courseLibrary');
         });
     }
-    
+
     contentMgmtService.saveBookID($routeParams.bid);
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
     var qnsType = path.substr(path.lastIndexOf('/') + 1);
-    if (qnsType == 'spreadsheet') {
-        qnsType = 'excel';
-    }
-    if (qnsType == 'codebox') {
-        qnsType = 'code';
-    }
-    
-    if (qnsType == 'google_form') {
-      qnsType = 'form';
-    } else if (qnsType === 'code') {
+
+    if (qnsType === 'code') {
       var functionEditor = ace.edit("functionEditor");
       var qnsEditor = ace.edit("qnsEditor");
     }
@@ -237,15 +237,14 @@
       $scope.isNewQuestion = true;
       $scope.qns = { qnsTitle: "", qnsType: qnsType, cid: $routeParams.cid }
       if (qnsType === "slides") {
-        $scope.qns['slides'] = [];
+        $scope.qns['slides'] = [{explanation: "", imageLink: "" }]
       } else if (qnsType === "video" || qnsType == "iframe") {
         $scope.qns['qnsDescription'] = "";
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['link'] = "";
       } else if (qnsType === "mcq") {
-        $scope.qns['mcq'] = [];
+        $scope.qns['mcq'] = [{ options: ['Choice 1', 'Choice 2'], qns: "", qnsID: "Q1", answer:'Choice 1' }];
         $scope.qns['hint'] = "";
-        $scope.qns['qnsInstruction'] = [];
       } else if (qnsType === "form") {
         $scope.qns['link'] = "";
       } else if (qnsType === "excel") {
@@ -347,16 +346,12 @@
       if($scope.qns.slides!=null) {
         $scope.qns.slides.push({ explanation: "", imageLink: "" });
       }else {
-        $scope.qns[slides] = [{explanation: "", imageLink: "" }];
+        $scope.qns['slides'] = [{explanation: "", imageLink: "" }];
       }
     }
 
     $scope.toggleQns = function (id) {
       $("#text_" + id).toggle();
-    }
-
-    $scope.toggleChoice = function (id, index) {
-      $("#text_" + id + "_" + index).toggle();
     }
 
     $scope.addChoice = function (mcq_id) {
@@ -655,13 +650,19 @@
   }
 
   function CourseMapController($timeout, $http, $rootScope, $scope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService, $q) {
-
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
-    $scope.qnsTypes = ["Video", "Slides", "MCQ", "Spreadsheet", "Codebox", "Google_Form", "IFrame"];
+    $scope.qnsTypes = [
+      {name: "Video", type: "video"},
+      {name: "Images Gallery", type: "slides"},
+      {name: "MCQ", type: "mcq"},
+      {name: "Spreadsheet", type: "excel"},
+      {name: "Codebox", type: "code"},
+      {name: "Google Form", type: "form"},
+      {name: "IFrame (Eg, Google Slides)", type: "iframe"},
+    ];
 
-    $scope.bid = $routeParams.bid;
     contentMgmtService.saveBookID($routeParams.bid);
     $scope.book = contentMgmtService.getBook($routeParams.bid);
 
@@ -975,32 +976,32 @@
         targetEvent: ev,
         template:
 
-        '<md-dialog style="padding:20px">' +
+        '<md-dialog style="padding:20px; width:500px;">' +
         '<form name="qnsForm">' +
         ' <h3>Options to create challenge:</h3><br>' +
         '  <md-dialog-content>' +
-        '  <md-input-container style="width:500px;height:auto;">' +
-        '    <label>Please select Chapter to put challenge in.</label> ' +
-        '    <md-select ng-model="selectedChapter" name="chapter" required>' +
-        '      <md-option ng-repeat="item in chapters" value="{{item.cid}}">' +
+        '  <md-input-container style="width:480px; height:auto;">' +
+        '    <md-select placeholder="Please select Chapter to put challenge in." ng-model="selectedChapter" name="chapter" md-container-class="chptDDL" required>' +
+        '      <md-option ng-repeat="item in chapters" value="{{item.cid}}" >' +
         '       {{item.chapterTitle}}' +
-        '      ' +
         '    </md-option></md-select>' +
         '    <ng-messages for="qnsForm.chapter.$error" md-auto-hide="true">' +
         '      <div ng-message="required">This is required.</div>' +
         '    </ng-messages>' +
-        '  </md-input-container><br>' +
-        '  <md-input-container style="width:500px;height:auto;">' +
-        '    <label>Select challenge Type.</label> ' +
-        '    <md-select ng-model="selectedQnsType" name="type" required>' +
-        '      <md-option ng-repeat="item in qnsTypes" value="{{item}}">' +
-        '       {{item}}' +
-        '      ' +
+        '  </md-input-container>' +
+        '  <br>' +
+
+        '  <md-input-container style="width:480px; height:30px;">' +
+        '    <md-select placeholder="Select challenge Type." ng-model="selectedQnsType" name="type" md-container-class="typeDDL" required>' +
+        '      <md-option ng-repeat="item in qnsTypes" value="{{item.type}}" >' +
+        '       {{item.name}}' +
         '    </md-option></md-select>' +
         '    <ng-messages for="qnsForm.type.$error" md-auto-hide="true">' +
         '      <div ng-message="required">This is required.</div>' +
         '    </ng-messages>' +
         '  </md-input-container>' +
+        '  <br>' +
+
         '  </md-dialog-content>' +
         '  <md-dialog-actions>' +
         '    <md-button ng-click="closeDialog()" class="md-primary">' +
@@ -1015,7 +1016,7 @@
         locals: {
           chapters: $scope.chapters,
           qnsTypes: $scope.qnsTypes,
-          bid: $scope.bid
+          bid: $routeParams.bid
         },
         controller: DialogController
       });
@@ -1129,11 +1130,11 @@
       var qlist = [];
       var qns = {};
       $("div#chapter").each(function (index, value) {
-        var c = $(this).find('h2.cid');
+        var chpt = $(this).find('label.chapterHead');
 
         console.log(index + ":" + $(this).attr('id'));
-        var cid = c.attr('cid');
-        var title = c.find('span').text().trim();
+        var cid = chpt.attr('cid');
+        var title = chpt.find('span').text().trim();
         chap['cid'] = cid;
         chap['chapterTitle'] = title;
         var qElements = $(this).find('h4.question');
@@ -1175,9 +1176,71 @@
       $scope.qnsTBD.push(qid);
     }
 
-    $scope.toggleChapterTextbox = function (id) {
-      $("#text_" + id).toggle();
-    }
+    $scope.editChapter = function (ev, chptTitle, cid, id) {
+      // Appending dialog to document.body to cover sidenav in docs app
+      var parentEl = angular.element(document.body);
+      $mdDialog.show({
+        parent: parentEl,
+        targetEvent: ev,
+        template:
+
+        '<md-dialog style="padding:20px">' +
+        '<form name="qnsForm">' +
+        ' <h3>Edit Chapter Title</h3><br>' +
+        '  <md-dialog-content>' +
+        '  <md-input-container style="width:500px;height:auto;">' +
+        '    <label>Chapter Title </label> ' +
+        '    <input ng-model="chptTitle" name="chptTitle" required>' +
+        '    <ng-messages for="qnsForm.chptTitle.$error" md-auto-hide="true">' +
+        '      <div ng-message="required">This is required.</div>' +
+        '    </ng-messages>' +
+        '  </md-input-container><br>' +
+        '  </md-dialog-content>' +
+        '  <md-dialog-actions>' +
+        '    <md-button ng-click="closeDialog()" class="md-primary">' +
+        '      Close' +
+        '    </md-button>' +
+        '    <md-button type="submit" ng-click="qnsForm.$valid && nextStep()" class="md-primary">' +
+        '      Proceed' +
+        '    </md-button>' +
+        '  </md-dialog-actions>' +
+        '</form>' +
+        '</md-dialog>',
+        locals: {
+          id : id,
+          cid: cid,
+          chptTitle: chptTitle,
+          bid: $routeParams.bid,
+          firebase: firebase
+          // courseMap: $scope.courseMap,
+          // chapters: $scope.chapters
+        },
+        controller: DialogController
+      });
+
+      function DialogController($scope, $mdDialog, id, cid, chptTitle, bid, firebase) {
+        $scope.chptTitle = chptTitle;
+
+        $scope.closeDialog = function () {
+          $mdDialog.hide();
+        }
+
+        $scope.nextStep = function () {
+          var ref = firebase.database().ref();
+
+
+          //Update to library
+          var bookRef = ref.child('library/' + bid + '/sequence/' + id);
+          bookRef.update({chapterTitle : $scope.chptTitle});
+
+          //update course-chapter
+          var courseRef = ref.child('course/chapters/' + cid);
+          courseRef.update({chapterTitle : $scope.chptTitle});
+          $mdDialog.hide();
+
+        }
+      }
+    };
 
   }
 
@@ -1227,7 +1290,7 @@
         ' <h3>Fill the form to create a new Book</h3><br>' +
         '  <md-dialog-content>' +
         '  <md-input-container style="width:500px;height:auto;">' +
-        '    <label>Book Title Title</label> ' +
+        '    <label>Book Title</label> ' +
         '    <input ng-model="bookTitle" name="bookTitle" required>' +
         '    <ng-messages for="qnsForm.bookTitle.$error" md-auto-hide="true">' +
         '      <div ng-message="required">This is required.</div>' +
@@ -1235,10 +1298,7 @@
         '  </md-input-container><br>' +
         '  <md-input-container style="width:500px;height:auto;">' +
         '    <label>Book Description</label> ' +
-        '    <textarea ng-model="bookDescription" name="bookDescription" md-maxlength="150" rows="3" required></textarea>' +
-        '    <ng-messages for="qnsForm.bookDescription.$error" md-auto-hide="true">' +
-        '      <div ng-message="required">This is required.</div>' +
-        '    </ng-messages>' +
+        '    <textarea ng-model="bookDescription" name="bookDescription" md-maxlength="150" rows="3"></textarea>' +
         '  </md-input-container><br>' +
         '  </md-dialog-content>' +
         '  <md-dialog-actions>' +
@@ -1269,6 +1329,9 @@
           var newBook = {};
 
           newBook["bookTitle"] = $scope.bookTitle;
+          if(! $scope.bookDescription) {
+            $scope.bookDescription = "";
+          }
           newBook["bookDescription"] = $scope.bookDescription;
 
           contentMgmtService.updateBook(newBook, true).then(function (bookNode) {

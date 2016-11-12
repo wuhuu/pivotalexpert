@@ -17,7 +17,7 @@
       <md-button class="md-raised" ng-click="addBook($event)">Create a Book</md-button>
       <md-menu>
                 <md-button class="md-raised md-primary" ng-click="courseMenu($mdOpenMenu, $event)">
-                 Book Options
+                 Export / Import
                 </md-button>
                 <md-menu-content width="4">
                    <md-menu-item>
@@ -47,17 +47,10 @@
                   <div class="md-tile-left inset" hide-sm flex='10' ng-click="viewBook(book.bid)" style="cursor: pointer;">
                     <img ng-src="content/images/book-flat.png" style='height:50px;'>
                   </div>
-                  <div flex ng-click="viewBook(book.bid)" style="cursor: pointer;">
+                  <div flex ng-click="viewBook(book.bid)" flex='80' style="cursor: pointer;">
                     <h3 style='font-weight: bold;'>Book {{$index+1}} :  {{book.bookTitle}}</h3>
                     <p>{{book.bookDescription}}</p>
                   </div>
-                  <div flex='20'>
-                    <md-button ng-click="viewBook(book.bid)" class="md-primary md-icon-button" aria-label="Settings">
-                      <i style="font-size:1.5em;" class="material-icons">book</i>
-                      <md-tooltip md-delay="200">
-                        View Book Content
-                      </md-tooltip>
-                    </md-button>
                     <md-button ng-click="editBook($event,book.bookTitle,book.bookDescription,book.bid)" class="md-icon-button" aria-label="Settings">
                       <i style="font-size:1.5em" class="fa fa-pencil"></i>
                       <md-tooltip md-delay="200">
@@ -70,7 +63,7 @@
                         Delete Book
                       </md-tooltip>
                     </md-button>
-                  </div>
+
                 </div>
                 <md-divider></md-divider>
             </div>

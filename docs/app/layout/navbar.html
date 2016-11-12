@@ -26,11 +26,11 @@
     <md-button hide show-xs href="#/course">
       <i class="fa fa-sitemap" aria-hidden="true"></i>
     </md-button>
-    <md-button style="margin-right:10px" href="#/course" >Library</md-button>
+    <md-button style="margin-right:-20px" href="#/course" >Library</md-button>
     <md-button style="margin-right:10px" href="#/profile/{{profileLink}}" >[ {{ownNumAchievement}} ]</md-button>
 
     <md-button style="margin-right:10px" hide-xs class="md-fab md-primary md-hue-2" aria-label="Profile" href="#/profile/{{profileLink}}">
-      <img ng-src="{{displayPic}}" alt="Profile Photo" width="40px" height="40px">
+      <img ng-src="{{displayPic}}" alt="Profile Photo" class="profilePic">
     </md-button>
 
     <md-button hide show-xs ng-click="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i></md-button>

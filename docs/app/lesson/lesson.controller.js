@@ -558,6 +558,12 @@
               $scope.hints.push(test.hint);
             }
         };
+
+        ww.onerror = function() {
+          deferred.resolve(false);
+          $scope.hints.push("Please declare your variables and functions according to the instructions.");
+        }
+        
         return deferred.promise;
     }
 

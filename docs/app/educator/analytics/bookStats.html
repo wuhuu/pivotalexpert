@@ -1,10 +1,10 @@
 <style>
-    .chapter {
+    #chapter {
         cursor: pointer;
         font-weight:bold;
 
     }
-    .chapter td {
+    #chapter td {
         border-bottom:1pt solid black;
     }
     .firstRow {
@@ -15,16 +15,6 @@
     }
 
 </style>
-<script>
-
-    $(".accordion")
-                .accordion({
-                  header: "> .chapter",
-                  collapsible: true,
-                  heightStyle: "content"
-                });
-</script>
-
 <div layout="row" flex>
     <div flex="15"></div>
     <div class="md-whiteframe-z2" layout="column" flex="70">
@@ -37,7 +27,7 @@
 
                 <!--Table -->
                 <div layout-align="center" flex="70" flex-xs='100'>
-                    <table style='text-align:center;width:100%;' cellpadding="5" class='accordion'>
+                    <table style='text-align:center;width:100%;' cellpadding="5" id='accordion'>
                         <thead>
                             <tr style='font-weight:bold;font-size:large;'>
                                 <td>Chapter/Challenge</td>
@@ -48,8 +38,8 @@
                                 <td></td>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="chapter in bookStats">
-                            <tr class='chapter'>
+                        <tbody ng-repeat="chapter in bookStats track by $index" on-done-render>
+                            <tr id='chapter'>
                                 <td class='firstRow'><div>{{chapter.title}}
                                     <md-tooltip md-delay="200">
                                         Click to expand
@@ -69,11 +59,7 @@
                                 <td>-</td>
                                 <td>-</td>
                             </tr>
-
-
                         </tbody>
-
-
                       </table>
                 </div>
             </div>

@@ -2,7 +2,23 @@
 
   angular
     .module('app.analytics')
-    .controller('AnalyticsController', AnalyticsController);
+    .controller('AnalyticsController', AnalyticsController)
+    .directive('onDoneRender', function ($timeout) {
+      return {
+        restrict: 'A',
+        link: function (scope, element, attr) {
+          if (scope.$last === true) {
+            $timeout(function () {
+              $("#accordion").accordion({
+                  header: "> #chapter",
+                  collapsible: true,
+                  heightStyle: "content"
+                });
+            });
+          }
+        }
+      }
+    });
 
     function AnalyticsController ($scope,contentMgmtService,$firebaseObject,$firebaseArray,$location,$routeParams) {
       var ref = firebase.database().ref();

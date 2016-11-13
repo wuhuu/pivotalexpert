@@ -1,0 +1,68 @@
+<style>
+    #chapter {
+        cursor: pointer;
+        font-weight:bold;
+
+    }
+    #chapter td {
+        border-bottom:1pt solid black;
+    }
+    .firstRow {
+        text-align:left;
+    }
+    .challengeRow{
+       text-align:right;
+    }
+
+</style>
+<div layout="row" flex>
+    <div flex="15"></div>
+    <div class="md-whiteframe-z2" layout="column" flex="70">
+        <div style="padding: 0px 20px">
+            <h2 class="pull-left">{{bookTitle}}</h2>
+        </div>
+        <md-divider></md-divider>
+        <div style="padding: 10px 0px">
+            <div layout="column">
+
+                <!--Table -->
+                <div layout-align="center" flex="70" flex-xs='100'>
+                    <table style='text-align:center;width:100%;' cellpadding="5" id='accordion'>
+                        <thead>
+                            <tr style='font-weight:bold;font-size:large;'>
+                                <td>Chapter/Challenge</td>
+                                <td>Student completed/<br>attempted</td>
+                                <td>Avg Duration</td>
+                                <td># Revisit</td>
+                                <td>Avg Progress</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody ng-repeat="chapter in bookStats track by $index" on-done-render>
+                            <tr id='chapter'>
+                                <td class='firstRow'><div>{{chapter.title}}
+                                    <md-tooltip md-delay="200">
+                                        Click to expand
+                                    </md-tooltip></div>
+                                </td>
+                                <td>{{chapter.totalUserCompleted}}/{{chapter.totalUserAttempted}}</td>
+                                <td>{{chapter.avgDuration}}</td>
+                                <td>-</td>
+                                <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="{{chapter.avgProgress}}"></md-progress-linear></td>
+                                <td>{{chapter.avgProgress}}%</td>
+                            </tr>
+                            <tr class='challenge' ng-repeat="qns in chapter.qns">
+                                <td class='challengeRow'>{{qns.title}}</td>
+                                <td>{{qns.totalUserCompleted}}/{{qns.totalUserAttempted}}</td>
+                                <td>{{qns.avgDuration}}</td>
+                                <td>{{qns.revisitCount}}</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

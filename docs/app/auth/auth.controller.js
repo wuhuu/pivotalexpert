@@ -4,7 +4,7 @@
     .module('app.auth')
     .controller('AuthController', AuthController);
 
-  function AuthController($scope, $location, $firebaseObject, $mdDialog, authService) {
+  function AuthController($scope, $location, $firebaseObject, $mdDialog, authService,navBarService) {
     var ref = firebase.database().ref();
     var userRef = ref.child("auth/users");
 	var user = firebase.auth().currentUser;
@@ -62,7 +62,7 @@
                 recordNewUser();
 
                 $location.path('/course/');
-
+                navBarService.updateProfileLink(newLink);
             }else {
                 var confirm = $mdDialog.confirm()
                   .title('Challenge Completed!')

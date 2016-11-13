@@ -47,7 +47,7 @@
                 <!--chapterTitle div-->
                 <div layout=row id="chapterHeader" >
                   <label class="chapterHead" flex="85" cid='{{item.cid}}'>
-                    Chapter {{$index+1}}: <span>{{item.chapterTitle}}</span>
+                    Chapter {{$index+1}}: <span style='word-wrap:break-word;'>{{item.chapterTitle}}</span>
                   </label>
                   <span class="chapterHeadIcon">
                     <!--chapter buttons-->
@@ -72,7 +72,7 @@
                     <div ng-repeat="question in item.qns track by $index" style='margin-top:-30px;'>
                       <div layout="row" flex style='padding:10px 20px'>
                         <div flex="90">
-                          <h4 class="question" ng-model="item.qns[$index].qnsTitle" id='{{question.qid}}' qnsType="{{question.qnsType}}">Challenge {{$index+1}}:  <span>{{question.qnsTitle}}</span></h4>
+                          <h4 class="question" ng-model="item.qns[$index].qnsTitle" id='{{question.qid}}' qnsType="{{question.qnsType}}">Challenge {{$index+1}}:  <span style='word-wrap:break-word;'>{{question.qnsTitle}}</span></h4>
                         </div>
                           <md-button class="md-icon-button" ng-click="editQuestion(question.qid,item.cid)">
                             <i class="fa fa-pencil fa-lg"></i>

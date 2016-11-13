@@ -11,7 +11,8 @@
 
     var service = {
       updateNavBar: updateNavBar,
-      getCourseTitle: getCourseTitle
+      getCourseTitle: getCourseTitle,
+      updateProfileLink:updateProfileLink
     };
 
     return service;
@@ -93,6 +94,10 @@
     function getCourseTitle() {
         var courseTitleRef = ref.child('/courseSetting/courseName');
         return courseTitleRef;
+    }
+
+    function updateProfileLink(displayName) {
+      $rootScope.profileLink = displayName;
     }
   }
 

@@ -17,7 +17,7 @@
         <md-divider></md-divider>
         <md-content style="padding: 0 10px; max-height: 200px">
           <h4 style="margin: 0.5em 0">Hint:</h4>
-          <p style="margin: 0.5em 0">{{qnsHint}}</p>
+          <p ng-repeat="hint in hints"style="margin: 0.5em 0"><strong>{{$index + 1}}.</strong> {{hint}}</p>
           <p style="margin: 0.5em 0">{{errMsg}}</p>
         </md-content>
       </div>
@@ -28,8 +28,8 @@
       <h2>{{qnsTitle}}</h2>
     </div>
     <md-divider></md-divider>
-    <div id="editor" style="padding: 20px" flex > 
-    
+    <div id="editor" style="padding: 20px" flex >
+
     </div>
   </div>
 </div>

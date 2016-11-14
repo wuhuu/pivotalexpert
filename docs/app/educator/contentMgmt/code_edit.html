@@ -19,39 +19,39 @@
       </h2>
         <div class="pull-right"style="padding:20px">
             <md-button class="md-raised " ng-click='saveCodeBoxChanges($event)'>Save all changes</md-button>
-            <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
+            <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Challenge</md-button>
             <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
         </div>
     </div>
     <md-divider></md-divider>
     </br>
-    <label>Pre-Defined Functions</label>
+    <label>Pre-Defined Codes (These will run but not shown to the student)</label>
     <div id="functionEditor" style="padding: 20px" flex ></div>
     </br>
     <md-divider></md-divider>
     </br>
-    <label>Pre-Loaded Codes in Question</label>
+    <label>Challenge Codebox (This will be given to the students to edit)</label>
     <div id="qnsEditor" style="padding: 20px" flex ></div>
         <div>
         <div layout="row">
         <br/>
         <label>Sample Test Case</label>
           <md-input-container class="md-block">
-            <label>Test Case - Name</label>
-            <input value = "Demo Test Case" disabled>
+            <label>Identifier</label>
+            <input value = "Example Test Case" disabled>
           </md-input-container>
           <md-input-container class="md-block">
-            <label>Test Case - Expect</label>
+            <label>Test Case</label>
             <input  value = "sum(2,3)" disabled>
           </md-input-container>
           <md-input-container class="md-block">
-            <label>Test Case - To Equal</label>
+            <label>Expected Value</label>
             <input  value = "5" disabled>
           </md-input-container>
            </div>
           <md-input-container class="md-block">
-            <label>Test Case - Hint</label>
-            <input value = "Hint to be display for student if they failed this test case" disabled>
+            <label>Hint for students</label>
+            <input value = "Hint to be displayed to student if they failed this test case" disabled>
           </md-input-container>
         </div>
 
@@ -61,15 +61,15 @@
             <div layout="row">
             <br/>
               <md-input-container class="md-block">
-                <label>Test Case - Name</label>
+                <label>Identifier</label>
                 <input ng-model="test.name">
               </md-input-container>
               <md-input-container class="md-block">
-                <label>Test Case - Expect</label>
+                <label>Test Case</label>
                 <input ng-model="test.expect">
               </md-input-container>
               <md-input-container class="md-block">
-                <label>Test Case - To Equal</label>
+                <label>Expected Value</label>
                 <input ng-model="test.toEqual">
               </md-input-container>
 
@@ -78,7 +78,7 @@
               </md-button>
                </div>
               <md-input-container class="md-block">
-                <label>Test Case - Hint</label>
+                <label>Hint for students</label>
                 <input ng-model="test.hint">
               </md-input-container>
             </div>

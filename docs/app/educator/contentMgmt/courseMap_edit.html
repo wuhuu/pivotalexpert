@@ -9,16 +9,15 @@
   <style>
     ng-messages {display: block;}
   </style>
-      <div layout="row" flex>
-        <div flex="auto"></div>
-        <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 30px;height:auto;">
+      <div layout="row" flex layout-align="center">
+        <div class="md-whiteframe-z1 text-center" flex="70" flex-xs="100" style=" padding: 30px;height:auto;">
               <h1>{{book.bookTitle}} Content Map</h1>
               <md-button class="md-raised" ng-click="saveAllChanges($event)">Save all changes</md-button>
               <md-button class="md-raised" ng-click="showPrompt($event)">Add a challenge</md-button>
               <md-button class="md-raised" ng-click="addChapter($event)">Create a Chapter</md-button>
               <md-menu>
                 <md-button class="md-raised md-primary" ng-click="chapterMenu($mdOpenMenu, $event)">
-                 Chapter Options
+                 Export/import a Chapter
                 </md-button>
                 <md-menu-content width="4">
                   <md-menu-item>
@@ -34,17 +33,15 @@
                 </md-menu-content>
               </md-menu>
         </div>
-        <div flex="auto"></div>
       </div>
 
-      <div layout="row" flex>
-        <div flex="auto"></div>
-        <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: 0px;padding: 20px 20px;">
+      <div layout="row" flex layout-align="center">
+        <div class="md-whiteframe-z2" layout="column" flex="70" flex-xs="100" style="margin-top: 0px;padding: 20px 20px;">
           <md-content flex md-scroll-y>
           <md-card-content >
             <div class="accordion1" style='background-color:white'>
               <div id="chapter" style="height:auto;" layout="column" ng-repeat="item in courseMap track by $index" on-finish-render="ngRepeatFinished">
-                
+
                 <!--chapterTitle div-->
                 <div layout=row id="chapterHeader">
                   <h2 class='cid' cid='{{item.cid}}'>
@@ -86,7 +83,7 @@
                     </div>
                   </div>
                    <!--end of chapter buttons-->
-                  
+
                     <div class="accordion2">
                     <div ng-repeat="question in item.qns track by $index" style='margin-top:-30px;'>
                       <div layout="row" flex style='padding:10px 20px'>
@@ -110,7 +107,7 @@
                       </div>
                     </div>
                     </div>
-                  
+
                 </div>
                 <md-divider></md-divider>
               </div>
@@ -120,5 +117,4 @@
           </md-card-content>
         </md-content>
       </div>
-      <div flex="auto"></div>
     </div>

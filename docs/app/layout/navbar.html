@@ -16,17 +16,17 @@
       <md-icon md-svg-icon="menu.svg"></md-icon>
     </md-button>
     -->
-    <h2 hide-xs >
+    <h2 show hide-xs >
 		  <span>{{courseTitle}}</span>
 	  </h2>
     <span flex></span>
-    <md-button style="margin-right:10px" href="#/educator/administrator" ng-show="mainAdmin" >Manage Admin</md-button>
-    <md-button style="margin-right:10px" href="#/feedback" ng-show="isAdmin || mainAdmin || haveFeedback">Feedback</md-button>
-    <md-button style="margin-right:10px" href="#/educator/courseLibrary" ng-show="isAdmin || mainAdmin" >Educator Library</md-button>
+    <md-button style="margin-right:10px" href="#/educator/administrator" ng-show="mainAdmin" hide-xs >Manage Admin</md-button>
+    <md-button style="margin-right:10px" href="#/feedback" ng-show="isAdmin || mainAdmin || haveFeedback" hide-xs >Feedback</md-button>
+    <md-button style="margin-right:10px" href="#/educator/courseLibrary" ng-show="isAdmin || mainAdmin" hide-xs >Educator Library</md-button>
     <md-button hide show-xs href="#/course">
       <i class="fa fa-sitemap" aria-hidden="true"></i>
     </md-button>
-    <md-button style="margin-right:10px" href="#/course" >Library</md-button>
+    <md-button style="margin-right:10px" href="#/course" hide-xs >Library</md-button>
     <md-button style="margin-right:10px" href="#/profile/{{profileLink}}" >[ {{ownNumAchievement}} ]</md-button>
 
     <md-button style="margin-right:10px" hide-xs class="md-fab md-primary md-hue-2" aria-label="Profile" href="#/profile/{{profileLink}}">

@@ -12,5 +12,5 @@
   firebase.initializeApp(config);
 
   //Replace with the name of your course
-  window.courseName = "";
+  window.courseName = "UAT_UI";
 })();

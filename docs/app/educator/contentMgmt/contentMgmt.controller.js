@@ -134,7 +134,7 @@
             $location.path('educator/courseLibrary');
         });
     }
-    
+
     contentMgmtService.saveBookID($routeParams.bid);
     var path = $location.$$path;
     path = path.substr(path.indexOf('/educator/'), path.indexOf('_create'));
@@ -145,7 +145,7 @@
     if (qnsType == 'codebox') {
         qnsType = 'code';
     }
-    
+
     if (qnsType == 'google_form') {
       qnsType = 'form';
     } else if (qnsType === 'code') {
@@ -1227,7 +1227,7 @@
         ' <h3>Fill the form to create a new Book</h3><br>' +
         '  <md-dialog-content>' +
         '  <md-input-container style="width:500px;height:auto;">' +
-        '    <label>Book Title Title</label> ' +
+        '    <label>Book Title</label> ' +
         '    <input ng-model="bookTitle" name="bookTitle" required>' +
         '    <ng-messages for="qnsForm.bookTitle.$error" md-auto-hide="true">' +
         '      <div ng-message="required">This is required.</div>' +

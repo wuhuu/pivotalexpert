@@ -12,7 +12,8 @@
     var service = {
       updateNavBar: updateNavBar,
       getCourseTitle: getCourseTitle,
-      updateProfileLink:updateProfileLink
+      updateProfileLink:updateProfileLink,
+      updateDisplayPic:updateDisplayPic
     };
 
     return service;
@@ -97,6 +98,10 @@
 
     function updateProfileLink(displayName) {
       $rootScope.profileLink = displayName;
+    }
+
+    function updateDisplayPic(url) {
+      $rootScope.displayPic = url;
     }
   }
 

@@ -3,7 +3,7 @@
     "default": "firebase-pivotal-expert",
     "staging": "firebase-pivotal-expert",
     "FYP": "firebase-pivotal-expert",
-    "testing": "fyp-development",
+    "testing": "firebase-pivotal-expert",
     "dev": "fyp-development",
     "dev2": "fyp-development2"
   }

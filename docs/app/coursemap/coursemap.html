@@ -2,11 +2,11 @@
 <div layout="column" class="relative" layout-fill role="main">
     <div layout="row" flex>
         <div flex="auto"></div>
-        <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 0px 10px;height: 70px;">
+        <div class="md-whiteframe-z1 text-center" flex="70" flex-xs="100" style=" padding: 0px 10px;height: 70px;">
               <h1>{{book.bookTitle}} Content Map</h1>
         </div>
         <div flex="auto">
-          
+
         </div>
     </div>
     <style>
@@ -26,7 +26,7 @@
               <h2>Chapter {{$index+1}}. {{chapter.chapterTitle}}  <i class="material-icons pull-right">expand_more</i> </h2>
               <div layout="column">
                  <div layout="row" ng-repeat="qns in chapter.qns" ng-init="qnsIndex = $index" style="padding:20px 50px;">
-                      
+
                       <div flex=90>
                         <i class="material-icons">label</i>
                         <a style="font-size:1.3em" ng-href="#/lesson/{{qns.qnsType}}/{{bid}}/{{courseIndex + 1}}/{{qnsIndex + 1}}/{{qns.qid}}">

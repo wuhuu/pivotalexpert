@@ -199,7 +199,7 @@
         }
 
         //Excel type question
-        if (qnsType == 'excel') {
+        if (qnsType == 'spreadsheet') {
             //load qns sheet ID
             $scope.sheetID = question.sheetID;
 
@@ -314,7 +314,7 @@
                 }
 
                 //excel question type
-                if (qnsType == 'excel') {
+                if (qnsType == 'spreadsheet') {
                     $scope.incorrect = false;
                     gapi.auth.setToken({
                         access_token: $scope.token

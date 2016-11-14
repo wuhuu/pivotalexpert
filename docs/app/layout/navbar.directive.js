@@ -29,7 +29,7 @@
         if (user) {
           // User is signed in.
           navBarService.updateNavBar();
-          $scope.displayPic = user.photoURL;
+
           $rootScope.logined = true;
 
           //Check if feedbackLink already exist
@@ -41,7 +41,17 @@
             });
           var userData = $firebaseObject(usersRef.child(user.uid));
           userData.$loaded().then(function(){
-            $scope.profileLink =  $sce.trustAsResourceUrl(userData.profileLink);
+            testImage(userData.pic).then(
+                function fulfilled(img) {
+                      $scope.displayPic = $sce.trustAsUrl(userData.pic);
+                },
+
+                function rejected() {
+                      $scope.displayPic = $sce.trustAsUrl("../content/images/photo.jpg");
+                }
+
+            );
+            $scope.profileLink =  userData.profileLink;
           });
         }
       });
@@ -54,10 +64,34 @@
         authService.logout();
         $location.path('/login');
         window.location.reload();
-	}
+    }
 
   }
 
+  function testImage(url) {
 
+      // Define the promise
+      const imgPromise = new Promise(function(resolve, reject) {
+
+          // Create the image
+          const imgElement = new Image();
+
+          // When image is loaded, resolve the promise
+          imgElement.addEventListener('load', function imgOnLoad() {
+              resolve(this);
+          });
+
+          // When there's an error during load, reject the promise
+          imgElement.addEventListener('error', function imgOnError() {
+              reject();
+          })
+
+          // Assign URL
+          imgElement.src = url;
+
+      });
+
+      return imgPromise;
+  }
 
 })();

@@ -655,10 +655,10 @@
     $scope.chapters = [];
     $scope.qnsTypes = [
       {name: "Video", type: "video"},
-      {name: "Images Gallery", type: "slides"},
+      {name: "Slides", type: "slides"},
       {name: "MCQ", type: "mcq"},
       {name: "Spreadsheet", type: "excel"},
-      {name: "Codebox", type: "code"},
+      {name: "Code", type: "code"},
       {name: "Google Form", type: "form"},
       {name: "IFrame (Eg, Google Slides)", type: "iframe"},
     ];

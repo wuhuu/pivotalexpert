@@ -1,21 +1,22 @@
-<div class="container">
-
-	<header class="welcome text-center">
-		
-	</header>
-	
-	<div class="row container-white">
-		<div>
-		<h1>Create Profile Link:</h1>
-			<br>
-			Important: Letters will be changed to lower case and spaces will be removed.
-			<br>
-				<form ng-submit="createProfileLink(newLink)">
-					<label>New Profile Link : </label><input type="text" name="newLink" ng-model="newLink" >
-					<input type="submit" value="Create!" style="margin-left:10px;margin-top:5px;"/>
-				</form>
-			<br>
-            You new profile link will be : http://pivotal-expert.firebaseapp.com/#/profile/{{newLink}}
-		</div>
-	</div>
-</div>
+<meta name="viewport" content="width=device-width">
+  <div layout="row" flex layout-align="center">
+    <div class="md-whiteframe-z2" layout="column" flex="70" flex-xs="100">
+      <div style="padding: 0px 20px">
+        <h1>Create Profile Link</h1>
+      </div>
+      <md-divider></md-divider>
+      <div style="padding: 10px 50px">
+        <div ng-if="qnsInstruction">
+          <p><strong>Important: Letters will be changed to lower case and spaces will be removed.</strong></p>
+        </div>
+        <div >
+					<form ng-submit="createProfileLink(newLink)">
+						<label>Public Profile Username : </label><input type="text" name="newLink" ng-model="newLink" >
+						<input type="submit" value="Create!" style="margin-left:10px;margin-top:5px;"/>
+					</form>
+					<p>You public profile link will be : http://pivotal-expert.firebaseapp.com/#/profile/{{newLink}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</meta>

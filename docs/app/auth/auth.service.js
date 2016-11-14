@@ -37,9 +37,9 @@
         $rootScope.userID = user.uid;
         var loginEmail = user.providerData[0].email;
         var token = result.credential.accessToken;
-
+        var photoURL = user.providerData[0].photoURL;
         usersRef.child(user.uid).update({
-          pic: user.photoURL,
+          pic: photoURL,
           email: loginEmail,
           displayName: user.displayName,
           access_token: token

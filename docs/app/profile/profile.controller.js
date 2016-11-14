@@ -22,8 +22,16 @@
             }else {
                 $scope.displayPencil = false;
             }
-            $scope.displayPic = $sce.trustAsResourceUrl(profile.pic);
+            testImage(profile.pic).then(
+                function fulfilled(img) {
+                      $scope.displayPic = $sce.trustAsUrl(profile.pic);
+                },
 
+                function rejected() {
+                      $scope.displayPic = $sce.trustAsUrl("../content/images/photo.jpg");
+                }
+
+            );
         });
     });
 
@@ -85,5 +93,32 @@
         });
     }
   }
+
+  function testImage(url) {
+
+      // Define the promise
+      const imgPromise = new Promise(function(resolve, reject) {
+
+          // Create the image
+          const imgElement = new Image();
+
+          // When image is loaded, resolve the promise
+          imgElement.addEventListener('load', function imgOnLoad() {
+              resolve(this);
+          });
+
+          // When there's an error during load, reject the promise
+          imgElement.addEventListener('error', function imgOnError() {
+              reject();
+          })
+
+          // Assign URL
+          imgElement.src = url;
+
+      });
+
+      return imgPromise;
+  }
+
 
 })();

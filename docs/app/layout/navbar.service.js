@@ -23,7 +23,6 @@
         });
         //Check whether login is an admin or sub-admin
         var userData = firebase.auth().currentUser;
-        console.log(userData);
         adminRef.once('value', function(snapshot) {
           if(snapshot.child('admin').val()) {
             if(snapshot.child('admin').val() === userData.uid) {

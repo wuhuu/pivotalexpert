@@ -11,7 +11,7 @@
         </textarea>
     </md-input-container>
   </div>
-  
+
   <!--RIGHT SIDE-->
   <div flex="70" layout="column">
     <div style="padding: 0px 20px">
@@ -30,15 +30,15 @@
             <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
         </div>
     </div>
-    
+
     <div layout="column"  ng-if="!srclink">
-        <label style="padding: 0 20px"> Please wait while we prepare the excel sheet.  </label>
+        <label style="padding: 0 20px"> Please wait while we prepare the spreadsheet.  </label>
         <md-progress-linear md-mode="query"></md-progress-linear>
     </div>
     <div ng-if="srclink" style="padding-bottom: 60px">
         <iframe style="height: 450px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
-        <div style="padding: 10px 0px">   
-          <label>Validate Answers</label>        
+        <div style="padding: 10px 0px">
+          <label>Validate Answers</label>
           <div ng-repeat="ans in qns.testcases">
             <div layout="row">
             <br/>
@@ -64,7 +64,7 @@
                   Remove validation
                 </md-tooltip>
             </md-button>
-            </div> 
+            </div>
             <md-input-container class="md-block" >
               <label>Hint Message</label>
               <input ng-model="ans.msg">

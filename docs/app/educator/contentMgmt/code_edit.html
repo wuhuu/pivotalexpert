@@ -19,18 +19,18 @@
       </h2>
         <div class="pull-right"style="padding:20px">
             <md-button class="md-raised " ng-click='saveCodeBoxChanges($event)'>Save all changes</md-button>
-            <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Question</md-button>
+            <md-button class="md-warn md-raised " ng-show="!isNewQuestion" ng-click='deleteQns($event,qns.cid,qns.qid)'>Delete Challenge</md-button>
             <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
         </div>
     </div>
     <md-divider></md-divider>
     </br>
-    <label>Pre-Defined Functions</label>
+    <label>Pre-Defined Codes (These will run but not shown to the student)</label>
     <div id="functionEditor" style="padding: 20px" flex ></div>
     </br>
     <md-divider></md-divider>
     </br>
-    <label>Pre-Loaded Codes in Question</label>
+    <label>Challenge Codebox (This will be given to the students to edit)</label>
     <div id="qnsEditor" style="padding: 20px" flex ></div>
         <div>
         <div layout="row">

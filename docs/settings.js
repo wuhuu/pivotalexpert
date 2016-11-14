@@ -2,15 +2,15 @@
 
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyAiZ2aMY30z0Z6si44j9Vx9-vtVOJiChEU",
-    authDomain: "uat-ui.firebaseapp.com",
-    databaseURL: "https://uat-ui.firebaseio.com",
-    storageBucket: "uat-ui.appspot.com",
-    messagingSenderId: "1081321369054"
+    apiKey: "AIzaSyBzj8ivOz2gu-wpTvO-btGqFwcPjO7IpKM",
+    authDomain: "your-project-name-d52d4.firebaseapp.com",
+    databaseURL: "https://your-project-name-d52d4.firebaseio.com",
+    storageBucket: "your-project-name-d52d4.appspot.com",
+    messagingSenderId: "787059378519"
   };
 
   firebase.initializeApp(config);
 
   //Replace with the name of your course
-  window.courseName = "UAT_UI";
+  window.courseName = "My Library";
 })();

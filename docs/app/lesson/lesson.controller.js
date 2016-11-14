@@ -25,7 +25,7 @@
             $location.path('course');
         });
     }
-    
+
 	var ref = firebase.database().ref();
     var user = firebase.auth().currentUser;
 	var chapter = $routeParams.chapter;
@@ -64,7 +64,7 @@
         $scope.qnsTitle = question.qnsTitle;
 		$scope.qnsInstruction = question.qnsInstruction;
 		$scope.qnsDescription = question.qnsDescription;
-        
+
         var qnsType = question.qnsType;
 
         //Video type question
@@ -92,7 +92,7 @@
             function onYouTubePlayer() {
               player = new YT.Player('player', {
                 height: '150%',
-                width: '100%',  
+                width: '100%',
                 videoId: question.link,
                 events: {
                   'onStateChange': onPlayerStateChange
@@ -154,7 +154,7 @@
             $scope.questions = question.mcq;
             $scope.currentScore = 0;
             $scope.totalScore = $scope.questions.length;
-            
+
             var mcq = question.mcq;
 
             $scope.currentMCQ = 1;
@@ -426,9 +426,9 @@
         }, function(response) {
             var errorCode = response.result.error.code;
             if (errorCode == 404) {
-                showErrorDialog("Could not find the spreadsheet. If this keep occur, manually delete the spreadsheet from firebase and re-login.");
+                showErrorDialog("Could not find the spreadsheet. If this error persists, manually delete the spreadsheet from firebase and re-login.");
             } else {
-                showErrorDialog("Failed to load. Please try again. If this occur again, please logout and signin again." );
+                showErrorDialog("Failed to load spreadsheet, please try again. If this error persists, please Logout and SignIn again." );
             }
           });
         return deferred.promise;

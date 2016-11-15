@@ -21,7 +21,7 @@
       });
 
 
-      $timeout(1000, loadAdmin());
+      $timeout(function() {$scope.adminList = true}, 1000, loadAdmin());
       function loadAdmin() {
         subAdminRef.once('value', function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
@@ -46,11 +46,10 @@
 
       //$scope.invalid = false;
       $scope.addAdmin = function() {
-
+        $scope.addingAdmin = true;
         var userID = $firebaseObject(ref.child('usedLinks/' + $scope.newAdmin));
         userID.$loaded().then(function(){
             if(userID.$value) {
-
                 if($scope.adminShet) {
                   //retrieve email and grant permission for excel spreadsheet
                   var user = $firebaseObject(userRef.child(userID.$value));
@@ -63,6 +62,7 @@
                   window.location.reload();
                 }
             } else {
+                $scope.addingAdmin = false;
                 $scope.invalid = true;
             }
 

@@ -22,7 +22,8 @@
 
         </div>
         <div style="padding-bottom: 20px; padding-top:-20px"  ng-if="feedbackLink || !(isAdmin || mainAdmin)">
-              <h5 style="padding:20px" ng-if="(isAdmin || mainAdmin)">Student view of Google Form</h5>
+            <h5 style="padding:20px" ng-if="(isAdmin || mainAdmin)">Student view of Google Form</h5>
+            <md-progress-linear md-mode="query" ng-hide="loadFeedback"></md-progress-linear>
             <iframe ng-src="{{feedbackLink}}" width="100%" height="450px" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
         </div>
       </div>

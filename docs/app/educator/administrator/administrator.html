@@ -8,6 +8,7 @@
     <div style="padding: 10px 0px">
       <div layout="column">
         <div layout="column" layout-align=" center">
+          <md-progress-linear md-mode="query" ng-hide="adminList"></md-progress-linear>
             <div flex style="padding:20px" ng-if="admins.length != 0">
                 <h3>List of Administrators</h3>
                 <div ng-repeat="user in admins">
@@ -25,11 +26,11 @@
             </div>
 
             <div flex style="padding:20px">
-
               <md-input-container class="md-block">
                 <label>Enter their public profile usernames to add as administrators</label>
                 <input ng-model="newAdmin" name="newAdmin">
               </md-input-container>
+              <md-progress-linear md-mode="query" ng-show="addingAdmin"></md-progress-linear>
               <label style="color:red" ng-show="invalid" > Failed to Add. The username entered is invalid. </label>
             </div>
         </div>

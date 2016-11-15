@@ -12,7 +12,7 @@
         $scope.form = {};
 
         $scope.addFeedback = function() {
-          console.log($scope.form.link);
+            console.log($scope.form.link);
             settingRef.update({"feedback" : $scope.form.link});
             window.location.reload();
         }
@@ -26,7 +26,9 @@
         var feedback = $firebaseObject(feedbackRef);
         feedback.$loaded().then(function(){
             if(feedback.$value) {
+                $scope.loadFeedback = true;
                 $scope.feedbackLink = $sce.trustAsResourceUrl(feedback.$value);
+
             }
 
         });

@@ -9,15 +9,14 @@
       display: block;
     }
   </style>
-  <div layout="row" flex>
-    <div flex="auto"></div>
-    <div class="md-whiteframe-z1 text-center" flex="70" style=" padding: 30px;height:auto;">
+  <div layout="row" layout-align="center" flex>
+    <div class="md-whiteframe-z1 text-center" flex="70" flex-xs="100" style=" padding: 30px;height:auto;">
       <h1>Library</h1>
       <md-button class="md-raised" ng-click="saveBooksOrder($event)">Save Books Order</md-button>
       <md-button class="md-raised" ng-click="addBook($event)">Create a Book</md-button>
       <md-menu>
                 <md-button class="md-raised md-primary" ng-click="courseMenu($mdOpenMenu, $event)">
-                 Export / Import
+                 Export / Import Book
                 </md-button>
                 <md-menu-content width="4">
                    <md-menu-item>
@@ -34,11 +33,9 @@
                 </md-menu-content>
               </md-menu>
     </div>
-    <div flex="auto"></div>
   </div>
-  <div layout="row" flex>
-    <div flex="auto"></div>
-    <div class="md-whiteframe-z2" layout="column" flex="70" style="margin-top: 0px;padding: 20px 20px;">
+  <div layout="row" layout-align="center" flex>
+    <div class="md-whiteframe-z2" layout="column" flex="70" flex-xs="100" style="margin-top: 0px;padding: 20px 20px;">
       <md-content>
         <md-card-content >
             <div id="accordion1" style='background-color:white' layout='column'>
@@ -51,6 +48,16 @@
                     <h3 style='font-weight: bold;'>Book {{$index+1}} :  {{book.bookTitle}}</h3>
                     <p>{{book.bookDescription}}</p>
                   </div>
+<<<<<<< HEAD
+=======
+                  <div flex='20'>
+                    <!-- <md-button ng-click="viewBook(book.bid)" class="md-primary md-icon-button" aria-label="Settings">
+                      <i style="font-size:1.5em;" class="material-icons">book</i>
+                      <md-tooltip md-delay="200">
+                        View Book Content
+                      </md-tooltip>
+                    </md-button> -->
+>>>>>>> f84dba347298ca1bf0429aba2d685f37552fa30c
                     <md-button ng-click="editBook($event,book.bookTitle,book.bookDescription,book.bid)" class="md-icon-button" aria-label="Settings">
                       <i style="font-size:1.5em" class="fa fa-pencil"></i>
                       <md-tooltip md-delay="200">
@@ -71,5 +78,4 @@
         <md-card-content >
       </md-content>
     </div>
-    <div flex="auto"></div>
 </div>

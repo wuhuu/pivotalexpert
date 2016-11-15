@@ -11,7 +11,7 @@
         </textarea>
     </md-input-container>
   </div>
-  
+
   <!--RIGHT SIDE-->
   <div flex="70" layout="column">
     <div style="padding: 0px 20px">
@@ -30,32 +30,32 @@
             <md-button class="md-raised" type='submit' ng-click='backToCourseMap()'>Cancel</md-button>
         </div>
     </div>
-    
+
     <div layout="column"  ng-if="!srclink">
-        <label style="padding: 0 20px"> Please wait while we prepare the excel sheet.  </label>
+        <label style="padding: 0 20px"> Please wait while we prepare the spreadsheet.  </label>
         <md-progress-linear md-mode="query"></md-progress-linear>
     </div>
     <div ng-if="srclink" style="padding-bottom: 60px">
         <iframe style="height: 450px; width: 100%" ng-src="{{srclink}}" ng-if="!!srclink"></iframe>
-        <div style="padding: 10px 0px">   
-          <label>Validate Answers</label>        
+        <div style="padding: 10px 0px">
+          <label>Answer Validation</label>
           <div ng-repeat="ans in qns.testcases">
             <div layout="row">
             <br/>
             <md-input-container class="md-block">
-              <label>Cell to Change</label>
+              <label>Cell to Change(A cell where you change the value for testing)</label>
               <input ng-model="ans.cellToChange"/>
             </md-input-container>
             <md-input-container class="md-block">
-                <label>Changed To</label>
+                <label>Value to replace the current cell value</label>
                 <input ng-model="ans.changedTo">
             </md-input-container>
             <md-input-container class="md-block" >
-              <label>Expect Cell</label>
+              <label>Answer Cell (Cell to validate answer)</label>
               <input ng-model="ans.expectCell">
             </md-input-container>
             <md-input-container class="md-block" >
-              <label>toEqual</label>
+              <label>Expected Value of Answer Cell</label>
               <input ng-model="ans.toEqual">
             </md-input-container>
             <md-button ng-click='deleteValidation($index)' class="md-icon-button" aria-label="deleteValidation">
@@ -64,9 +64,9 @@
                   Remove validation
                 </md-tooltip>
             </md-button>
-            </div> 
+            </div>
             <md-input-container class="md-block" >
-              <label>Hint Message</label>
+              <label>Hint for student</label>
               <input ng-model="ans.msg">
             </md-input-container>
           </div>

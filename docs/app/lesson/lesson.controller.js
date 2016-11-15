@@ -199,7 +199,7 @@
         }
 
         //Excel type question
-        if (qnsType == 'excel') {
+        if (qnsType == 'spreadsheet') {
             //load qns sheet ID
             $scope.sheetID = question.sheetID;
 
@@ -314,7 +314,7 @@
                 }
 
                 //excel question type
-                if (qnsType == 'excel') {
+                if (qnsType == 'spreadsheet') {
                     $scope.incorrect = false;
                     gapi.auth.setToken({
                         access_token: $scope.token
@@ -419,9 +419,9 @@
         }, function(response) {
             var errorCode = response.result.error.code;
             if (errorCode == 404) {
-                showErrorDialog("Could not find the spreadsheet. If this keep occur, manually delete the spreadsheet from firebase and re-login.");
+                showErrorDialog("Could not find the spreadsheet. If this error persists, manually delete the spreadsheet from firebase and re-login.");
             } else {
-                showErrorDialog("Failed to load. Please try again. If this occur again, please logout and signin again." );
+                showErrorDialog("Failed to load spreadsheet, please try again. If this error persists, please Logout and SignIn again." );
             }
           });
         return deferred.promise;

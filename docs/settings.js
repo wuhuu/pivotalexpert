@@ -12,5 +12,6 @@
   firebase.initializeApp(config);
 
   //Replace with the name of your course
+
   window.courseName = "Pivotal Expert";
 })();

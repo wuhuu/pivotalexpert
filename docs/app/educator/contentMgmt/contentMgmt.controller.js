@@ -194,7 +194,7 @@
             });
           }
 
-          if (question.qnsType === 'excel') {
+          if (question.qnsType === 'spreadsheet') {
             $timeout(loadDetails, 3000);
           }
           function loadDetails() {
@@ -247,7 +247,7 @@
         $scope.qns['hint'] = "";
       } else if (qnsType === "form") {
         $scope.qns['link'] = "";
-      } else if (qnsType === "excel") {
+      } else if (qnsType === "spreadsheet") {
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['sheetID'] = "";
         //answer key scope
@@ -294,8 +294,8 @@
 
     $scope.saveQns = function (ev) {
       var confirm = $mdDialog.confirm()
-        .title('Would you want to save all changes?')
-        .textContent('This challenge will be saved to what you configured, is it ok to proceed?')
+        .title('Would you like to save all changes?')
+        .textContent('This challenge will be saved to what you have configured, is it ok to proceed?')
         .targetEvent(ev)
         .ok('Please do it!')
         .cancel('Cancel!');
@@ -369,7 +369,7 @@
         // Appending dialog to document.body to cover sidenav in docs app
         var confirm = $mdDialog.confirm()
           .title('Would you want to save all changes?')
-          .textContent('This question will be saved to what you configured, is it ok to proceed?')
+          .textContent('This challenge will be saved to what you have configured, is it ok to proceed?')
           .targetEvent(ev)
           .ok('Please do it!')
           .cancel('Cancel!');
@@ -377,7 +377,7 @@
       $mdDialog.show(confirm).then(function () {
         var listToUpdate = [];
         var qids = $("#mcq").find('strong');
-        // updating the question sequence
+        // updating the challenge sequence
         for (i = 0; i < qids.length; i++) {
           var qid = qids[i].innerText.replace('.', '');
           $.each(mcqList, function (index, value) {
@@ -389,7 +389,7 @@
         }
         $scope.qns.mcq = listToUpdate;
 
-        contentMgmtService.updateMCQ($scope.qns, $scope.isNewQuestion).then(function () {
+        contentMgmtService.updateMCQ($scope.qns, $scope.isNewchallenge).then(function () {
           window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
           commonService.showSimpleToast("MCQ Challenge Added/Updated.");
         });
@@ -435,7 +435,7 @@
       $mdDialog.show(confirm).then(function () {
         contentMgmtService.deleteQuestion(cid, qid).then(function () {
           window.location.href = "#/educator/bookMap/" + contentMgmtService.getBookID();
-          commonService.showSimpleToast("Question deleted.");
+          commonService.showSimpleToast("Challenge deleted.");
           //window.location.reload();
         });
       }, function () {
@@ -445,8 +445,8 @@
 
     $scope.deleteChap = function (ev, cid) {
       var confirm = $mdDialog.confirm()
-        .title('Do you really want to DELETE this question?')
-        .textContent('This question will deleted, is it ok to proceed?')
+        .title('Do you really want to DELETE this challenge?')
+        .textContent('This challenge will deleted, is it ok to proceed?')
         .targetEvent(ev)
         .ok('Delete it now!')
         .cancel('Cancel');
@@ -522,7 +522,7 @@
       });
     }
 
-    // ADDITION PART for excel
+    // ADDITION PART for spreadsheet
     //Add more value answer
     $scope.addValidation = function () {
       $scope.qns.testcases.push({ cellToChange: "", changedTo: "", expectCell: "", toEqual: "", msg: "" });
@@ -547,7 +547,7 @@
         contentMgmtService.updateExcel($scope.qns, $scope.isNewQuestion).then(function (result) {
           if (result) {
             gapi.client.load(discoveryUrl).then(updateSheetTitle);
-            commonService.showSimpleToast("Excel Challenge Added/Updated.");
+            commonService.showSimpleToast("Spreadsheet Challenge Added/Updated.");
           } else {
             commonService.showSimpleToast(" Added/Updated Failed! This Challenge Title had been used.");
           }
@@ -566,7 +566,7 @@
         var sheetID = null;
         for (i = 0; i < sheets.length; i++) {
           var sheetTitle = sheets[i].properties.title;
-          if (sheetTitle === "New Question Created") {
+          if (sheetTitle === "New challenge Created") {
             sheetID = sheets[i].properties.sheetId;
             deferred.resolve(sheetID);
           }
@@ -616,7 +616,7 @@
           {
             addSheet: {
               properties: {
-                title: "New Question Created",
+                title: "New challenge Created",
               }
             }
           }
@@ -711,7 +711,7 @@
         ' <h3>Export options:</h3><br>' +
         '  <md-dialog-content>' +
         '  <md-input-container style="width:500px;height:auto;">' +
-        '    <label>Please select Chapter to put question in.</label> ' +
+        '    <label>Please select Chapter to put challenge in.</label> ' +
         '    <md-select ng-model="selectedChapter" name="chapter" required>' +
         '      <md-option ng-repeat="item in chapters" value="{{item.cid}}">' +
         '       {{item.chapterTitle}}' +
@@ -925,7 +925,7 @@
               angular.forEach(question, function (qns, key) {
                 totalQnsCount++;
                 //if excel qns
-                if (qns.qnsType == 'excel') {
+                if (qns.qnsType == 'spreadsheet') {
                   contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
 
                     qns.sheetID = response;
@@ -1771,8 +1771,8 @@
         function importQuestion(qns, spreadsheetID, userSpreadsheetID, answer) {
           var q = $q.defer();
 
-          //if excel qns
-          if (qns.qnsType == 'excel' && spreadsheetID != -1 && userSpreadsheetID != -1) {
+          //if spreadsheet qns
+          if (qns.qnsType == 'spreadsheet' && spreadsheetID != -1 && userSpreadsheetID != -1) {
             contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
               qns.sheetID = response;
               q.resolve(qns);

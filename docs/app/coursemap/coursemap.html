@@ -3,11 +3,10 @@
     <div layout="row" flex>
         <div flex="auto"></div>
         <div class="md-whiteframe-z1 text-center" flex="70" flex-xs="100" style=" padding: 0px 10px;height: 70px;">
-
               <h1>{{book.bookTitle}} Content Map</h1>
+
         </div>
         <div flex="auto">
-
         </div>
     </div>
     <style>
@@ -18,9 +17,11 @@
       }
       .material-icons.green { color: 	#008000; }
     </style>
+
     <div layout="row" layout-align="center" flex>
     <div class="md-whiteframe-z2" layout="column" flex="70" flex-xs="100" flex-sm="100" style="margin-top: 0px;padding: 20px 20px;">
       <md-content flex md-scroll-y>
+        <md-progress-linear md-mode="query" ng-hide="hideLoading"></md-progress-linear>
       <md-card-content>
         <div id="accordion1" style='background-color:white'>
           <div style="height:auto;" layout="column" ng-repeat="chapter in courseMaterial" ng-init="courseIndex = $index" on-finish-render="ngRepeatFinished">

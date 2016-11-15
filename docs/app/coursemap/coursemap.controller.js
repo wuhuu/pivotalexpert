@@ -61,6 +61,7 @@
                 }
               }
           $scope.$apply(function(){
+            $scope.hideLoading = true;
             $scope.courseMaterial = courseList;
           });
         });

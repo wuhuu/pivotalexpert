@@ -691,6 +691,7 @@
         seq.push(courseMap[i]);
         $scope.chapters.push({ cid: courseMap[i].cid, chapterTitle: courseMap[i].chapterTitle });
       }
+      $scope.hideLoading = true;
       $scope.courseMap = seq;
     });
 
@@ -1254,6 +1255,7 @@
       for (i = 0; i < library.length; i++) {
         $scope.library.push({ bid: library[i].$id, bookTitle: library[i].bookTitle, bookDescription: library[i].bookDescription });
       }
+      $scope.hideLoading = true;
     });
 
     $scope.saveBooksOrder = function(ev) {
@@ -1660,7 +1662,6 @@
             // Closure to capture the file information.
             reader.onload = (function (theFile) {
               return function (e) {
-                // try {
                 $scope.loading = true;
                 importCourse(e).then(function () {
                   $timeout(function () { window.location.reload(); }, 1000);
@@ -1783,8 +1784,6 @@
           }
           return q.promise;
         }
-
-
       }
     };
   }

@@ -37,6 +37,7 @@
   <div layout="row" layout-align="center" flex>
     <div class="md-whiteframe-z2" layout="column" flex="70" flex-xs="100" style="margin-top: 0px;padding: 20px 20px;">
       <md-content>
+        <md-progress-linear md-mode="query" ng-hide="hideLoading"></md-progress-linear>
         <md-card-content >
             <div id="accordion1" style='background-color:white' layout='column'>
               <div class="books" ng-repeat="book in library track by $index" layout='column' on-book-finish-render="ngRepeatFinished">

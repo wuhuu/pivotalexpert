@@ -199,7 +199,7 @@
         }
 
         //Excel type question
-        if (qnsType == 'spreadsheet') {
+        if (qnsType == 'excel') {
             //load qns sheet ID
             $scope.sheetID = question.sheetID;
 
@@ -314,7 +314,7 @@
                 }
 
                 //excel question type
-                if (qnsType == 'spreadsheet') {
+                if (qnsType == 'excel') {
                     $scope.incorrect = false;
                     gapi.auth.setToken({
                         access_token: $scope.token
@@ -365,7 +365,14 @@
                                     if ($scope.codeResult.indexOf(false) === -1) {
                                         showCompleteDialog("FANTASTIC!! You have completed the Challenge, go for more!");
                                     } else {
+
                                         $scope.incorrect = true;
+                                        var hint = "";
+                                        for (a = 0; a < $scope.hints.length ; a++){
+                                          var hintNo = a + 1;
+                                          hint = hint + hintNo + " " + $scope.hints[a] + "\n\r";
+                                        }
+                                        $scope.qnsHint = hint;
                                     }
                                 }
                             });
@@ -419,9 +426,9 @@
         }, function(response) {
             var errorCode = response.result.error.code;
             if (errorCode == 404) {
-                showErrorDialog("Could not find the spreadsheet. If this error persists, manually delete the spreadsheet from firebase and re-login.");
+                showErrorDialog("Could not find the spreadsheet. If this keep occur, manually delete the spreadsheet from firebase and re-login.");
             } else {
-                showErrorDialog("Failed to load spreadsheet, please try again. If this error persists, please Logout and SignIn again." );
+                showErrorDialog("Failed to load. Please try again. If this occur again, please logout and signin again." );
             }
           });
         return deferred.promise;

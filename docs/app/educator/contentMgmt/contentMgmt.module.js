@@ -27,8 +27,8 @@
       templateUrl: 'app/educator/contentMgmt/mcq_edit.html',
 	     controller: 'ContentMgmtController'
     })
-    .when('/educator/spreadsheet_edit/:bid/:cid/:qid', {
-      templateUrl: 'app/educator/contentMgmt/spreadsheet_edit.html',
+    .when('/educator/excel_edit/:bid/:cid/:qid', {
+      templateUrl: 'app/educator/contentMgmt/excel_edit.html',
 	     controller: 'ContentMgmtController'
     })
     .when('/educator/code_edit/:bid/:cid/:qid', {

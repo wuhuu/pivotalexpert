@@ -19,7 +19,7 @@
 	  controller: 'LessonController'
     })
 	.when('/lesson/excel/:bid/:chapter/:qns/:qid', {
-      templateUrl: 'app/lesson/spreadsheet.html',
+      templateUrl: 'app/lesson/excel.html',
 	  controller: 'LessonController'
     })
     .when('/lesson/code/:bid/:chapter/:qns/:qid', {

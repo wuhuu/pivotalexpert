@@ -7,7 +7,7 @@
   function LandingController($rootScope, $firebaseObject,$location) {
 	  console.log("LandingController");
       firebase.auth().onAuthStateChanged(function(user) {
-         
+
         if (user) {
           // User is signed in.
           var usersRef = firebase.database().ref().child('auth/users');
@@ -17,7 +17,7 @@
             $rootScope.logined = true;
             if(userData.profileLink == null) {
               $location.path('/createProfileLink');
-            }
+            } 
             else{
               $location.path('/course/');
             }

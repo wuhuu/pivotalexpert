@@ -194,7 +194,7 @@
             });
           }
 
-          if (question.qnsType === 'spreadsheet') {
+          if (question.qnsType === 'excel') {
             $timeout(loadDetails, 3000);
           }
           function loadDetails() {
@@ -247,7 +247,7 @@
         $scope.qns['hint'] = "";
       } else if (qnsType === "form") {
         $scope.qns['link'] = "";
-      } else if (qnsType === "spreadsheet") {
+      } else if (qnsType === "excel") {
         $scope.qns['qnsInstruction'] = "";
         $scope.qns['sheetID'] = "";
         //answer key scope
@@ -925,7 +925,7 @@
               angular.forEach(question, function (qns, key) {
                 totalQnsCount++;
                 //if excel qns
-                if (qns.qnsType == 'spreadsheet') {
+                if (qns.qnsType == 'excel') {
                   contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
 
                     qns.sheetID = response;

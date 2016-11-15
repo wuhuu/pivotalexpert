@@ -39,9 +39,10 @@
                 }
             }
           }
-
+          var url = $location.url();
+          var educatorLink = url.includes('educator');
           // check if user is admin, if not go to student side.
-          if(!($rootScope.isAdmin || $rootScope.mainAdmin)){
+          if(educatorLink && !($rootScope.isAdmin || $rootScope.mainAdmin)){
               $location.path('/course/');
           }
         });

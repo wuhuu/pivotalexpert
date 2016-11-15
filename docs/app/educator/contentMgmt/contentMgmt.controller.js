@@ -121,8 +121,8 @@
     });
 
 
-  function ContentMgmtController($http, $scope, $rootScope, $sce, $routeParams, $location, $firebaseArray, $mdDialog, $firebaseObject, commonService, contentMgmtService, $timeout, $q) {
-
+  function ContentMgmtController($http, $scope, $rootScope, $sce, $routeParams, $location, $firebaseArray, $mdDialog, $firebaseObject,navBarService, commonService, contentMgmtService, $timeout, $q) {
+    navBarService.updateNavBar();
     console.log("ContentMgmtController");
 
     function showErrorDialog(msg) {
@@ -649,7 +649,8 @@
 
   }
 
-  function CourseMapController($timeout, $http, $rootScope, $scope, $routeParams, $mdDialog, $location, $firebaseObject, contentMgmtService, $q) {
+  function CourseMapController($timeout, $http, $rootScope, $scope, $routeParams, $mdDialog, $location, $firebaseObject,navBarService, contentMgmtService, $q) {
+    navBarService.updateNavBar();
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
     $scope.chapters = [];
@@ -1244,8 +1245,8 @@
 
   }
 
-  function BookController($timeout, $http, $scope, $rootScope, $routeParams, $mdDialog, $location, $firebaseObject,$window,commonService, contentMgmtService) {
-
+  function BookController($timeout, $http, $scope, $rootScope, $routeParams, $mdDialog, $location, $firebaseObject,$window,navBarService,commonService, contentMgmtService) {
+    navBarService.updateNavBar();
     $scope.library = [];
     // get library to display
     var library = contentMgmtService.getLibrary();

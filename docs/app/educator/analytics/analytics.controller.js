@@ -20,7 +20,8 @@
       }
     });
 
-    function AnalyticsController ($scope,contentMgmtService,$firebaseObject,$firebaseArray,$location,$routeParams) {
+    function AnalyticsController ($scope,contentMgmtService,$firebaseObject,$firebaseArray,$location,$routeParams,navBarService) {
+      navBarService.updateNavBar();
       var ref = firebase.database().ref();
       var activeUserNode = ref.child('analytics/activeUser');
       var challengeStats = ref.child('analytics/challengeStats')

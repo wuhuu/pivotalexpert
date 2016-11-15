@@ -1,17 +1,17 @@
 (function() {
 
-  // Initialize Firebase
+ // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyA1C3DGIpn6zY1p9z4a7qDnE60p28HDgxQ",
-    authDomain: "fyp-development.firebaseapp.com",
-    databaseURL: "https://fyp-development.firebaseio.com",
-    storageBucket: "fyp-development.appspot.com",
-    messagingSenderId: "1024577960550"
+    apiKey: "AIzaSyAiZ2aMY30z0Z6si44j9Vx9-vtVOJiChEU",
+    authDomain: "uat-ui.firebaseapp.com",
+    databaseURL: "https://uat-ui.firebaseio.com",
+    storageBucket: "uat-ui.appspot.com",
+    messagingSenderId: "1081321369054"
   };
 
   firebase.initializeApp(config);
 
   //Replace with the name of your course
 
-  window.courseName = "FYP TESTING";
+  window.courseName = "UAT UI";
 })();

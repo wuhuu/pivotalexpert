@@ -13,5 +13,5 @@
 
   //Replace with the name of your course
 
-  window.courseName = "UAT UI";
+  window.courseName = "UAT UI1";
 })();

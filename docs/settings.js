@@ -1,17 +1,17 @@
 (function() {
 
  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyAiZ2aMY30z0Z6si44j9Vx9-vtVOJiChEU",
-    authDomain: "uat-ui.firebaseapp.com",
-    databaseURL: "https://uat-ui.firebaseio.com",
-    storageBucket: "uat-ui.appspot.com",
-    messagingSenderId: "1081321369054"
-  };
+ var config = {
+   apiKey: "AIzaSyDt22-VriobDs7cNfkmY8yxHur9IQBewWo",
+   authDomain: "pivotal-expert.firebaseapp.com",
+   databaseURL: "https://pivotal-expert.firebaseio.com",
+   storageBucket: "firebase-pivotal-expert.appspot.com",
+   messagingSenderId: "841641391530"
+ };
 
   firebase.initializeApp(config);
 
   //Replace with the name of your course
 
-  window.courseName = "UAT UI2";
+  window.courseName = "PIVOTAL EXPERT";
 })();

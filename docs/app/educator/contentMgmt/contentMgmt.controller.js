@@ -650,6 +650,7 @@
   }
 
   function CourseMapController($timeout, $http, $rootScope, $scope, $routeParams, $mdDialog, $location, $firebaseObject,navBarService, contentMgmtService, $q) {
+
     navBarService.updateNavBar();
     $scope.chapTBD = [];
     $scope.qnsTBD = [];
@@ -683,7 +684,6 @@
         $scope.accessToken = adminUser.child('access_token').val();
       });
     });
-
 
     courseMap.$loaded().then(function () {
       var seq = [];
@@ -889,27 +889,38 @@
                   var question = JsonObj.course.questions;
                   var chapter = JsonObj.course.chapters;
                   var spreadsheetID = JsonObj.spreadsheetID;
+                  var numOfQns = 0;
                   var cid = "";
 
-                  contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
-                    //Add to course chapter
-                    angular.forEach(chapter, function (chap, key) {
-                      var chapRef = chapterRef.push(chap);
-                      cid = chapRef.key;
-                      ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
-                    });
+                  angular.forEach(question, function (qns, key) {
+                    numOfQns++;
+                  });
 
-                    importQuestions(question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
-
-                      sequence.cid = cid;
-                      sequence.qns = qnsList;
-                      // Add to sequence
-                      sequenceRef.once("value", function (snapshot) {
-                        sequenceRef.child(snapshot.numChildren()).set(sequence);
-                        window.location.reload();
+                  var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+                  gapi.client.load(discoveryUrl).then(function() {
+                    contentMgmtService.getAdminSpreadsheetID().then(function (userSpreadsheetID) {
+                      //Add to course chapter
+                      angular.forEach(chapter, function (chap, key) {
+                        var chapRef = chapterRef.push(chap);
+                        cid = chapRef.key;
+                        ref.child('/course/chapters/' + cid).update({ helpRoomCode: cid });
                       });
-                    });
 
+                      importQuestions(question, spreadsheetID, userSpreadsheetID, answer).then(function (qnsList) {
+
+                        sequence.cid = cid;
+                        sequence.qns = qnsList;
+
+                        if(qnsList.length == numOfQns) {
+                          // Add to sequence
+                          sequenceRef.once("value", function (snapshot) {
+                            sequenceRef.child(snapshot.numChildren()).set(sequence);
+                            window.location.reload();
+                          });
+                        }
+                      });
+
+                    });
                   });
                 } catch (err) {
                   $scope.fileError = "Please upload file in correct JSON format.";
@@ -923,42 +934,38 @@
               var qnsList = [];
               var totalQnsCount = 0;
               var currentQnsCount = 0
-              //Add to course Question
               angular.forEach(question, function (qns, key) {
                 totalQnsCount++;
+              });
+              //Add to course Question
+              angular.forEach(question, function (qns, key) {
+                var qnsRef = questionRef.push(qns);
+                var qid = qnsRef.key;
+                if (answer && answer[key]) {
+                  ref.child('/answerKey/' + qid).set(answer[key]);
+                }
                 //if excel qns
                 if (qns.qnsType == 'excel') {
                   contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
-
                     qns.sheetID = response;
-                    var qnsRef = questionRef.push(qns);
-                    var qid = qnsRef.key;
-                    if (answer[key]) {
-                      ref.child('/answerKey/' + qid).set(answer[key]);
-                    }
                     qnsList.push({ qid: qid, qnsTitle: qns.qnsTitle, qnsType: qns.qnsType });
-                    currentQnsCount++;
-                    if (currentQnsCount == totalQnsCount) {
+                    if(response) {
+                      currentQnsCount++;
+                    }
+                    if (currentQnsCount === totalQnsCount) {
                       q.resolve(qnsList);
                     }
                   });
                 } else {
                   currentQnsCount++;
-                  var qnsRef = questionRef.push(qns);
-                  var qid = qnsRef.key;
-                  if (answer && answer[key]) {
-                    ref.child('/answerKey/' + qid).set(answer[key]);
-                  }
                   qnsList.push({ qid: qid, qnsTitle: qns.qnsTitle, qnsType: qns.qnsType });
-                  if (currentQnsCount == totalQnsCount) {
+                  if (currentQnsCount === totalQnsCount) {
                     q.resolve(qnsList);
                   }
                 }
               });
-
               return q.promise;
             }
-
             // Read in the image file as a data URL.
             reader.readAsText(file);
           } else {
@@ -1229,8 +1236,6 @@
 
         $scope.nextStep = function () {
           var ref = firebase.database().ref();
-
-
           //Update to library
           var bookRef = ref.child('library/' + bid + '/sequence/' + id);
           bookRef.update({chapterTitle : $scope.chptTitle});
@@ -1687,21 +1692,23 @@
           var question = JsonObj.course.questions;
           var chapter = JsonObj.course.chapters;
           var spreadsheetID = JsonObj.spreadsheetID;
+          var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+          gapi.client.load(discoveryUrl).then(function() {
+            angular.forEach(book, function (bookContent, bookID) {
 
-          angular.forEach(book, function (bookContent, bookID) {
+              nbook.bookDescription = bookContent.bookDescription;
+              nbook.bookTitle = bookContent.bookTitle;
+              var sequences = bookContent.sequence;
 
-            nbook.bookDescription = bookContent.bookDescription;
-            nbook.bookTitle = bookContent.bookTitle;
-            var sequences = bookContent.sequence;
+              importSequence(sequences, answer, question, chapter, spreadsheetID).then(function (seqList) {
+                nbook.sequence = seqList;
 
-            importSequence(sequences, answer, question, chapter, spreadsheetID).then(function (seqList) {
-              nbook.sequence = seqList;
+                // Add to firebase
+                libraryRef.push(nbook);
+                q.resolve(true);
+              });
 
-              // Add to firebase
-              libraryRef.push(nbook);
-              q.resolve(true);
             });
-
           });
           return q.promise;
         }
@@ -1740,15 +1747,20 @@
 
         function importQuestions(sequenceQns, questionList, spreadsheetID, userSpreadsheetID, answer) {
           var q = $q.defer();
-          var totalQnsCount = 0;
+
           var currentQnsCount = 0;
           var qnsList = [];
 
           if (sequenceQns) {
             angular.forEach(sequenceQns, function (seqQns, seqKey) {
+              var totalQnsCount = 0;
               angular.forEach(questionList, function (qns, qnsKey) {
                 if (seqQns.qid == qnsKey) {
-                  totalQnsCount++
+                  totalQnsCount++;
+                }
+              });
+              angular.forEach(questionList, function (qns, qnsKey) {
+                if (seqQns.qid == qnsKey) {
                   importQuestion(qns, spreadsheetID, userSpreadsheetID, answer).then(function (nQns) {
                     var qnsRef = questionRef.push(nQns);
                     var qid = qnsRef.key;
@@ -1774,7 +1786,7 @@
           var q = $q.defer();
 
           //if spreadsheet qns
-          if (qns.qnsType == 'spreadsheet' && spreadsheetID != -1 && userSpreadsheetID != -1) {
+          if (qns.qnsType == 'excel' && spreadsheetID != -1 && userSpreadsheetID != -1) {
             contentMgmtService.copySpreadsheetQns($scope.accessToken, spreadsheetID, qns.sheetID, userSpreadsheetID).then(function (response) {
               qns.sheetID = response;
               q.resolve(qns);

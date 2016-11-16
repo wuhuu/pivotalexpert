@@ -41,20 +41,24 @@
             });
           var userData = $firebaseObject(usersRef.child(user.uid));
           userData.$loaded().then(function(){
-            // testImage(userData.pic).then(
-            //     function fulfilled(img) {
-            //           $scope.displayPic = $sce.trustAsUrl(userData.pic);
-            //           navBarService.updateDisplayPic($scope.displayPic);
-            //     },
-
-            //     function rejected() {
-            //           $scope.displayPic = $sce.trustAsUrl("../content/images/photo.jpg");
-            //           navBarService.updateDisplayPic($scope.displayPic);
-            //     }
-
-            // );
-            navBarService.updateDisplayPic(userData.pic);
+            testImage(userData.pic).then(
+                function fulfilled(img) {
+                      $scope.displayPic = $sce.trustAsUrl(userData.pic);
+                      navBarService.updateDisplayPic($scope.displayPic);
+                },
+                function rejected() {
+                      $scope.displayPic = $sce.trustAsUrl("../content/images/photo.jpg");
+                      navBarService.updateDisplayPic($scope.displayPic);
+                }
+            );
             $scope.profileLink =  userData.profileLink;
+            var usersLinkRef =  $firebaseObject(ref.child('auth/usedLinks/' + userData.profileLink));
+            usersLinkRef.$loaded().then(function(){
+              if(!usersLinkRef.$value) {
+                ref.child('auth/usedLinks/' + userData.profileLink).set(user.uid);
+              }
+            });
+
           });
         }
       });

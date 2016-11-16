@@ -909,7 +909,7 @@
                     answerKeyNodeRef.child(qid).update(answerNode);
 
                     //Update course sequence
-                    var questionSeqNode = {qid:qid, qnsTitle:question.qnsTitle, qnsType: "spreadsheet"};
+                    var questionSeqNode = {qid:qid, qnsTitle:question.qnsTitle, qnsType: "excel"};
 
                     //find the chapter cidIndex
                     getChapterIndex(cid).then(function(chapIndex){
@@ -1016,20 +1016,21 @@
         }
 
         function copySpreadsheetQns(accessToken, IDCopyFrom, sheetID, IDCopyTo) {
-            var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-            var deferred = $q.defer();
-            gapi.client.load(discoveryUrl).then(function() {
-              gapi.client.sheets.spreadsheets.sheets.copyTo({
-                spreadsheetId: IDCopyFrom,
-                sheetId: sheetID,
-                destinationSpreadsheetId: IDCopyTo,
-              }).then(function(response) {
-                var title = response.result.title.substring(8);
-                deferred.resolve(response.result.sheetId);
-                updateSheetTitle(IDCopyTo, title, response.result.sheetId);
-              });
-            });
-            return deferred.promise;
+
+          var deferred = $q.defer();
+
+          gapi.client.sheets.spreadsheets.sheets.copyTo({
+            spreadsheetId: IDCopyFrom,
+            sheetId: sheetID,
+            destinationSpreadsheetId: IDCopyTo,
+          }).then(function(response) {
+            var title = response.result.title.substring(8);
+            deferred.resolve(response.result.sheetId);
+            updateSheetTitle(IDCopyTo, title, response.result.sheetId);
+          }, function(response) {
+            deferred.resolve(-1);
+          });
+          return deferred.promise;
         }
 
         function updateSheetTitle(spreadsheetID, titleName, sheetID) {

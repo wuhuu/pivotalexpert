@@ -16,9 +16,9 @@
       <md-icon md-svg-icon="menu.svg"></md-icon>
     </md-button>
     -->
-    <h2 show hide-xs >
-		  <span>{{courseTitle}}</span>
-	  </h2>
+    <div hide-xs>
+      <h2>{{courseTitle}}</h2>
+    </div>
     <span flex></span>
     <md-button style="margin-right:10px" href="#/educator/administrator" ng-show="mainAdmin" hide-xs >Manage Admin</md-button>
     <md-button style="margin-right:10px" href="#/feedback" ng-show="isAdmin || mainAdmin || haveFeedback" hide-xs >Feedback</md-button>

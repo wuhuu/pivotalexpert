@@ -28,8 +28,10 @@
       <i class="fa fa-sitemap" aria-hidden="true"></i>
     </md-button>
     <md-button style="margin-right:10px" href="#/course" hide-xs >Library</md-button>
-    <md-button style="margin-right:10px" href="#/profile/{{profileLink}}" >[ {{ownNumAchievement}} ]</md-button>
-
+    <div>
+      <md-button style="margin-right:10px" href="#/profile/{{profileLink}}" >[ {{ownNumAchievement}} ]</md-button>
+      <md-tooltip>Total Challenges Completed</md-tooltip>
+    </div>
     <md-button style="margin-right:10px" hide-xs class="md-fab md-primary md-hue-2" aria-label="Profile" href="#/profile/{{profileLink}}">
       <img ng-src="{{displayPic}}" alt="Profile Photo" class="profilePic">
     </md-button>

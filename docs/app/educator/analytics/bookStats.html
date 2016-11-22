@@ -1,6 +1,5 @@
 <style>
     #chapter {
-        cursor: pointer;
         font-weight:bold;
 
     }
@@ -41,13 +40,10 @@
                         <tbody ng-repeat="chapter in bookStats track by $index" on-done-render>
                             <tr id='chapter'>
                                 <td class='firstRow'><div>{{chapter.title}}
-                                    <md-tooltip md-delay="200">
-                                        Click to expand
-                                    </md-tooltip></div>
                                 </td>
                                 <td>{{chapter.totalUserCompleted}}/{{chapter.totalUserAttempted}}</td>
                                 <td>{{chapter.avgDuration}}</td>
-                                <td>-</td>
+                                <td>N.A</td>
                                 <td><md-progress-linear style='margin-top:5px' md-mode="determinate" value="{{chapter.avgProgress}}"></md-progress-linear></td>
                                 <td>{{chapter.avgProgress}}%</td>
                             </tr>
@@ -56,8 +52,8 @@
                                 <td>{{qns.totalUserCompleted}}/{{qns.totalUserAttempted}}</td>
                                 <td>{{qns.avgDuration}}</td>
                                 <td>{{qns.revisitCount}}</td>
-                                <td>-</td>
-                                <td>-</td>
+                                <td>N.A</td>
+                                <td>N.A</td>
                             </tr>
                         </tbody>
                       </table>

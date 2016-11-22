@@ -333,6 +333,7 @@
                                 $scope.incorrect = true;
                                 $scope.checkingAns = false;
                             }
+                            $scope.checkingAns = false;
                         });
                     });
                 }
@@ -380,6 +381,7 @@
                     } else {
                         $scope.incorrect = true;
                         $scope.errMsg = "Error with the syntax. Please check your answer again."
+                        $scope.checkingAns = false;
                     }
                 }
             });
@@ -741,7 +743,6 @@
             }else{
               var record = {};
               record[user.uid] = true;
-              userCompletedRecordRef.update(record);
               var firstEndDateTime = new Date();
               var firstEndDateTimeString = firstEndDateTime.toLocaleString("en-US");
               userChallengeTimeRecordRef.update({endTime:firstEndDateTimeString});
@@ -755,11 +756,11 @@
               }else{
                 challengeRecordRef.update({averageTime:difference});
               }
+              userCompletedRecordRef.update(record);
             }
           }else{
             var record = {};
             record[user.uid] = true;
-            userCompletedRecordRef.update(record);
             var firstEndDateTime = new Date();
             var firstEndDateTimeString = firstEndDateTime.toLocaleString("en-US");
             userChallengeTimeRecordRef.update({endTime:firstEndDateTimeString});
@@ -773,6 +774,7 @@
             }else{
               challengeRecordRef.update({averageTime:difference});
             }
+            userCompletedRecordRef.update(record);
           }
           q.resolve(true);
         });

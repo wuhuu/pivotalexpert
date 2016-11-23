@@ -64,9 +64,8 @@
                         var currentPos = 0;
 
                         for (k = 0; k < qnsCount; k++) {
-
-                            if(chapter.qns[k]) {
-                                if(achievedlist.indexOf(chapter.qns[k].qid) == -1){
+                            if(chapter.qns[currentPos]) {
+                                if(achievedlist.indexOf(chapter.qns[currentPos].qid) == -1){
                                     chapter.qns.splice(currentPos, 1);
                                 } else {
                                     achievementsNum++;

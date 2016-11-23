@@ -165,6 +165,12 @@
 
             //MCQ validation
             $scope.changeMCQ = function(changeBy) {
+              //track active user
+              recordActiveUser();
+              //track attempts and record user start time if first attempt
+              recordUserAttempt();
+              //track user who attempted
+              recordUserWhoAttempted();
                answerKey.$loaded().then(function() {
                    if($scope.questions[$scope.currentMCQ-1].qnsID === answerKey.answer[$scope.currentMCQ-1]) {
                         if($scope.currentMCQ === $scope.totalMCQ) {
